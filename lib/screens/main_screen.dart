@@ -19,6 +19,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
 import 'auth_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -251,6 +252,7 @@ class _MainScreenState extends State<MainScreen>
     _initNotifications();
     _checkPersistentTimer();
     _loadChatHistory();
+    _loadDraft(); // Restaura el entrenamiento en curso si la app se cerró
     _loadDataFromFirestore();
   }
 
@@ -836,6 +838,11 @@ class _MainScreenState extends State<MainScreen>
 
         // Request notification permission on Android 13+
         await android.requestNotificationsPermission();
+        // Permiso de alarma exacta (Android 12+) para que el timer suene
+        // aunque la app esté cerrada
+        if (await Permission.scheduleExactAlarm.isDenied) {
+          await Permission.scheduleExactAlarm.request();
+        }
       }
     } catch (e) {
       debugPrint("Notification init error: $e");
@@ -2822,12 +2829,14 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  Future<void> _syncDataToFirestore() async {
+  Future<void> _syncDataToFirestore({bool showFeedback = true}) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Subiendo datos...")),
-    );
+    if (showFeedback) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Subiendo datos...")),
+      );
+    }
     try {
       final doc = FirebaseFirestore.instance.collection('users').doc(user.uid);
       await doc.set({
@@ -2864,7 +2873,13 @@ class _MainScreenState extends State<MainScreen>
       final data = doc.data()!;
       if (data['sessions'] == null && data['groups'] == null) return;
 
+      // No sobrescribir los datos locales del dispositivo (evita "volver atrás")
       final prefs = await SharedPreferences.getInstance();
+      final localSessions = prefs.getString('trainer_sessions');
+      final localConfig = prefs.getString('trainer_config');
+      final hasLocalData = (localSessions != null && localSessions != '[]') ||
+          (localConfig != null && localConfig.contains('"groups"'));
+      if (hasLocalData) return;
 
       if (data['sessions'] != null) {
         await prefs.setString('trainer_sessions', jsonEncode(data['sessions']));
@@ -5353,6 +5368,7 @@ class _MainScreenState extends State<MainScreen>
         ),
       );
       _saveSessions();
+      _syncDataToFirestore(showFeedback: false); // Auto-backup silencioso en la nube
     }
     _clearDraft();
     setState(() {

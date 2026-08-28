@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/app_theme.dart';
 import 'screens/main_screen.dart';
 import 'screens/auth_screen.dart';
+import 'screens/splash_screen.dart';
 
 class TrainerProApp extends StatefulWidget {
   const TrainerProApp({super.key});
@@ -14,11 +15,21 @@ class TrainerProApp extends StatefulWidget {
 
 class _TrainerProAppState extends State<TrainerProApp> {
   AppTheme _currentTheme = AppTheme.deepSlate;
+  bool _showSplash = true;
 
   @override
   void initState() {
     super.initState();
     _loadTheme();
+    _checkSplash();
+  }
+
+  Future<void> _checkSplash() async {
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('trainer_splash_seen') ?? false;
+    if (seen) {
+      if (mounted) setState(() => _showSplash = false);
+    }
   }
 
   Future<void> _loadTheme() async {
@@ -89,21 +100,25 @@ class _TrainerProAppState extends State<TrainerProApp> {
       title: 'Trainer Pro',
       debugShowCheckedModeBanner: false,
       theme: _getThemeData(),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              backgroundColor: Color(0xFF0A0E1A),
-              body: Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6))),
-            );
-          }
-          if (snapshot.hasData) {
-            return MainScreen(currentTheme: _currentTheme, onToggleTheme: _cycleTheme);
-          }
-          return const AuthScreen();
-        },
-      ),
+      home: _showSplash
+          ? SplashScreen(
+              onDone: () => setState(() => _showSplash = false),
+            )
+          : StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    backgroundColor: Color(0xFF0A0E1A),
+                    body: Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6))),
+                  );
+                }
+                if (snapshot.hasData) {
+                  return MainScreen(currentTheme: _currentTheme, onToggleTheme: _cycleTheme);
+                }
+                return const AuthScreen();
+              },
+            ),
     );
   }
 }

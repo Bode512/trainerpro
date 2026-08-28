@@ -20,6 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   String? _error;
   bool _emailVerificationSent = false;
   bool _needsEmailVerification = false;
+  bool _obscurePassword = true;
 
   final _auth = FirebaseAuth.instance;
   final _google = GoogleSignIn();
@@ -243,7 +244,20 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                   _buildField(_emailCtrl, "Email", LucideIcons.mail, keyboard: TextInputType.emailAddress),
                   const SizedBox(height: 14),
-                  _buildField(_passCtrl, "Contraseña", LucideIcons.lock, obscure: true),
+                  _buildField(
+                    _passCtrl,
+                    "Contraseña",
+                    LucideIcons.lock,
+                    obscure: _obscurePassword,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? LucideIcons.eyeOff : LucideIcons.eye,
+                        size: 18,
+                        color: Colors.white38,
+                      ),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    ),
+                  ),
 
                   if (_error != null) ...[
                     const SizedBox(height: 12),
@@ -336,7 +350,14 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildField(TextEditingController ctrl, String hint, IconData icon, {TextInputType? keyboard, bool obscure = false}) {
+  Widget _buildField(
+    TextEditingController ctrl,
+    String hint,
+    IconData icon, {
+    TextInputType? keyboard,
+    bool obscure = false,
+    Widget? suffixIcon,
+  }) {
     return TextField(
       controller: ctrl,
       keyboardType: keyboard,
@@ -346,6 +367,7 @@ class _AuthScreenState extends State<AuthScreen> {
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
         prefixIcon: Icon(icon, size: 18, color: Colors.white24),
+        suffixIcon: suffixIcon,
         filled: true,
         fillColor: const Color(0xFF12162A),
         border: OutlineInputBorder(
