@@ -80,7 +80,7 @@ class _MainScreenState extends State<MainScreen>
   final TextEditingController _chatInputController = TextEditingController();
   final ScrollController _chatScrollController = ScrollController();
   bool _chatLoading = false;
-  String _geminiApiKey = '***';
+  final String _geminiApiKey = '***';
   bool _useCustomApiKey = false;
   String _customApiKey = '';
 
@@ -89,7 +89,7 @@ class _MainScreenState extends State<MainScreen>
   String _currentConversationId = '';
 
   // Nav order
-  List<Map<String, dynamic>> _navItems = [
+  final List<Map<String, dynamic>> _navItems = [
     {'icon': 'play', 'label': 'HOY'},
     {'icon': 'calendar', 'label': 'HISTORIAL'},
     {'icon': 'trendingUp', 'label': 'PROGRESO'},
@@ -105,48 +105,116 @@ class _MainScreenState extends State<MainScreen>
   // Static Data
   final List<String> _globalExerciseList = [
     // PECHO
-    'PRESS BANCA', 'PRESS BANCA CON MANCUERNA', 'PRESS INCLINADO', 'PRESS INCLINADO MANCUERNA',
-    'PRESS DECLINADO', 'APERTURAS', 'APERTURAS EN MÁQUINA', 'APERTURAS CABLE', 'PULL OVER',
-    'PRESS BANCA HALTEROFILIA', 'PRESS BANCA PAUSA', 'PRESS BANCA AGARRE ABIERTO', 'PRESS BANCA AGARRE ESTRECHO',
+    'PRESS BANCA',
+    'PRESS BANCA CON MANCUERNA',
+    'PRESS INCLINADO',
+    'PRESS INCLINADO MANCUERNA',
+    'PRESS DECLINADO',
+    'APERTURAS',
+    'APERTURAS EN MÁQUINA',
+    'APERTURAS CABLE',
+    'PULL OVER',
+    'PRESS BANCA HALTEROFILIA',
+    'PRESS BANCA PAUSA',
+    'PRESS BANCA AGARRE ABIERTO',
+    'PRESS BANCA AGARRE ESTRECHO',
     'PRESS INCLINADO POLEA', 'CROSS OVER', 'PEC DECK',
     // ESPALDA
-    'JALÓN AL PECHO', 'JALÓN AL PECHO ABIERTO', 'JALÓN AL PECHO CERRADO', 'JALÓN AL PECHO NEUTRO',
-    'REMO CON BARRA', 'REMO CON MANCUERNA', 'REMO EN T', 'REMO POLEA BAJA', 'REMO INVERTIDO',
-    'REMO MÁQUINA', 'REMO CERRADO', 'DOMINADAS', 'DOMINADAS TRAS NUCA', 'DOMINADAS SUPINAS',
-    'REMO SERRATO', 'PULL OVER POLEA', 'REMO SENTADO POLEA', 'REMADOR', 'REMO PENDLAY',
+    'JALÓN AL PECHO',
+    'JALÓN AL PECHO ABIERTO',
+    'JALÓN AL PECHO CERRADO',
+    'JALÓN AL PECHO NEUTRO',
+    'REMO CON BARRA',
+    'REMO CON MANCUERNA',
+    'REMO EN T',
+    'REMO POLEA BAJA',
+    'REMO INVERTIDO',
+    'REMO MÁQUINA',
+    'REMO CERRADO',
+    'DOMINADAS',
+    'DOMINADAS TRAS NUCA',
+    'DOMINADAS SUPINAS',
+    'REMO SERRATO',
+    'PULL OVER POLEA',
+    'REMO SENTADO POLEA',
+    'REMADOR',
+    'REMO PENDLAY',
     // HOMBROS
-    'PRESS MILITAR', 'PRESS MILITAR MÁQUINA', 'PRESS MILITAR MANCUERNA', 'PRESS ARNOLD',
+    'PRESS MILITAR',
+    'PRESS MILITAR MÁQUINA',
+    'PRESS MILITAR MANCUERNA',
+    'PRESS ARNOLD',
     'LATERALES', 'LATERALES MAQUINA', 'LATERALES CABLE', 'LATERALES POSTERIOR',
     'FRONTALES', 'ELEVACIONES LATERALES', 'FACE PULL', 'PÁJARO',
     'PRESS MILITAR SENTADO', 'PRESS MILITAR HALTEROFILIA', 'UPRIGHT ROW',
     // BÍCEPS
-    'CURL DE BÍCEPS', 'CURL MARTILLO', 'CURL POLEA', 'CURL POLEA ALTERNADO', 'CURL BANCOS',
-    'CURL INCLINADO', 'CURL SENTADO', 'CURL CONCENTRADO', 'CURL SCOTT', 'CURL MANCUERNA ALTERNADO',
+    'CURL DE BÍCEPS',
+    'CURL MARTILLO',
+    'CURL POLEA',
+    'CURL POLEA ALTERNADO',
+    'CURL BANCOS',
+    'CURL INCLINADO',
+    'CURL SENTADO',
+    'CURL CONCENTRADO',
+    'CURL SCOTT',
+    'CURL MANCUERNA ALTERNADO',
     'CURL BARRA RECTA', 'CURL BARRA Z', 'PREACHER CURL', 'CURL BÍCEPS POLEA',
     // TRÍCEPS
-    'EXTENSIÓN DE TRÍCEPS', 'EXTENSIÓN TRÍCEPS POLEA', 'EXTENSIÓN TRÍCEPS CABLE', 'EXTENSIÓN TRIC UNILAT',
-    'PRESS FRANCES', 'FONDOS DE TRÍCEPS', 'SKULL CRUSHERS', 'EXTENSIÓN POLEA CORDURA',
+    'EXTENSIÓN DE TRÍCEPS',
+    'EXTENSIÓN TRÍCEPS POLEA',
+    'EXTENSIÓN TRÍCEPS CABLE',
+    'EXTENSIÓN TRIC UNILAT',
+    'PRESS FRANCES',
+    'FONDOS DE TRÍCEPS',
+    'SKULL CRUSHERS',
+    'EXTENSIÓN POLEA CORDURA',
     'KICKBACKS', 'PRESSESS TRÍCEPS', 'EXTENSIÓN MÁQUINA',
     // PIERNAS - CUÁDRICEPS
     'SENTADILLA', 'SENTADILLA FRONTAL', 'SENTADILLA HACK', 'SENTADILLA BULGARA',
-    'SENTADILLA GOBLET', 'SENTADILLA SMITH', 'SENTADILLA A UNA PIERNA', 'PRESS DE PIERNAS',
-    'EXTENSIÓN DE CUÁDRICEPS', 'EXTENSIÓN MÁQUINA', 'SENTADILLA PROFUNDA', 'PENCHA',
+    'SENTADILLA GOBLET',
+    'SENTADILLA SMITH',
+    'SENTADILLA A UNA PIERNA',
+    'PRESS DE PIERNAS',
+    'EXTENSIÓN DE CUÁDRICEPS',
+    'EXTENSIÓN MÁQUINA',
+    'SENTADILLA PROFUNDA',
+    'PENCHA',
     // PIERNAS - ISQUIOS
-    'PESO MUERTO', 'PESO MUERTO RUMANO', 'PESO MUERTO SUMO', 'PESO MUERTO CON MANCUERNA',
+    'PESO MUERTO',
+    'PESO MUERTO RUMANO',
+    'PESO MUERTO SUMO',
+    'PESO MUERTO CON MANCUERNA',
     'FEMORAL TUMBADO', 'FEMORAL SENTADO', 'FEMORAL DE PIE', 'NORDIC CURL',
     'BUCHILLAS', 'HIP THRUST', 'PESO MUERTO STIFF', 'SENTADILLA RUMANA',
     // PIERNAS - GLÚTEOS
-    'HIP THRUST BARRA', 'HIP THRUST MÁQUINA', 'PATADA DE GLÚTEO', 'ABDUCCIÓN CADERA',
-    'GLUTE BRIDGE', 'STEP UP', 'ZANCADAS', 'ZANCADAS CAMINANDO', 'ZANCADAS BULGARAS',
+    'HIP THRUST BARRA',
+    'HIP THRUST MÁQUINA',
+    'PATADA DE GLÚTEO',
+    'ABDUCCIÓN CADERA',
+    'GLUTE BRIDGE',
+    'STEP UP',
+    'ZANCADAS',
+    'ZANCADAS CAMINANDO',
+    'ZANCADAS BULGARAS',
     'ZANCADAS INVERTIDAS', 'SENTADILLA SUMO',
     // PIERNAS - PANTORRILLAS
-    'ELEVACIÓN DE PANTORRILLAS', 'ELEVACIÓN PANTORRILLAS MÁQUINA', 'ELEVACIÓN PANTORRILLAS SMITH',
+    'ELEVACIÓN DE PANTORRILLAS',
+    'ELEVACIÓN PANTORRILLAS MÁQUINA',
+    'ELEVACIÓN PANTORRILLAS SMITH',
     'ELEVACIÓN PANTORRILLAS SENTADO', 'PANTORRILLAS UNA PIERNA',
     // PIERNAS - ADUCTORES/ABDUCTORES
     'ADUCTOR', 'ABDUCTOR', 'ADUCTOR MÁQUINA', 'ABDUCTOR MÁQUINA',
     // CENTRO
-    'CRUNCH', 'CRUNCH EN MÁQUINA', 'PLANCHAS', 'PLANCHAS LATERALES', 'RUSSIAN TWIST',
-    'LUMBAR EN MÁQUINA', 'LUMBAR Hiperextension', 'AB wheel', 'LEG RAISE', 'HOLLOW BODY',
+    'CRUNCH',
+    'CRUNCH EN MÁQUINA',
+    'PLANCHAS',
+    'PLANCHAS LATERALES',
+    'RUSSIAN TWIST',
+    'LUMBAR EN MÁQUINA',
+    'LUMBAR Hiperextension',
+    'AB wheel',
+    'LEG RAISE',
+    'HOLLOW BODY',
     'FRENCH PRESS', 'MOUNTAIN CLIMBERS', 'DEAD BUG', 'BIRD DOG', 'RKC PLANK',
     // CARDIO Y OTROS
     'HAKA', 'SENTADILLA ISOMÉTRICA', 'BURPEES', 'BOX JUMPS', 'KETTLEBELL SWING',
@@ -373,7 +441,9 @@ class _MainScreenState extends State<MainScreen>
     if (chatJson != null && mounted) {
       try {
         final List<dynamic> decoded = jsonDecode(chatJson);
-        final loaded = decoded.map((e) => Map<String, dynamic>.from(e)).toList();
+        final loaded = decoded
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList();
         if (mounted) {
           setState(() {
             _chatConversations = loaded;
@@ -403,7 +473,11 @@ class _MainScreenState extends State<MainScreen>
         final msgs = conv['messages'];
         if (msgs is List) {
           for (var e in msgs) {
-            final map = e is Map ? Map<String, String>.from(e.map((k, v) => MapEntry(k, v.toString()))) : <String, String>{};
+            final map = e is Map
+                ? Map<String, String>.from(
+                    e.map((k, v) => MapEntry(k, v.toString())),
+                  )
+                : <String, String>{};
             _chatMessages.add(map);
           }
         }
@@ -453,13 +527,15 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _saveChatHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    final idx = _chatConversations.indexWhere((c) => c['id'] == _currentConversationId);
+    final idx = _chatConversations.indexWhere(
+      (c) => c['id'] == _currentConversationId,
+    );
     if (idx != -1) {
-      _chatConversations[idx]['messages'] = _chatMessages.map((m) => {
-        'role': m['role'] ?? '',
-        'content': m['content'] ?? '',
-      }).toList();
-      if (_chatMessages.isNotEmpty && _chatConversations[idx]['title'] == 'Nueva conversación') {
+      _chatConversations[idx]['messages'] = _chatMessages
+          .map((m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''})
+          .toList();
+      if (_chatMessages.isNotEmpty &&
+          _chatConversations[idx]['title'] == 'Nueva conversación') {
         final firstUser = _chatMessages.firstWhere(
           (m) => m['role'] == 'user',
           orElse: () => {'role': '', 'content': ''},
@@ -471,21 +547,27 @@ class _MainScreenState extends State<MainScreen>
         }
       }
     }
-    await prefs.setString('trainer_chat_conversations', jsonEncode(_chatConversations));
+    await prefs.setString(
+      'trainer_chat_conversations',
+      jsonEncode(_chatConversations),
+    );
   }
 
   // --- NAV ORDER ---
-  static const _defaultNavIcons = ['play', 'calendar', 'trendingUp', 'wrench', 'messageCircle'];
-  static const _defaultNavLabels = ['HOY', 'HISTORIAL', 'PROGRESO', 'TOOLS', 'CHAT'];
-
   IconData _iconFromString(String name) {
     switch (name) {
-      case 'play': return LucideIcons.play;
-      case 'calendar': return LucideIcons.calendar;
-      case 'trendingUp': return LucideIcons.trendingUp;
-      case 'wrench': return LucideIcons.wrench;
-      case 'messageCircle': return LucideIcons.messageCircle;
-      default: return LucideIcons.circle;
+      case 'play':
+        return LucideIcons.play;
+      case 'calendar':
+        return LucideIcons.calendar;
+      case 'trendingUp':
+        return LucideIcons.trendingUp;
+      case 'wrench':
+        return LucideIcons.wrench;
+      case 'messageCircle':
+        return LucideIcons.messageCircle;
+      default:
+        return LucideIcons.circle;
     }
   }
 
@@ -665,9 +747,15 @@ class _MainScreenState extends State<MainScreen>
                 ? _exerciseDb[_activeWorkoutType]!.first
                 : '';
           }
-          if (draft['weightCtrl'] != null) _weightCtrl.text = draft['weightCtrl'];
-          if (draft['repsCtrl'] != null) _repsCtrl.text = draft['repsCtrl'];
-          if (draft['noteCtrl'] != null) _noteCtrl.text = draft['noteCtrl'];
+          if (draft['weightCtrl'] != null) {
+            _weightCtrl.text = draft['weightCtrl'];
+          }
+          if (draft['repsCtrl'] != null) {
+            _repsCtrl.text = draft['repsCtrl'];
+          }
+          if (draft['noteCtrl'] != null) {
+            _noteCtrl.text = draft['noteCtrl'];
+          }
         });
       } catch (e) {
         _clearDraft();
@@ -745,7 +833,10 @@ class _MainScreenState extends State<MainScreen>
       final endTimeStr = prefs.getString('timer_end_time');
       if (endTimeStr == null) {
         timer.cancel();
-        setState(() { _showTimer = false; _isTimerExpanded = false; });
+        setState(() {
+          _showTimer = false;
+          _isTimerExpanded = false;
+        });
         return;
       }
       final endTime = DateTime.parse(endTimeStr);
@@ -812,8 +903,10 @@ class _MainScreenState extends State<MainScreen>
       );
 
       // Create notification channels explicitly
-      final android = _notificationsPlugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final android = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       if (android != null) {
         await android.createNotificationChannel(
           const AndroidNotificationChannel(
@@ -871,17 +964,17 @@ class _MainScreenState extends State<MainScreen>
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'rest_timer_progress',
-      'Temporizador en Progreso',
-      channelDescription: 'Muestra el progreso del descanso',
-      importance: Importance.low,
-      priority: Priority.low,
-      onlyAlertOnce: true,
-      ongoing: true,
-      autoCancel: false,
-      playSound: false,
-      enableVibration: false,
-    );
+          'rest_timer_progress',
+          'Temporizador en Progreso',
+          channelDescription: 'Muestra el progreso del descanso',
+          importance: Importance.low,
+          priority: Priority.low,
+          onlyAlertOnce: true,
+          ongoing: true,
+          autoCancel: false,
+          playSound: false,
+          enableVibration: false,
+        );
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
@@ -901,15 +994,15 @@ class _MainScreenState extends State<MainScreen>
     if (!_enableNotifications) return;
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'rest_timer_channel',
-      'Temporizador Finalizado',
-      channelDescription: 'Notifica cuando termina el descanso',
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: true,
-      playSound: true,
-      enableVibration: true,
-    );
+          'rest_timer_channel',
+          'Temporizador Finalizado',
+          channelDescription: 'Notifica cuando termina el descanso',
+          importance: Importance.max,
+          priority: Priority.high,
+          showWhen: true,
+          playSound: true,
+          enableVibration: true,
+        );
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
@@ -959,9 +1052,14 @@ class _MainScreenState extends State<MainScreen>
         final player = AudioPlayer();
         String asset;
         switch (value) {
-          case 'beep': asset = 'sounds/timer_beep.wav'; break;
-          case 'ding': asset = 'sounds/timer_ding.wav'; break;
-          default: asset = 'sounds/timer_alarm.wav';
+          case 'beep':
+            asset = 'sounds/timer_beep.wav';
+            break;
+          case 'ding':
+            asset = 'sounds/timer_ding.wav';
+            break;
+          default:
+            asset = 'sounds/timer_alarm.wav';
         }
         player.play(AssetSource(asset)).then((_) {
           Future.delayed(const Duration(seconds: 2), () => player.dispose());
@@ -970,10 +1068,14 @@ class _MainScreenState extends State<MainScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? _accentColor.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+          color: isSelected
+              ? _accentColor.withValues(alpha: 0.2)
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? _accentColor.withOpacity(0.5) : Colors.white10,
+            color: isSelected
+                ? _accentColor.withValues(alpha: 0.5)
+                : Colors.white10,
           ),
         ),
         child: Text(
@@ -997,8 +1099,9 @@ class _MainScreenState extends State<MainScreen>
   void _addSet() {
     if (_selectedExercise.isEmpty ||
         _weightCtrl.text.isEmpty ||
-        _repsCtrl.text.isEmpty)
+        _repsCtrl.text.isEmpty) {
       return;
+    }
     final now = DateTime.now();
     double weight = double.tryParse(_weightCtrl.text.replaceAll(',', '.')) ?? 0;
     double reps = double.tryParse(_repsCtrl.text.replaceAll(',', '.')) ?? 0;
@@ -1341,10 +1444,12 @@ class _MainScreenState extends State<MainScreen>
     setState(() {
       int idx = _userGroups.indexOf(oldName);
       if (idx != -1) _userGroups[idx] = newName;
-      if (_exerciseDb.containsKey(oldName))
+      if (_exerciseDb.containsKey(oldName)) {
         _exerciseDb[newName] = _exerciseDb.remove(oldName)!;
-      if (_archivedExercises.containsKey(oldName))
+      }
+      if (_archivedExercises.containsKey(oldName)) {
         _archivedExercises[newName] = _archivedExercises.remove(oldName)!;
+      }
       _weeklyPlan.forEach((key, value) {
         if (value == oldName) _weeklyPlan[key] = newName;
       });
@@ -1539,7 +1644,7 @@ class _MainScreenState extends State<MainScreen>
   // --- INTERFAZ PRINCIPAL ---
   @override
   Widget build(BuildContext context) {
-    if (_loading)
+    if (_loading) {
       return Scaffold(
         body: Center(
           child: Column(
@@ -1554,8 +1659,9 @@ class _MainScreenState extends State<MainScreen>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: _accentColor.withOpacity(
-                              0.3 * _glowController.value),
+                          color: _accentColor.withValues(
+                            alpha: 0.3 * _glowController.value,
+                          ),
                           blurRadius: 30 * _glowController.value,
                           spreadRadius: 5 * _glowController.value,
                         ),
@@ -1582,6 +1688,7 @@ class _MainScreenState extends State<MainScreen>
           ),
         ),
       );
+    }
     if (_isFirstTime) return _buildOnboarding();
 
     return Scaffold(
@@ -1596,9 +1703,9 @@ class _MainScreenState extends State<MainScreen>
                   physics: const BouncingScrollPhysics(),
                   onPageChanged: (i) => setState(() {
                     _activeTab = i;
-                    if (i != 0)
-                      _showSettings =
-                          false;
+                    if (i != 0) {
+                      _showSettings = false;
+                    }
                   }),
                   children: [
                     _buildAddTab(),
@@ -1654,17 +1761,21 @@ class _MainScreenState extends State<MainScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: _accentColor.withOpacity(0.3),
+                      color: _accentColor.withValues(alpha: 0.3),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: _accentColor.withOpacity(0.2),
+                        color: _accentColor.withValues(alpha: 0.2),
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),
                     ],
                   ),
-                  child: Icon(LucideIcons.dumbbell, size: 50, color: _accentColor),
+                  child: Icon(
+                    LucideIcons.dumbbell,
+                    size: 50,
+                    color: _accentColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 25),
@@ -1697,7 +1808,7 @@ class _MainScreenState extends State<MainScreen>
                       'Selecciona una base para comenzar.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         fontSize: 12,
                       ),
                     ),
@@ -1712,10 +1823,7 @@ class _MainScreenState extends State<MainScreen>
                   duration: const Duration(milliseconds: 600),
                   curve: Curves.easeOut,
                   builder: (context, value, child) {
-                    return Opacity(
-                      opacity: value,
-                      child: child,
-                    );
+                    return Opacity(opacity: value, child: child);
                   },
                   child: const Text(
                     'MIS PLANTILLAS GUARDADAS',
@@ -1728,144 +1836,142 @@ class _MainScreenState extends State<MainScreen>
                   ),
                 ),
                 const SizedBox(height: 10),
-                ..._customTemplates.keys
-                    .map(
-                      (name) => TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0, end: 1),
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeOutCubic,
-                        builder: (context, value, child) {
-                          return Opacity(
-                            opacity: value,
-                            child: Transform.translate(
-                              offset: Offset(0, 15 * (1 - value)),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: PressableScale(
-                                  onTap: () {
-                                    _setupInitialRoutine(name);
-                                    setState(() => _showSettings = false);
-                                    if (Navigator.canPop(context))
-                                      Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 15,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.blueAccent.withOpacity(0.3),
-                                          Colors.blueAccent.withOpacity(0.15),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color:
-                                            Colors.blueAccent.withOpacity(0.3),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      name,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        color: Colors.blueAccent,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              PressableScale(
-                                onTap: () => _deleteCustomTemplate(name),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.redAccent.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    LucideIcons.trash2,
-                                    color: Colors.redAccent,
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                ..._customTemplates.keys.map(
+                  (name) => TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: 1),
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Transform.translate(
+                          offset: Offset(0, 15 * (1 - value)),
+                          child: child,
                         ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: PressableScale(
+                              onTap: () {
+                                _setupInitialRoutine(name);
+                                setState(() => _showSettings = false);
+                                if (Navigator.canPop(context)) {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.blueAccent.withValues(alpha: 0.3),
+                                      Colors.blueAccent.withValues(alpha: 0.15),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.blueAccent.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  name,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.blueAccent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          PressableScale(
+                            onTap: () => _deleteCustomTemplate(name),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                LucideIcons.trash2,
+                                color: Colors.redAccent,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-                    .toList(),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
-                Divider(color: Colors.white.withOpacity(0.1)),
+                Divider(color: Colors.white.withValues(alpha: 0.1)),
                 const SizedBox(height: 20),
               ],
 
               ...routines.asMap().entries.map(
-                    (entry) => TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0, end: 1),
-                      duration:
-                          Duration(milliseconds: 500 + entry.key * 100),
-                      curve: Curves.easeOutCubic,
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, 20 * (1 - value)),
-                            child: child,
-                          ),
-                        );
+                (entry) => TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: 1),
+                  duration: Duration(milliseconds: 500 + entry.key * 100),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: PressableScale(
+                      onTap: () {
+                        _setupInitialRoutine(entry.value);
+                        setState(() => _showSettings = false);
+                        if (Navigator.canPop(context)) Navigator.pop(context);
                       },
                       child: Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: PressableScale(
-                          onTap: () {
-                            _setupInitialRoutine(entry.value);
-                            setState(() => _showSettings = false);
-                            if (Navigator.canPop(context)) Navigator.pop(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            decoration: BoxDecoration(
-                              color: _cardColor,
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.08),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                          color: _cardColor,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.08),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
-                            child: Text(
-                              entry.value,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
-                            ),
+                          ],
+                        ),
+                        child: Text(
+                          entry.value,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -1882,7 +1988,7 @@ class _MainScreenState extends State<MainScreen>
       return GestureDetector(
         onTap: () => setState(() => _isTimerExpanded = false),
         child: Container(
-          color: Colors.black.withOpacity(0.95),
+          color: Colors.black.withValues(alpha: 0.95),
           width: double.infinity,
           height: double.infinity,
           child: Column(
@@ -1906,14 +2012,21 @@ class _MainScreenState extends State<MainScreen>
                 children: [
                   PressableScale(
                     onTap: () async {
-                      setState(() => _secondsLeft = (_secondsLeft - 10).clamp(1, 999));
+                      setState(
+                        () => _secondsLeft = (_secondsLeft - 10).clamp(1, 999),
+                      );
                       final prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('timer_end_time', DateTime.now().add(Duration(seconds: _secondsLeft)).toIso8601String());
+                      await prefs.setString(
+                        'timer_end_time',
+                        DateTime.now()
+                            .add(Duration(seconds: _secondsLeft))
+                            .toIso8601String(),
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.05),
+                        color: Colors.white.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: Colors.white10),
                       ),
@@ -1927,17 +2040,25 @@ class _MainScreenState extends State<MainScreen>
                   const SizedBox(width: 40),
                   PressableScale(
                     onTap: () async {
-                      setState(() => _secondsLeft = (_secondsLeft + 10).clamp(1, 999));
+                      setState(
+                        () => _secondsLeft = (_secondsLeft + 10).clamp(1, 999),
+                      );
                       final prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('timer_end_time', DateTime.now().add(Duration(seconds: _secondsLeft)).toIso8601String());
+                      await prefs.setString(
+                        'timer_end_time',
+                        DateTime.now()
+                            .add(Duration(seconds: _secondsLeft))
+                            .toIso8601String(),
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: _accentColor.withOpacity(0.1),
+                        color: _accentColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                            color: _accentColor.withOpacity(0.3)),
+                          color: _accentColor.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: Icon(
                         LucideIcons.plusCircle,
@@ -1951,7 +2072,11 @@ class _MainScreenState extends State<MainScreen>
               const SizedBox(height: 20),
               const Text(
                 "TIEMPOS RÁPIDOS",
-                style: TextStyle(color: Colors.white38, fontSize: 9, letterSpacing: 1.5),
+                style: TextStyle(
+                  color: Colors.white38,
+                  fontSize: 9,
+                  letterSpacing: 1.5,
+                ),
               ),
               const SizedBox(height: 10),
               Row(
@@ -1963,15 +2088,25 @@ class _MainScreenState extends State<MainScreen>
                       onTap: () async {
                         setState(() => _secondsLeft = min * 60);
                         final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString('timer_end_time', DateTime.now().add(Duration(seconds: _secondsLeft)).toIso8601String());
+                        await prefs.setString(
+                          'timer_end_time',
+                          DateTime.now()
+                              .add(Duration(seconds: _secondsLeft))
+                              .toIso8601String(),
+                        );
                         _totalRestSeconds = _secondsLeft;
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: _accentColor.withOpacity(0.15),
+                          color: _accentColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _accentColor.withOpacity(0.3)),
+                          border: Border.all(
+                            color: _accentColor.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Text(
                           "${min}m",
@@ -2010,8 +2145,14 @@ class _MainScreenState extends State<MainScreen>
         onTap: () => setState(() => _isTimerExpanded = true),
         onPanUpdate: (details) {
           setState(() {
-            _timerPosX = (posX + details.delta.dx).clamp(0, MediaQuery.of(context).size.width - 120);
-            _timerPosY = (posY + details.delta.dy).clamp(0, MediaQuery.of(context).size.height - 60);
+            _timerPosX = (posX + details.delta.dx).clamp(
+              0,
+              MediaQuery.of(context).size.width - 120,
+            );
+            _timerPosY = (posY + details.delta.dy).clamp(
+              0,
+              MediaQuery.of(context).size.height - 60,
+            );
           });
         },
         child: Container(
@@ -2019,17 +2160,14 @@ class _MainScreenState extends State<MainScreen>
           decoration: BoxDecoration(
             color: _cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _accentColor.withOpacity(0.5)),
+            border: Border.all(color: _accentColor.withValues(alpha: 0.5)),
             boxShadow: [
               BoxShadow(
-                color: _accentColor.withOpacity(0.2),
+                color: _accentColor.withValues(alpha: 0.2),
                 blurRadius: 10,
                 spreadRadius: 1,
               ),
-              const BoxShadow(
-                color: Colors.black45,
-                blurRadius: 8,
-              ),
+              const BoxShadow(color: Colors.black45, blurRadius: 8),
             ],
           ),
           child: Row(
@@ -2051,7 +2189,7 @@ class _MainScreenState extends State<MainScreen>
                   fontSize: 12,
                   shadows: [
                     Shadow(
-                      color: _accentColor.withOpacity(0.3),
+                      color: _accentColor.withValues(alpha: 0.3),
                       blurRadius: 6,
                     ),
                   ],
@@ -2071,7 +2209,7 @@ class _MainScreenState extends State<MainScreen>
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: const Icon(
@@ -2120,7 +2258,7 @@ class _MainScreenState extends State<MainScreen>
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 60, 24, 20),
         decoration: BoxDecoration(
-          color: _cardColor.withOpacity(0.8),
+          color: _cardColor.withValues(alpha: 0.8),
           border: const Border(
             bottom: BorderSide(color: Colors.white10, width: 0.3),
           ),
@@ -2133,10 +2271,10 @@ class _MainScreenState extends State<MainScreen>
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: _accentColor.withOpacity(0.1),
+                  color: _accentColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: _accentColor.withOpacity(0.2),
+                    color: _accentColor.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(themeIcon, color: _accentColor, size: 20),
@@ -2160,7 +2298,7 @@ class _MainScreenState extends State<MainScreen>
                       color: _accentColor,
                       shadows: [
                         Shadow(
-                          color: _accentColor.withOpacity(0.5),
+                          color: _accentColor.withValues(alpha: 0.5),
                           blurRadius: 10,
                         ),
                       ],
@@ -2178,15 +2316,16 @@ class _MainScreenState extends State<MainScreen>
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: _showSettings
-                                  ? _accentColor.withOpacity(0.2)
-                                  : Colors.white.withOpacity(0.05),
+                                  ? _accentColor.withValues(alpha: 0.2)
+                                  : Colors.white.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               _showSettings ? LucideIcons.x : LucideIcons.edit3,
                               size: 18,
-                              color:
-                                  _showSettings ? _accentColor : Colors.white24,
+                              color: _showSettings
+                                  ? _accentColor
+                                  : Colors.white24,
                             ),
                           ),
                         )
@@ -2197,8 +2336,8 @@ class _MainScreenState extends State<MainScreen>
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: _showSettings
-                                  ? _accentColor.withOpacity(0.2)
-                                  : Colors.white.withOpacity(0.05),
+                                  ? _accentColor.withValues(alpha: 0.2)
+                                  : Colors.white.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
@@ -2206,8 +2345,9 @@ class _MainScreenState extends State<MainScreen>
                                   ? LucideIcons.x
                                   : LucideIcons.settings,
                               size: 18,
-                              color:
-                                  _showSettings ? _accentColor : Colors.white24,
+                              color: _showSettings
+                                  ? _accentColor
+                                  : Colors.white24,
                             ),
                           ),
                         ))
@@ -2231,10 +2371,10 @@ class _MainScreenState extends State<MainScreen>
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
             duration: const Duration(milliseconds: 500),
-                curve: Curves.easeOutBack,
-                builder: (context, value, child) {
-                  return Opacity(
-                    opacity: value.clamp(0.0, 1.0),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value.clamp(0.0, 1.0),
                 child: Transform.translate(
                   offset: Offset(0, -10 * (1 - value)),
                   child: child,
@@ -2245,12 +2385,12 @@ class _MainScreenState extends State<MainScreen>
               margin: const EdgeInsets.only(bottom: 25),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.08),
-                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                color: Colors.orange.withValues(alpha: 0.08),
+                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.1),
+                    color: Colors.orange.withValues(alpha: 0.1),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -2261,7 +2401,7 @@ class _MainScreenState extends State<MainScreen>
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.15),
+                      color: Colors.orange.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
@@ -2294,9 +2434,11 @@ class _MainScreenState extends State<MainScreen>
                     onTap: _clearDraft,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent.withOpacity(0.1),
+                        color: Colors.redAccent.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
@@ -2314,13 +2456,15 @@ class _MainScreenState extends State<MainScreen>
                     onTap: _loadDraft,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.orange,
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.orange.withOpacity(0.3),
+                            color: Colors.orange.withValues(alpha: 0.3),
                             blurRadius: 8,
                           ),
                         ],
@@ -2351,7 +2495,10 @@ class _MainScreenState extends State<MainScreen>
               gradient: suggestion['type'] == 'DESCANSO'
                   ? LinearGradient(colors: [_cardColor, Colors.black])
                   : LinearGradient(
-                      colors: [_accentColor.withOpacity(0.8), _accentColor],
+                      colors: [
+                        _accentColor.withValues(alpha: 0.8),
+                        _accentColor,
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -2359,7 +2506,7 @@ class _MainScreenState extends State<MainScreen>
               boxShadow: suggestion['type'] != 'DESCANSO'
                   ? [
                       BoxShadow(
-                        color: _accentColor.withOpacity(0.3),
+                        color: _accentColor.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -2373,9 +2520,11 @@ class _MainScreenState extends State<MainScreen>
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
@@ -2424,64 +2573,63 @@ class _MainScreenState extends State<MainScreen>
         ),
         const SizedBox(height: 15),
         ..._userGroups.asMap().entries.map(
-              (entry) => TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: 1),
-                duration: Duration(milliseconds: 400 + entry.key * 100),
-                curve: Curves.easeOutCubic,
-                builder: (context, value, child) {
-                  return Opacity(
-                    opacity: value,
-                    child: Transform.translate(
-                      offset: Offset(0, 20 * (1 - value)),
-                      child: child,
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: _cardColor,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.08),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+          (entry) => TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: Duration(milliseconds: 400 + entry.key * 100),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset(0, 20 * (1 - value)),
+                  child: child,
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: _cardColor,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 4),
-                    title: Text(
-                      entry.value,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                    trailing: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: _accentColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        LucideIcons.chevronRight,
-                        size: 16,
-                        color: _accentColor,
-                      ),
-                    ),
-                    onTap: () => _startWorkout(entry.value),
+                ],
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 4,
+                ),
+                title: Text(
+                  entry.value,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.white,
                   ),
                 ),
+                trailing: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: _accentColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    LucideIcons.chevronRight,
+                    size: 16,
+                    color: _accentColor,
+                  ),
+                ),
+                onTap: () => _startWorkout(entry.value),
               ),
-            )
-            .toList(),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -2497,7 +2645,7 @@ class _MainScreenState extends State<MainScreen>
           decoration: BoxDecoration(
             color: _cardColor,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _accentColor.withOpacity(0.3)),
+            border: Border.all(color: _accentColor.withValues(alpha: 0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2521,7 +2669,7 @@ class _MainScreenState extends State<MainScreen>
               // BOTON UNIFICADO V4: COMPARTIR
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _accentColor.withOpacity(0.2),
+                  backgroundColor: _accentColor.withValues(alpha: 0.2),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   minimumSize: const Size(double.infinity, 45),
                 ),
@@ -2586,7 +2734,8 @@ class _MainScreenState extends State<MainScreen>
               LucideIcons.percent,
               _showPercentTool,
             ),
-            _toolCard("Timer Rápido",
+            _toolCard(
+              "Timer Rápido",
               LucideIcons.timer,
               () => _startRestTimer(),
             ),
@@ -2610,10 +2759,10 @@ class _MainScreenState extends State<MainScreen>
           decoration: BoxDecoration(
             color: _cardColor,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -2631,7 +2780,7 @@ class _MainScreenState extends State<MainScreen>
                   style: TextStyle(color: Colors.white54, fontSize: 10),
                 ),
                 value: _enableVibration,
-                activeColor: _accentColor,
+                activeThumbColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _enableVibration = val;
@@ -2650,7 +2799,7 @@ class _MainScreenState extends State<MainScreen>
                   style: TextStyle(color: Colors.white54, fontSize: 10),
                 ),
                 value: _enableSound,
-                activeColor: _accentColor,
+                activeThumbColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _enableSound = val;
@@ -2660,7 +2809,10 @@ class _MainScreenState extends State<MainScreen>
               ),
               if (_enableSound) ...[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -2694,22 +2846,27 @@ class _MainScreenState extends State<MainScreen>
                   style: TextStyle(color: Colors.white54, fontSize: 10),
                 ),
                 value: _enableNotifications,
-                activeColor: _accentColor,
+                activeThumbColor: _accentColor,
                 onChanged: (val) async {
                   if (val) {
                     // Request permission first
                     final android = _notificationsPlugin
                         .resolvePlatformSpecificImplementation<
-                            AndroidFlutterLocalNotificationsPlugin>();
+                          AndroidFlutterLocalNotificationsPlugin
+                        >();
                     if (android != null) {
-                      final granted = await android.requestNotificationsPermission();
+                      final granted = await android
+                          .requestNotificationsPermission();
                       if (granted != true) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                "Permiso de notificaciones denegado. Actívalo en Ajustes."),
-                          ),
-                        );
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Permiso de notificaciones denegado. Actívalo en Ajustes.",
+                              ),
+                            ),
+                          );
+                        }
                         return;
                       }
                     }
@@ -2718,13 +2875,17 @@ class _MainScreenState extends State<MainScreen>
                     _enableNotifications = val;
                     _saveConfig();
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(val
-                          ? "Notificaciones activadas."
-                          : "Notificaciones desactivadas."),
-                    ),
-                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          val
+                              ? "Notificaciones activadas."
+                              : "Notificaciones desactivadas.",
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
@@ -2738,7 +2899,7 @@ class _MainScreenState extends State<MainScreen>
           decoration: BoxDecoration(
             color: _cardColor,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: _buildAuthSection(),
         ),
@@ -2761,10 +2922,13 @@ class _MainScreenState extends State<MainScreen>
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundColor: _accentColor.withOpacity(0.2),
+              backgroundColor: _accentColor.withValues(alpha: 0.2),
               child: Text(
                 (user.displayName ?? user.email ?? 'U')[0].toUpperCase(),
-                style: TextStyle(color: _accentColor, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: _accentColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             title: Text(
@@ -2779,14 +2943,27 @@ class _MainScreenState extends State<MainScreen>
           const Divider(color: Colors.white10, height: 1),
           ListTile(
             leading: Icon(LucideIcons.cloud, color: _accentColor, size: 18),
-            title: const Text("Subir datos a la nube", style: TextStyle(color: Colors.white, fontSize: 13)),
-            subtitle: const Text("Guardar progreso en tu cuenta", style: TextStyle(color: Colors.white38, fontSize: 10)),
+            title: const Text(
+              "Subir datos a la nube",
+              style: TextStyle(color: Colors.white, fontSize: 13),
+            ),
+            subtitle: const Text(
+              "Guardar progreso en tu cuenta",
+              style: TextStyle(color: Colors.white38, fontSize: 10),
+            ),
             onTap: _syncDataToFirestore,
           ),
           const Divider(color: Colors.white10, height: 1),
           ListTile(
-            leading: const Icon(LucideIcons.logOut, color: Colors.redAccent, size: 18),
-            title: const Text("Cerrar sesión", style: TextStyle(color: Colors.redAccent, fontSize: 13)),
+            leading: const Icon(
+              LucideIcons.logOut,
+              color: Colors.redAccent,
+              size: 18,
+            ),
+            title: const Text(
+              "Cerrar sesión",
+              style: TextStyle(color: Colors.redAccent, fontSize: 13),
+            ),
             onTap: () async {
               await FirebaseAuth.instance.signOut();
               setState(() {});
@@ -2814,13 +2991,25 @@ class _MainScreenState extends State<MainScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: _accentColor,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () async {
-                await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AuthScreen()),
+                );
                 setState(() {});
               },
-              child: const Text("INICIAR SESIÓN / REGISTRARSE", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11)),
+              child: const Text(
+                "INICIAR SESIÓN / REGISTRARSE",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 11,
+                ),
+              ),
             ),
           ),
         ),
@@ -2833,9 +3022,9 @@ class _MainScreenState extends State<MainScreen>
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     if (showFeedback) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Subiendo datos...")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Subiendo datos...")));
     }
     try {
       final doc = FirebaseFirestore.instance.collection('users').doc(user.uid);
@@ -2857,9 +3046,9 @@ class _MainScreenState extends State<MainScreen>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al subir: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error al subir: $e")));
       }
     }
   }
@@ -2868,7 +3057,10 @@ class _MainScreenState extends State<MainScreen>
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       if (!doc.exists || doc.data() == null) return;
       final data = doc.data()!;
       if (data['sessions'] == null && data['groups'] == null) return;
@@ -2877,7 +3069,8 @@ class _MainScreenState extends State<MainScreen>
       final prefs = await SharedPreferences.getInstance();
       final localSessions = prefs.getString('trainer_sessions');
       final localConfig = prefs.getString('trainer_config');
-      final hasLocalData = (localSessions != null && localSessions != '[]') ||
+      final hasLocalData =
+          (localSessions != null && localSessions != '[]') ||
           (localConfig != null && localConfig.contains('"groups"'));
       if (hasLocalData) return;
 
@@ -2885,18 +3078,29 @@ class _MainScreenState extends State<MainScreen>
         await prefs.setString('trainer_sessions', jsonEncode(data['sessions']));
       }
       if (data['templates'] != null) {
-        await prefs.setString('trainer_custom_templates', jsonEncode(data['templates']));
+        await prefs.setString(
+          'trainer_custom_templates',
+          jsonEncode(data['templates']),
+        );
       }
       if (data['notes'] != null) {
         await prefs.setString('trainer_notes', jsonEncode(data['notes']));
       }
       if (data['groups'] != null || data['exerciseDb'] != null) {
         final configStr = prefs.getString('trainer_config');
-        final config = configStr != null ? jsonDecode(configStr) as Map<String, dynamic> : {};
+        final config = configStr != null
+            ? jsonDecode(configStr) as Map<String, dynamic>
+            : {};
         if (data['groups'] != null) config['groups'] = data['groups'];
-        if (data['exerciseDb'] != null) config['exercises'] = data['exerciseDb'];
-        if (data['weeklyPlan'] != null) config['weeklyPlan'] = data['weeklyPlan'];
-        if (data['pinnedNotes'] != null) config['pinnedNotes'] = data['pinnedNotes'];
+        if (data['exerciseDb'] != null) {
+          config['exercises'] = data['exerciseDb'];
+        }
+        if (data['weeklyPlan'] != null) {
+          config['weeklyPlan'] = data['weeklyPlan'];
+        }
+        if (data['pinnedNotes'] != null) {
+          config['pinnedNotes'] = data['pinnedNotes'];
+        }
         await prefs.setString('trainer_config', jsonEncode(config));
       }
 
@@ -2927,43 +3131,38 @@ class _MainScreenState extends State<MainScreen>
                 style: TextStyle(fontSize: 12, color: Colors.white54),
               ),
               const SizedBox(height: 10),
-              ..._userGroups
-                  .map(
-                    (g) => ListTile(
-                      title: Text(
-                        g,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                      trailing: const Icon(
-                        LucideIcons.copy,
-                        size: 16,
-                        color: Colors.white54,
-                      ),
-                      onTap: () {
-                        List<String> exercises = _exerciseDb[g] ?? [];
-                        Map<String, dynamic> data = {
-                          'type': 'single_group',
-                          'name': g,
-                          'exercises': exercises,
-                        };
-                        String jsonStr = jsonEncode(data);
-                        String base64Str = base64Encode(utf8.encode(jsonStr));
+              ..._userGroups.map(
+                (g) => ListTile(
+                  title: Text(
+                    g,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  trailing: const Icon(
+                    LucideIcons.copy,
+                    size: 16,
+                    color: Colors.white54,
+                  ),
+                  onTap: () {
+                    List<String> exercises = _exerciseDb[g] ?? [];
+                    Map<String, dynamic> data = {
+                      'type': 'single_group',
+                      'name': g,
+                      'exercises': exercises,
+                    };
+                    String jsonStr = jsonEncode(data);
+                    String base64Str = base64Encode(utf8.encode(jsonStr));
 
-                        Clipboard.setData(ClipboardData(text: base64Str));
-                        Navigator.pop(c);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: _accentColor,
-                            content: Text("Día '$g' copiado."),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
+                    Clipboard.setData(ClipboardData(text: base64Str));
+                    Navigator.pop(c);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: _accentColor,
+                        content: Text("Día '$g' copiado."),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -3193,7 +3392,7 @@ class _MainScreenState extends State<MainScreen>
           border: Border.all(color: Colors.white10),
           boxShadow: [
             BoxShadow(
-              color: _accentColor.withOpacity(0.05),
+              color: _accentColor.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -3205,11 +3404,9 @@ class _MainScreenState extends State<MainScreen>
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: _accentColor.withOpacity(0.1),
+                color: _accentColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: _accentColor.withOpacity(0.15),
-                ),
+                border: Border.all(color: _accentColor.withValues(alpha: 0.15)),
               ),
               child: Icon(icon, size: 24, color: _accentColor),
             ),
@@ -3473,7 +3670,7 @@ class _MainScreenState extends State<MainScreen>
               "EDITAR CONTENIDO",
               style: TextStyle(color: _accentColor, fontSize: 14),
             ),
-            content: Container(
+            content: SizedBox(
               width: double.maxFinite,
               height: 300,
               child: ListView.builder(
@@ -3683,7 +3880,14 @@ class _MainScreenState extends State<MainScreen>
               children: [
                 Icon(LucideIcons.beef, color: _accentColor, size: 18),
                 const SizedBox(width: 8),
-                Text("CALCULAR MACROS", style: TextStyle(color: _accentColor, fontSize: 14, fontWeight: FontWeight.bold)),
+                Text(
+                  "CALCULAR MACROS",
+                  style: TextStyle(
+                    color: _accentColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
             content: SingleChildScrollView(
@@ -3696,14 +3900,26 @@ class _MainScreenState extends State<MainScreen>
                         child: TextField(
                           controller: weightCtrl,
                           keyboardType: TextInputType.number,
-                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
                           decoration: InputDecoration(
                             labelText: "Peso (kg)",
-                            labelStyle: const TextStyle(color: Colors.white38, fontSize: 11),
+                            labelStyle: const TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                            ),
                             filled: true,
                             fillColor: _cardColor,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
                           ),
                         ),
                       ),
@@ -3712,14 +3928,26 @@ class _MainScreenState extends State<MainScreen>
                         child: TextField(
                           controller: heightCtrl,
                           keyboardType: TextInputType.number,
-                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
                           decoration: InputDecoration(
                             labelText: "Altura (cm)",
-                            labelStyle: const TextStyle(color: Colors.white38, fontSize: 11),
+                            labelStyle: const TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                            ),
                             filled: true,
                             fillColor: _cardColor,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
                           ),
                         ),
                       ),
@@ -3732,28 +3960,60 @@ class _MainScreenState extends State<MainScreen>
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: InputDecoration(
                       labelText: "Edad",
-                      labelStyle: const TextStyle(color: Colors.white38, fontSize: 11),
+                      labelStyle: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 11,
+                      ),
                       filled: true,
                       fillColor: _cardColor,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _macroDropdown("Sexo", gender, ['Hombre', 'Mujer'], (v) => setState(() => gender = v!)),
+                  _macroDropdown("Sexo", gender, [
+                    'Hombre',
+                    'Mujer',
+                  ], (v) => setState(() => gender = v!)),
                   const SizedBox(height: 8),
-                  _macroDropdown("Actividad", activity, ['Sedentario', 'Ligero', 'Moderado', 'Intenso', 'Muy intenso'], (v) => setState(() => activity = v!)),
+                  _macroDropdown("Actividad", activity, [
+                    'Sedentario',
+                    'Ligero',
+                    'Moderado',
+                    'Intenso',
+                    'Muy intenso',
+                  ], (v) => setState(() => activity = v!)),
                   const SizedBox(height: 8),
-                  _macroDropdown("Objetivo", goal, ['Perder', 'Mantener', 'Ganar'], (v) => setState(() => goal = v!)),
+                  _macroDropdown("Objetivo", goal, [
+                    'Perder',
+                    'Mantener',
+                    'Ganar',
+                  ], (v) => setState(() => goal = v!)),
                   const SizedBox(height: 16),
-                  _buildMacroResult(weightCtrl, heightCtrl, ageCtrl, gender, activity, goal),
+                  _buildMacroResult(
+                    weightCtrl,
+                    heightCtrl,
+                    ageCtrl,
+                    gender,
+                    activity,
+                    goal,
+                  ),
                 ],
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(c),
-                child: const Text("CERRAR", style: TextStyle(color: Colors.white38)),
+                child: const Text(
+                  "CERRAR",
+                  style: TextStyle(color: Colors.white38),
+                ),
               ),
             ],
           );
@@ -3762,7 +4022,12 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  Widget _macroDropdown(String label, String value, List<String> options, ValueChanged<String?> onChanged) {
+  Widget _macroDropdown(
+    String label,
+    String value,
+    List<String> options,
+    ValueChanged<String?> onChanged,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
@@ -3775,21 +4040,41 @@ class _MainScreenState extends State<MainScreen>
         dropdownColor: const Color(0xFF1A1F2E),
         underline: const SizedBox(),
         style: const TextStyle(color: Colors.white, fontSize: 13),
-        items: options.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+        items: options
+            .map((o) => DropdownMenuItem(value: o, child: Text(o)))
+            .toList(),
         onChanged: onChanged,
       ),
     );
   }
 
-  Widget _buildMacroResult(TextEditingController weightCtrl, TextEditingController heightCtrl, TextEditingController ageCtrl, String gender, String activity, String goal) {
+  Widget _buildMacroResult(
+    TextEditingController weightCtrl,
+    TextEditingController heightCtrl,
+    TextEditingController ageCtrl,
+    String gender,
+    String activity,
+    String goal,
+  ) {
     final w = double.tryParse(weightCtrl.text) ?? 0;
     final h = double.tryParse(heightCtrl.text) ?? 0;
     final a = int.tryParse(ageCtrl.text) ?? 0;
     if (w <= 0 || h <= 0 || a <= 0) {
-      return const Text("Completa los datos para ver resultados", style: TextStyle(color: Colors.white24, fontSize: 11));
+      return const Text(
+        "Completa los datos para ver resultados",
+        style: TextStyle(color: Colors.white24, fontSize: 11),
+      );
     }
-    double bmr = gender == 'Hombre' ? (10 * w) + (6.25 * h) - (5 * a) + 5 : (10 * w) + (6.25 * h) - (5 * a) - 161;
-    double mult = {'Sedentario': 1.2, 'Ligero': 1.375, 'Moderado': 1.55, 'Intenso': 1.725, 'Muy intenso': 1.9}[activity]!;
+    double bmr = gender == 'Hombre'
+        ? (10 * w) + (6.25 * h) - (5 * a) + 5
+        : (10 * w) + (6.25 * h) - (5 * a) - 161;
+    double mult = {
+      'Sedentario': 1.2,
+      'Ligero': 1.375,
+      'Moderado': 1.55,
+      'Intenso': 1.725,
+      'Muy intenso': 1.9,
+    }[activity]!;
     double tdee = bmr * mult;
     if (goal == 'Perder') tdee *= 0.85;
     if (goal == 'Ganar') tdee *= 1.15;
@@ -3802,17 +4087,28 @@ class _MainScreenState extends State<MainScreen>
       decoration: BoxDecoration(
         color: _cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _accentColor.withOpacity(0.3)),
+        border: Border.all(color: _accentColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
-          Text("TDEE: ${tdee.round()} kcal/día", style: TextStyle(color: _accentColor, fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(
+            "TDEE: ${tdee.round()} kcal/día",
+            style: TextStyle(
+              color: _accentColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _macroItem("Proteína", "${protein.round()}g", _accentColor),
-              _macroItem("Carbos", "${carbs.round().clamp(0, 9999)}g", Colors.orangeAccent),
+              _macroItem(
+                "Carbos",
+                "${carbs.round().clamp(0, 9999)}g",
+                Colors.orangeAccent,
+              ),
               _macroItem("Grasa", "${fat.round()}g", Colors.pinkAccent),
             ],
           ),
@@ -3824,8 +4120,18 @@ class _MainScreenState extends State<MainScreen>
   Widget _macroItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
-        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white38, fontSize: 10),
+        ),
       ],
     );
   }
@@ -3925,8 +4231,8 @@ class _MainScreenState extends State<MainScreen>
           margin: const EdgeInsets.only(top: 10, bottom: 10),
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blueAccent.withOpacity(0.1),
-              side: BorderSide(color: Colors.blueAccent.withOpacity(0.3)),
+              backgroundColor: Colors.blueAccent.withValues(alpha: 0.1),
+              side: BorderSide(color: Colors.blueAccent.withValues(alpha: 0.3)),
               padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -3954,8 +4260,8 @@ class _MainScreenState extends State<MainScreen>
           margin: const EdgeInsets.only(top: 5, bottom: 40),
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent.withOpacity(0.05),
-              side: BorderSide(color: Colors.redAccent.withOpacity(0.3)),
+              backgroundColor: Colors.redAccent.withValues(alpha: 0.05),
+              side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.3)),
               padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -4056,7 +4362,7 @@ class _MainScreenState extends State<MainScreen>
     decoration: BoxDecoration(
       color: _cardColor,
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: Colors.white.withOpacity(0.05)),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4271,7 +4577,7 @@ class _MainScreenState extends State<MainScreen>
                           hintStyle: const TextStyle(color: Colors.white24),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: _accentColor.withOpacity(0.3),
+                              color: _accentColor.withValues(alpha: 0.3),
                             ),
                           ),
                         ),
@@ -4325,7 +4631,9 @@ class _MainScreenState extends State<MainScreen>
             hintText: 'Ej: BRAZO, PIERNA, FULL BODY...',
             hintStyle: const TextStyle(color: Colors.white24),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: _accentColor.withOpacity(0.3)),
+              borderSide: BorderSide(
+                color: _accentColor.withValues(alpha: 0.3),
+              ),
             ),
           ),
         ),
@@ -4507,7 +4815,7 @@ class _MainScreenState extends State<MainScreen>
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                _accentColor.withOpacity(0.05),
+                _accentColor.withValues(alpha: 0.05),
                 Colors.transparent,
               ],
               begin: Alignment.topCenter,
@@ -4527,7 +4835,7 @@ class _MainScreenState extends State<MainScreen>
                       borderRadius: BorderRadius.circular(2),
                       boxShadow: [
                         BoxShadow(
-                          color: _accentColor.withOpacity(0.5),
+                          color: _accentColor.withValues(alpha: 0.5),
                           blurRadius: 6,
                         ),
                       ],
@@ -4573,17 +4881,17 @@ class _MainScreenState extends State<MainScreen>
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
-                          color: Colors.redAccent.withOpacity(0.5),
+                          color: Colors.redAccent.withValues(alpha: 0.5),
                         ),
                         gradient: LinearGradient(
                           colors: [
-                            Colors.redAccent.withOpacity(0.2),
-                            Colors.redAccent.withOpacity(0.1),
+                            Colors.redAccent.withValues(alpha: 0.2),
+                            Colors.redAccent.withValues(alpha: 0.1),
                           ],
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.redAccent.withOpacity(0.15),
+                            color: Colors.redAccent.withValues(alpha: 0.15),
                             blurRadius: 8,
                           ),
                         ],
@@ -4703,12 +5011,12 @@ class _MainScreenState extends State<MainScreen>
                     ),
                     decoration: BoxDecoration(
                       color: _exerciseNotes.containsKey(_selectedExercise)
-                          ? Colors.amber.withOpacity(0.1)
-                          : Colors.white.withOpacity(0.05),
+                          ? Colors.amber.withValues(alpha: 0.1)
+                          : Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: _exerciseNotes.containsKey(_selectedExercise)
-                            ? Colors.amber.withOpacity(0.3)
+                            ? Colors.amber.withValues(alpha: 0.3)
                             : Colors.white10,
                       ),
                     ),
@@ -4730,7 +5038,7 @@ class _MainScreenState extends State<MainScreen>
                               fontSize: 12,
                               color:
                                   _exerciseNotes.containsKey(_selectedExercise)
-                                  ? Colors.amber.withOpacity(0.9)
+                                  ? Colors.amber.withValues(alpha: 0.9)
                                   : Colors.white24,
                               fontStyle: FontStyle.italic,
                             ),
@@ -4771,10 +5079,10 @@ class _MainScreenState extends State<MainScreen>
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withOpacity(0.2),
+                                  color: Colors.amber.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(4),
                                   border: Border.all(
-                                    color: Colors.amber.withOpacity(0.5),
+                                    color: Colors.amber.withValues(alpha: 0.5),
                                   ),
                                 ),
                                 child: Row(
@@ -4833,7 +5141,7 @@ class _MainScreenState extends State<MainScreen>
                     const SizedBox(height: 12),
 
                     // CAROUSEL CONTENT (PageView)
-                    Container(
+                    SizedBox(
                       height: 120, // Fixed height for carousel
                       child: PageView.builder(
                         controller: _historyPageController,
@@ -4862,9 +5170,9 @@ class _MainScreenState extends State<MainScreen>
                               margin: const EdgeInsets.symmetric(horizontal: 5),
                               padding: const EdgeInsets.all(15),
                               decoration: BoxDecoration(
-                                color: _accentColor.withOpacity(0.1),
+                                color: _accentColor.withValues(alpha: 0.1),
                                 border: Border.all(
-                                  color: _accentColor.withOpacity(0.3),
+                                  color: _accentColor.withValues(alpha: 0.3),
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -4951,7 +5259,9 @@ class _MainScreenState extends State<MainScreen>
                                 null)
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _accentColor.withOpacity(0.2),
+                              backgroundColor: _accentColor.withValues(
+                                alpha: 0.2,
+                              ),
                               foregroundColor: _accentColor,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -5096,8 +5406,8 @@ class _MainScreenState extends State<MainScreen>
                         color: _adjustmentIncrement == 0
                             ? _cardColor
                             : (_adjustmentIncrement > 0
-                                  ? Colors.green.withOpacity(0.2)
-                                  : Colors.red.withOpacity(0.2)),
+                                  ? Colors.green.withValues(alpha: 0.2)
+                                  : Colors.red.withValues(alpha: 0.2)),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: _adjustmentIncrement == 0
@@ -5154,7 +5464,7 @@ class _MainScreenState extends State<MainScreen>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        _accentColor.withOpacity(0.8),
+                        _accentColor.withValues(alpha: 0.8),
                         _accentColor,
                       ],
                       begin: Alignment.topLeft,
@@ -5163,7 +5473,7 @@ class _MainScreenState extends State<MainScreen>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: _accentColor.withOpacity(0.3),
+                        color: _accentColor.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -5172,11 +5482,7 @@ class _MainScreenState extends State<MainScreen>
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        LucideIcons.check,
-                        size: 18,
-                        color: Colors.white,
-                      ),
+                      Icon(LucideIcons.check, size: 18, color: Colors.white),
                       SizedBox(width: 10),
                       Text(
                         'GUARDAR SERIE',
@@ -5215,10 +5521,10 @@ class _MainScreenState extends State<MainScreen>
                       margin: const EdgeInsets.only(bottom: 8),
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: _cardColor.withOpacity(0.5),
+                        color: _cardColor.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.05),
+                          color: Colors.white.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Column(
@@ -5228,9 +5534,11 @@ class _MainScreenState extends State<MainScreen>
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: _accentColor.withOpacity(0.1),
+                                  color: _accentColor.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -5284,7 +5592,7 @@ class _MainScreenState extends State<MainScreen>
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
@@ -5368,7 +5676,9 @@ class _MainScreenState extends State<MainScreen>
         ),
       );
       _saveSessions();
-      _syncDataToFirestore(showFeedback: false); // Auto-backup silencioso en la nube
+      _syncDataToFirestore(
+        showFeedback: false,
+      ); // Auto-backup silencioso en la nube
     }
     _clearDraft();
     setState(() {
@@ -5410,15 +5720,17 @@ class _MainScreenState extends State<MainScreen>
       String task = _weeklyPlan[dayName] ?? 'DESCANSO';
       return {'type': task, 'reason': 'Hoy es $dayName'};
     } else {
-      if (_sessions.isEmpty || _userGroups.isEmpty)
+      if (_sessions.isEmpty || _userGroups.isEmpty) {
         return {
           'type': _userGroups.isNotEmpty ? _userGroups[0] : 'CREA UNA RUTINA',
           'reason': 'Comienza hoy',
         };
+      }
       String lastType = _sessions[0].type;
       int lastIdx = _userGroups.indexOf(lastType);
-      if (lastIdx == -1)
+      if (lastIdx == -1) {
         return {'type': _userGroups[0], 'reason': 'Nueva rutina'};
+      }
       int nextIdx = (lastIdx + 1) % _userGroups.length;
       return {'type': _userGroups[nextIdx], 'reason': 'Siguiente en el ciclo'};
     }
@@ -5491,7 +5803,7 @@ class _MainScreenState extends State<MainScreen>
               children: [
                 Icon(
                   LucideIcons.calendarX,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   size: 48,
                 ),
                 const SizedBox(height: 16),
@@ -5531,11 +5843,11 @@ class _MainScreenState extends State<MainScreen>
                     color: _cardColor,
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.05),
+                      color: Colors.white.withValues(alpha: 0.05),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -5554,7 +5866,9 @@ class _MainScreenState extends State<MainScreen>
                     subtitle: Text(
                       "${session.date.day}/${session.date.month} - ${session.exercises.length} series",
                       style: const TextStyle(
-                          fontSize: 10, color: Colors.white24),
+                        fontSize: 10,
+                        color: Colors.white24,
+                      ),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -5563,7 +5877,7 @@ class _MainScreenState extends State<MainScreen>
                           icon: Icon(
                             LucideIcons.edit,
                             size: 16,
-                            color: _accentColor.withOpacity(0.6),
+                            color: _accentColor.withValues(alpha: 0.6),
                           ),
                           onPressed: () => _showSessionOptions(i),
                         ),
@@ -5579,8 +5893,9 @@ class _MainScreenState extends State<MainScreen>
                             for (var ex in session.exercises) {
                               summary +=
                                   "- ${ex.name}: ${_formatNum(ex.weight)}kg x ${_formatNum(ex.reps)}";
-                              if (ex.note.isNotEmpty)
+                              if (ex.note.isNotEmpty) {
                                 summary += " [${ex.note}]";
+                              }
                               summary += "\n";
                             }
                             Clipboard.setData(ClipboardData(text: summary));
@@ -5588,7 +5903,8 @@ class _MainScreenState extends State<MainScreen>
                               SnackBar(
                                 backgroundColor: _accentColor,
                                 content: const Text(
-                                    "Resumen copiado al portapapeles"),
+                                  "Resumen copiado al portapapeles",
+                                ),
                               ),
                             );
                           },
@@ -5607,8 +5923,7 @@ class _MainScreenState extends State<MainScreen>
                         .map(
                           (s) => ListTile(
                             dense: true,
-                            onLongPress: () =>
-                                _editHistorySet(session, s),
+                            onLongPress: () => _editHistorySet(session, s),
                             title: Text(
                               "${s.name}: ${_formatNum(s.weight)}kg x ${_formatNum(s.reps)}",
                               style: const TextStyle(
@@ -5664,7 +5979,7 @@ class _MainScreenState extends State<MainScreen>
               const SizedBox(width: 10),
               Switch(
                 value: _statsUseFirstSet,
-                activeColor: _accentColor,
+                activeThumbColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _statsUseFirstSet = val;
@@ -5755,7 +6070,7 @@ class _MainScreenState extends State<MainScreen>
           ); // Añadir solo la primera serie a la lista visual
         } else {
           // MODO TODAS LAS SERIES
-          yValue = sets.fold(0.0, (sum, item) => sum + item.effectiveScore);
+          yValue = sets.fold(0.0, (acc, item) => acc + item.effectiveScore);
 
           // Guardar TODAS las series para mostrarlas
           historyDisplayItems.add({
@@ -5817,7 +6132,7 @@ class _MainScreenState extends State<MainScreen>
                     ),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: _accentColor.withOpacity(0.1),
+                      color: _accentColor.withValues(alpha: 0.1),
                     ),
                   ),
                 ],
@@ -5892,7 +6207,7 @@ class _MainScreenState extends State<MainScreen>
                 ),
               );
             }
-          }).toList(),
+          }),
         ],
       ],
     );
@@ -5912,7 +6227,7 @@ class _MainScreenState extends State<MainScreen>
             decoration: BoxDecoration(
               color: _cardColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             ),
             child: Row(
               children: [
@@ -5921,7 +6236,11 @@ class _MainScreenState extends State<MainScreen>
                 Expanded(
                   child: Text(
                     _chatConversations.length > 1
-                        ? (_chatConversations.firstWhere((c) => c['id'] == _currentConversationId, orElse: () => {'title': 'ENTRENADOR IA'})['title'] ?? 'ENTRENADOR IA')
+                        ? (_chatConversations.firstWhere(
+                                (c) => c['id'] == _currentConversationId,
+                                orElse: () => {'title': 'ENTRENADOR IA'},
+                              )['title'] ??
+                              'ENTRENADOR IA')
                         : "ENTRENADOR IA",
                     style: TextStyle(
                       color: _accentColor,
@@ -5937,13 +6256,17 @@ class _MainScreenState extends State<MainScreen>
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _useCustomApiKey ? Colors.greenAccent.withOpacity(0.15) : _accentColor.withOpacity(0.1),
+                      color: _useCustomApiKey
+                          ? Colors.greenAccent.withValues(alpha: 0.15)
+                          : _accentColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       _useCustomApiKey ? LucideIcons.key : LucideIcons.settings,
                       size: 16,
-                      color: _useCustomApiKey ? Colors.greenAccent : _accentColor,
+                      color: _useCustomApiKey
+                          ? Colors.greenAccent
+                          : _accentColor,
                     ),
                   ),
                 ),
@@ -5953,10 +6276,14 @@ class _MainScreenState extends State<MainScreen>
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _accentColor.withOpacity(0.1),
+                      color: _accentColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(LucideIcons.messageSquarePlus, size: 16, color: _accentColor),
+                    child: Icon(
+                      LucideIcons.messageSquarePlus,
+                      size: 16,
+                      color: _accentColor,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -5965,10 +6292,14 @@ class _MainScreenState extends State<MainScreen>
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _accentColor.withOpacity(0.1),
+                      color: _accentColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(LucideIcons.plus, size: 16, color: _accentColor),
+                    child: Icon(
+                      LucideIcons.plus,
+                      size: 16,
+                      color: _accentColor,
+                    ),
                   ),
                 ),
               ],
@@ -5977,64 +6308,73 @@ class _MainScreenState extends State<MainScreen>
           // Chat messages
           Expanded(
             child: _chatMessages.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(LucideIcons.messageCircle, size: 48, color: Colors.white10),
-                            const SizedBox(height: 16),
-                            const Text(
-                              "Pregúntame sobre\nentrenamiento y nutrición",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white24, fontSize: 13),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          LucideIcons.messageCircle,
+                          size: 48,
+                          color: Colors.white10,
                         ),
-                      )
-                    : ListView.builder(
-                        controller: _chatScrollController,
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-                        itemCount: _chatMessages.length,
-                        itemBuilder: (context, index) {
-                          final msg = _chatMessages[index];
-                          final isUser = msg['role'] == 'user';
-                          return TweenAnimationBuilder<double>(
-                            tween: Tween(begin: 0, end: 1),
-                            duration: const Duration(milliseconds: 300),
-                            builder: (context, value, child) {
-                              return Opacity(
-                                opacity: value,
-                                child: Transform.translate(
-                                  offset: Offset(0, 10 * (1 - value)),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: Align(
-                              alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isUser
-                                      ? _accentColor.withOpacity(0.2)
-                                      : _cardColor,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: isUser
-                                        ? _accentColor.withOpacity(0.3)
-                                        : Colors.white.withOpacity(0.05),
-                                  ),
-                                ),
-                                child: _buildRichText(msg['content'] ?? '', isUser),
-                              ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          "Pregúntame sobre\nentrenamiento y nutrición",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white24, fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    controller: _chatScrollController,
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                    itemCount: _chatMessages.length,
+                    itemBuilder: (context, index) {
+                      final msg = _chatMessages[index];
+                      final isUser = msg['role'] == 'user';
+                      return TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0, end: 1),
+                        duration: const Duration(milliseconds: 300),
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value,
+                            child: Transform.translate(
+                              offset: Offset(0, 10 * (1 - value)),
+                              child: child,
                             ),
                           );
                         },
-                      ),
+                        child: Align(
+                          alignment: isUser
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isUser
+                                  ? _accentColor.withValues(alpha: 0.2)
+                                  : _cardColor,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: isUser
+                                    ? _accentColor.withValues(alpha: 0.3)
+                                    : Colors.white.withValues(alpha: 0.05),
+                              ),
+                            ),
+                            child: _buildRichText(msg['content'] ?? '', isUser),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
           if (_chatLoading)
             Padding(
@@ -6043,18 +6383,26 @@ class _MainScreenState extends State<MainScreen>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: _cardColor,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(3, (i) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: _ThinkingDot(delay: i * 200, color: _accentColor),
+                          child: _ThinkingDot(
+                            delay: i * 200,
+                            color: _accentColor,
+                          ),
                         );
                       }),
                     ),
@@ -6064,10 +6412,17 @@ class _MainScreenState extends State<MainScreen>
             ),
           // Input
           Container(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom > 0 ? 8 : 36),
+            padding: EdgeInsets.fromLTRB(
+              16,
+              8,
+              16,
+              MediaQuery.of(context).viewInsets.bottom > 0 ? 8 : 36,
+            ),
             decoration: BoxDecoration(
-              color: const Color(0xFF0A0E1A).withOpacity(0.95),
-              border: const Border(top: BorderSide(color: Colors.white10, width: 0.3)),
+              color: const Color(0xFF0A0E1A).withValues(alpha: 0.95),
+              border: const Border(
+                top: BorderSide(color: Colors.white10, width: 0.3),
+              ),
             ),
             child: SafeArea(
               top: false,
@@ -6080,14 +6435,20 @@ class _MainScreenState extends State<MainScreen>
                       textInputAction: TextInputAction.send,
                       decoration: InputDecoration(
                         hintText: 'Pregunta sobre entrenamiento...',
-                        hintStyle: const TextStyle(color: Colors.white24, fontSize: 12),
+                        hintStyle: const TextStyle(
+                          color: Colors.white24,
+                          fontSize: 12,
+                        ),
                         filled: true,
                         fillColor: _cardColor,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                       ),
                       onSubmitted: (_) => _sendChatMessage(),
                     ),
@@ -6101,7 +6462,11 @@ class _MainScreenState extends State<MainScreen>
                         color: _accentColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(LucideIcons.send, size: 16, color: Colors.white),
+                      child: const Icon(
+                        LucideIcons.send,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -6120,59 +6485,53 @@ class _MainScreenState extends State<MainScreen>
 
     for (final match in regex.allMatches(text)) {
       if (match.start > lastEnd) {
-        spans.add(TextSpan(
-          text: text.substring(lastEnd, match.start),
-          style: TextStyle(
+        spans.add(
+          TextSpan(
+            text: text.substring(lastEnd, match.start),
+            style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
+          ),
+        );
+      }
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 13,
             height: 1.4,
+            fontWeight: FontWeight.bold,
           ),
-        ));
-      }
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          height: 1.4,
-          fontWeight: FontWeight.bold,
         ),
-      ));
+      );
       lastEnd = match.end;
     }
 
     if (lastEnd < text.length) {
-      spans.add(TextSpan(
-        text: text.substring(lastEnd),
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          height: 1.4,
+      spans.add(
+        TextSpan(
+          text: text.substring(lastEnd),
+          style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
         ),
-      ));
+      );
     }
 
     if (spans.isEmpty) {
       return Text(
         text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          height: 1.4,
-        ),
+        style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
       );
     }
 
-    return RichText(
-      text: TextSpan(children: spans),
-    );
+    return RichText(text: TextSpan(children: spans));
   }
 
   String _buildChatContext() {
     final buffer = StringBuffer();
     buffer.writeln('=== DATOS DEL USUARIO ===');
 
-    buffer.writeln('\nGrupos musculares configurados: ${_userGroups.isEmpty ? "Ninguno" : _userGroups.join(", ")}');
+    buffer.writeln(
+      '\nGrupos musculares configurados: ${_userGroups.isEmpty ? "Ninguno" : _userGroups.join(", ")}',
+    );
 
     if (_exerciseDb.isNotEmpty) {
       buffer.writeln('\nEjercicios por grupo:');
@@ -6202,16 +6561,22 @@ class _MainScreenState extends State<MainScreen>
     }
 
     if (_sessions.isNotEmpty) {
-      buffer.writeln('\nHistorial de entrenamientos (${_sessions.length} sesiones):');
+      buffer.writeln(
+        '\nHistorial de entrenamientos (${_sessions.length} sesiones):',
+      );
       final recent = _sessions.take(10);
       for (var s in recent) {
         final exercises = s.exercises;
         final exerciseSummary = <String, List<String>>{};
         for (var e in exercises) {
           exerciseSummary.putIfAbsent(e.name, () => []);
-          exerciseSummary[e.name]!.add('${e.weight}kg x ${e.reps.toInt()} reps${e.note.isNotEmpty ? " (${e.note})" : ""}');
+          exerciseSummary[e.name]!.add(
+            '${e.weight}kg x ${e.reps.toInt()} reps${e.note.isNotEmpty ? " (${e.note})" : ""}',
+          );
         }
-        buffer.writeln('- ${s.type} (${s.date.day}/${s.date.month}/${s.date.year}):');
+        buffer.writeln(
+          '- ${s.type} (${s.date.day}/${s.date.month}/${s.date.year}):',
+        );
         for (var ex in exerciseSummary.entries) {
           buffer.writeln('  ${ex.key}: ${ex.value.join(" | ")}');
         }
@@ -6221,7 +6586,8 @@ class _MainScreenState extends State<MainScreen>
       final Map<String, double> bestWeights = {};
       for (var s in _sessions) {
         for (var e in s.exercises) {
-          if (!bestWeights.containsKey(e.name) || e.weight > bestWeights[e.name]!) {
+          if (!bestWeights.containsKey(e.name) ||
+              e.weight > bestWeights[e.name]!) {
             bestWeights[e.name] = e.weight;
           }
         }
@@ -6260,7 +6626,9 @@ class _MainScreenState extends State<MainScreen>
     });
 
     try {
-      final activeApiKey = _useCustomApiKey && _customApiKey.isNotEmpty ? _customApiKey : _geminiApiKey;
+      final activeApiKey = _useCustomApiKey && _customApiKey.isNotEmpty
+          ? _customApiKey
+          : _geminiApiKey;
       final url = Uri.parse(
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${Uri.encodeComponent(activeApiKey)}',
       );
@@ -6269,7 +6637,9 @@ class _MainScreenState extends State<MainScreen>
       for (var msg in _chatMessages) {
         contents.add({
           'role': msg['role'] == 'user' ? 'user' : 'model',
-          'parts': [{'text': msg['content']}],
+          'parts': [
+            {'text': msg['content']},
+          ],
         });
       }
 
@@ -6279,12 +6649,14 @@ class _MainScreenState extends State<MainScreen>
         body: jsonEncode({
           'contents': contents,
           'systemInstruction': {
-            'parts': [{'text': 'Eres un experto en fitness, entrenamiento de fuerza, nutrición deportiva y salud. Respondes en español, de forma concisa y práctica. Usas **negrita** para resaltar puntos importantes. Si te preguntan algo que no es sobre fitness, redirige amablemente al tema.\n\nAquí tienes los datos del usuario para dar consejos personalizados:\n${_buildChatContext()}'}],
+            'parts': [
+              {
+                'text':
+                    'Eres un experto en fitness, entrenamiento de fuerza, nutrición deportiva y salud. Respondes en español, de forma concisa y práctica. Usas **negrita** para resaltar puntos importantes. Si te preguntan algo que no es sobre fitness, redirige amablemente al tema.\n\nAquí tienes los datos del usuario para dar consejos personalizados:\n${_buildChatContext()}',
+              },
+            ],
           },
-          'generationConfig': {
-            'temperature': 0.7,
-            'maxOutputTokens': 8192,
-          },
+          'generationConfig': {'temperature': 0.7, 'maxOutputTokens': 8192},
         }),
       );
 
@@ -6301,45 +6673,67 @@ class _MainScreenState extends State<MainScreen>
                 if (parts is List && parts.isNotEmpty) {
                   final part = parts[0];
                   if (part is Map<String, dynamic>) {
-                    final reply = part['text'] ?? 'No pude generar una respuesta.';
+                    final reply =
+                        part['text'] ?? 'No pude generar una respuesta.';
                     setState(() {
-                      _chatMessages.add({'role': 'model', 'content': reply.toString()});
+                      _chatMessages.add({
+                        'role': 'model',
+                        'content': reply.toString(),
+                      });
                       _chatLoading = false;
                     });
                     _saveChatHistory();
                   } else {
                     setState(() {
-                      _chatMessages.add({'role': 'model', 'content': 'Formato inesperado en partes.'});
+                      _chatMessages.add({
+                        'role': 'model',
+                        'content': 'Formato inesperado en partes.',
+                      });
                       _chatLoading = false;
                     });
                   }
                 } else {
                   setState(() {
-                    _chatMessages.add({'role': 'model', 'content': 'Respuesta vacía de Gemini.'});
+                    _chatMessages.add({
+                      'role': 'model',
+                      'content': 'Respuesta vacía de Gemini.',
+                    });
                     _chatLoading = false;
                   });
                 }
               } else {
                 setState(() {
-                  _chatMessages.add({'role': 'model', 'content': 'Sin contenido en la respuesta.'});
+                  _chatMessages.add({
+                    'role': 'model',
+                    'content': 'Sin contenido en la respuesta.',
+                  });
                   _chatLoading = false;
                 });
               }
             } else {
               setState(() {
-                _chatMessages.add({'role': 'model', 'content': 'Formato de candidato inesperado.'});
+                _chatMessages.add({
+                  'role': 'model',
+                  'content': 'Formato de candidato inesperado.',
+                });
                 _chatLoading = false;
               });
             }
           } else {
             setState(() {
-              _chatMessages.add({'role': 'model', 'content': 'Sin candidatos en la respuesta.'});
+              _chatMessages.add({
+                'role': 'model',
+                'content': 'Sin candidatos en la respuesta.',
+              });
               _chatLoading = false;
             });
           }
         } catch (parseError) {
           setState(() {
-            _chatMessages.add({'role': 'model', 'content': 'Error al procesar respuesta: $parseError'});
+            _chatMessages.add({
+              'role': 'model',
+              'content': 'Error al procesar respuesta: $parseError',
+            });
             _chatLoading = false;
           });
         }
@@ -6349,8 +6743,10 @@ class _MainScreenState extends State<MainScreen>
           final errData = jsonDecode(response.body);
           errorMsg = errData['error']['message'] ?? errorMsg;
         } catch (_) {}
-        if (errorMsg.contains('authentication') || errorMsg.contains('credential')) {
-          errorMsg = 'API Key inválida. Verifica que:\n1. La key sea de Google AI Studio (aistudio.google.com)\n2. Esté habilitada la API "Generative Language"\n3. No tenga espacios extra';
+        if (errorMsg.contains('authentication') ||
+            errorMsg.contains('credential')) {
+          errorMsg =
+              'API Key inválida. Verifica que:\n1. La key sea de Google AI Studio (aistudio.google.com)\n2. Esté habilitada la API "Generative Language"\n3. No tenga espacios extra';
         }
         setState(() {
           _chatMessages.add({'role': 'model', 'content': 'Error: $errorMsg'});
@@ -6359,7 +6755,10 @@ class _MainScreenState extends State<MainScreen>
       }
     } catch (e) {
       setState(() {
-        _chatMessages.add({'role': 'model', 'content': 'Error de conexión: $e'});
+        _chatMessages.add({
+          'role': 'model',
+          'content': 'Error de conexión: $e',
+        });
         _chatLoading = false;
       });
     }
@@ -6388,7 +6787,12 @@ class _MainScreenState extends State<MainScreen>
         return StatefulBuilder(
           builder: (context, setSheetState) {
             return Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                20,
+                20,
+                MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -6414,36 +6818,66 @@ class _MainScreenState extends State<MainScreen>
                     decoration: BoxDecoration(
                       color: _cardColor,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                     child: Column(
                       children: [
-                        RadioListTile<bool>(
-                          value: false,
+                        RadioGroup<bool>(
                           groupValue: _useCustomApiKey,
-                          onChanged: (v) => setSheetState(() => _useCustomApiKey = v ?? false),
-                          title: const Text("API de la app", style: TextStyle(color: Colors.white, fontSize: 13)),
-                          subtitle: Text(
-                            "Usar la API integrada de la app",
-                            style: const TextStyle(color: Colors.white38, fontSize: 10),
+                          onChanged: (v) => setSheetState(
+                            () => _useCustomApiKey = v ?? false,
                           ),
-                          activeColor: _accentColor,
-                          dense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                        const Divider(color: Colors.white10, height: 1),
-                        RadioListTile<bool>(
-                          value: true,
-                          groupValue: _useCustomApiKey,
-                          onChanged: (v) => setSheetState(() => _useCustomApiKey = v ?? true),
-                          title: const Text("Mi propia API Key", style: TextStyle(color: Colors.white, fontSize: 13)),
-                          subtitle: const Text(
-                            "Usar tu propia clave de Google AI Studio",
-                            style: TextStyle(color: Colors.white38, fontSize: 10),
+                          child: Column(
+                            children: [
+                              RadioListTile<bool>(
+                                value: false,
+                                title: const Text(
+                                  "API de la app",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  "Usar la API integrada de la app",
+                                  style: const TextStyle(
+                                    color: Colors.white38,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                activeColor: _accentColor,
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                              ),
+                              const Divider(color: Colors.white10, height: 1),
+                              RadioListTile<bool>(
+                                value: true,
+                                title: const Text(
+                                  "Mi propia API Key",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                subtitle: const Text(
+                                  "Usar tu propia clave de Google AI Studio",
+                                  style: TextStyle(
+                                    color: Colors.white38,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                activeColor: _accentColor,
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                              ),
+                            ],
                           ),
-                          activeColor: _accentColor,
-                          dense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                         ),
                       ],
                     ),
@@ -6456,14 +6890,20 @@ class _MainScreenState extends State<MainScreen>
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'AIzaSy...',
-                        hintStyle: const TextStyle(color: Colors.white24, fontSize: 12),
+                        hintStyle: const TextStyle(
+                          color: Colors.white24,
+                          fontSize: 12,
+                        ),
                         filled: true,
                         fillColor: _cardColor,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -6479,7 +6919,9 @@ class _MainScreenState extends State<MainScreen>
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _accentColor,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () {
                         setState(() {
@@ -6487,7 +6929,14 @@ class _MainScreenState extends State<MainScreen>
                         });
                         Navigator.pop(ctx);
                       },
-                      child: const Text("GUARDAR", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                      child: const Text(
+                        "GUARDAR",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -6529,7 +6978,11 @@ class _MainScreenState extends State<MainScreen>
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Icon(LucideIcons.messagesSquare, size: 16, color: _accentColor),
+                        Icon(
+                          LucideIcons.messagesSquare,
+                          size: 16,
+                          color: _accentColor,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           "CONVERSACIONES",
@@ -6549,10 +7002,14 @@ class _MainScreenState extends State<MainScreen>
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: _accentColor.withOpacity(0.15),
+                              color: _accentColor.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(LucideIcons.plus, size: 14, color: _accentColor),
+                            child: Icon(
+                              LucideIcons.plus,
+                              size: 14,
+                              color: _accentColor,
+                            ),
                           ),
                         ),
                       ],
@@ -6564,7 +7021,10 @@ class _MainScreenState extends State<MainScreen>
                             padding: EdgeInsets.all(24),
                             child: Text(
                               "No hay conversaciones",
-                              style: TextStyle(color: Colors.white24, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.white24,
+                                fontSize: 13,
+                              ),
                             ),
                           )
                         : ListView.builder(
@@ -6572,47 +7032,77 @@ class _MainScreenState extends State<MainScreen>
                             itemCount: _chatConversations.length,
                             itemBuilder: (context, i) {
                               final conv = _chatConversations[i];
-                              final isActive = conv['id'] == _currentConversationId;
-                              final msgCount = ((conv['messages'] as List?)?.where((m) => m['role'] == 'user').toList().length) ?? 0;
+                              final isActive =
+                                  conv['id'] == _currentConversationId;
+                              final msgCount =
+                                  ((conv['messages'] as List?)
+                                      ?.where((m) => m['role'] == 'user')
+                                      .toList()
+                                      .length) ??
+                                  0;
                               final title = conv['title'] ?? 'Sin título';
                               return Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 3,
+                                ),
                                 child: ListTile(
                                   onTap: () {
                                     Navigator.pop(ctx);
                                     _loadConversation(conv['id']);
                                   },
                                   onLongPress: () {
-                                    _showConversationOptions(ctx, conv['id'], title);
+                                    _showConversationOptions(
+                                      ctx,
+                                      conv['id'],
+                                      title,
+                                    );
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   tileColor: isActive
-                                      ? _accentColor.withOpacity(0.1)
+                                      ? _accentColor.withValues(alpha: 0.1)
                                       : Colors.transparent,
                                   leading: Icon(
                                     LucideIcons.messageCircle,
                                     size: 16,
-                                    color: isActive ? _accentColor : Colors.white24,
+                                    color: isActive
+                                        ? _accentColor
+                                        : Colors.white24,
                                   ),
                                   title: Text(
                                     title,
                                     style: TextStyle(
-                                      color: isActive ? _accentColor : Colors.white,
+                                      color: isActive
+                                          ? _accentColor
+                                          : Colors.white,
                                       fontSize: 13,
-                                      fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                                      fontWeight: isActive
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   subtitle: Text(
                                     "$msgCount preguntas",
-                                    style: const TextStyle(color: Colors.white24, fontSize: 10),
+                                    style: const TextStyle(
+                                      color: Colors.white24,
+                                      fontSize: 10,
+                                    ),
                                   ),
                                   trailing: isActive
-                                      ? Icon(LucideIcons.check, size: 14, color: _accentColor)
-                                      : Icon(LucideIcons.chevronRight, size: 14, color: Colors.white24),
+                                      ? Icon(
+                                          LucideIcons.check,
+                                          size: 14,
+                                          color: _accentColor,
+                                        )
+                                      : Icon(
+                                          LucideIcons.chevronRight,
+                                          size: 14,
+                                          color: Colors.white24,
+                                        ),
                                 ),
                               );
                             },
@@ -6628,7 +7118,11 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  void _showConversationOptions(BuildContext ctx, String id, String currentTitle) {
+  void _showConversationOptions(
+    BuildContext ctx,
+    String id,
+    String currentTitle,
+  ) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: const Color(0xFF121212),
@@ -6641,8 +7135,15 @@ class _MainScreenState extends State<MainScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(LucideIcons.pencil, color: _accentColor, size: 18),
-                title: const Text("Renombrar", style: TextStyle(color: Colors.white, fontSize: 14)),
+                leading: Icon(
+                  LucideIcons.pencil,
+                  color: _accentColor,
+                  size: 18,
+                ),
+                title: const Text(
+                  "Renombrar",
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
                 onTap: () {
                   Navigator.pop(c);
                   Navigator.pop(ctx);
@@ -6650,8 +7151,15 @@ class _MainScreenState extends State<MainScreen>
                 },
               ),
               ListTile(
-                leading: const Icon(LucideIcons.trash2, color: Colors.redAccent, size: 18),
-                title: const Text("Eliminar", style: TextStyle(color: Colors.redAccent, fontSize: 14)),
+                leading: const Icon(
+                  LucideIcons.trash2,
+                  color: Colors.redAccent,
+                  size: 18,
+                ),
+                title: const Text(
+                  "Eliminar",
+                  style: TextStyle(color: Colors.redAccent, fontSize: 14),
+                ),
                 onTap: () {
                   Navigator.pop(c);
                   Navigator.pop(ctx);
@@ -6671,21 +7179,37 @@ class _MainScreenState extends State<MainScreen>
       context: context,
       builder: (c) => AlertDialog(
         backgroundColor: const Color(0xFF121212),
-        title: Text("RENOMBRAR", style: TextStyle(color: _accentColor, fontSize: 14, fontWeight: FontWeight.bold)),
+        title: Text(
+          "RENOMBRAR",
+          style: TextStyle(
+            color: _accentColor,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: TextField(
           controller: ctrl,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: "Nombre de la conversación",
             hintStyle: const TextStyle(color: Colors.white24),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: _accentColor.withOpacity(0.3))),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: _accentColor)),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: _accentColor.withValues(alpha: 0.3),
+              ),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _accentColor),
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c),
-            child: const Text("CANCELAR", style: TextStyle(color: Colors.white38)),
+            child: const Text(
+              "CANCELAR",
+              style: TextStyle(color: Colors.white38),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -6701,25 +7225,38 @@ class _MainScreenState extends State<MainScreen>
 
   int _labelToPage(String label) {
     switch (label) {
-      case 'HOY': return 0;
-      case 'HISTORIAL': return 1;
-      case 'PROGRESO': return 2;
-      case 'TOOLS': return 3;
-      case 'CHAT': return 4;
-      default: return 0;
+      case 'HOY':
+        return 0;
+      case 'HISTORIAL':
+        return 1;
+      case 'PROGRESO':
+        return 2;
+      case 'TOOLS':
+        return 3;
+      case 'CHAT':
+        return 4;
+      default:
+        return 0;
     }
   }
 
   Widget _buildBottomNav() {
-    final navItems = _navItems.map((e) => AnimatedNavItem(
-      icon: _iconFromString(e['icon'] ?? 'play'),
-      label: e['label'] ?? 'HOY',
-    )).toList();
+    final navItems = _navItems
+        .map(
+          (e) => AnimatedNavItem(
+            icon: _iconFromString(e['icon'] ?? 'play'),
+            label: e['label'] ?? 'HOY',
+          ),
+        )
+        .toList();
 
-    final currentPageLabel = _navItems
-        .firstWhere((e) => _labelToPage(e['label']) == _activeTab,
-            orElse: () => _navItems[0])['label'];
-    final resolvedIndex = navItems.indexWhere((e) => e.label == currentPageLabel);
+    final currentPageLabel = _navItems.firstWhere(
+      (e) => _labelToPage(e['label']) == _activeTab,
+      orElse: () => _navItems[0],
+    )['label'];
+    final resolvedIndex = navItems.indexWhere(
+      (e) => e.label == currentPageLabel,
+    );
     final activeIdx = resolvedIndex >= 0 ? resolvedIndex : 0;
 
     return AnimatedBottomNav(
@@ -6748,7 +7285,10 @@ class _MainScreenState extends State<MainScreen>
         controller: ctrl,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(
@@ -6764,11 +7304,11 @@ class _MainScreenState extends State<MainScreen>
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.05)),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: _accentColor.withOpacity(0.5)),
+            borderSide: BorderSide(color: _accentColor.withValues(alpha: 0.5)),
           ),
         ),
       ),
@@ -7019,9 +7559,10 @@ class _ThinkingDotState extends State<_ThinkingDot>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _anim = Tween<double>(begin: 0.3, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _anim = Tween<double>(
+      begin: 0.3,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     Future.delayed(Duration(milliseconds: widget.delay), () {
       if (mounted) _controller.repeat(reverse: true);
     });
@@ -7042,10 +7583,10 @@ class _ThinkingDotState extends State<_ThinkingDot>
         height: 8,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: widget.color.withOpacity(_anim.value),
+          color: widget.color.withValues(alpha: _anim.value),
           boxShadow: [
             BoxShadow(
-              color: widget.color.withOpacity(_anim.value * 0.4),
+              color: widget.color.withValues(alpha: _anim.value * 0.4),
               blurRadius: 6,
             ),
           ],

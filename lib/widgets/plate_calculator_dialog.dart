@@ -102,7 +102,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
     if (target < _barWeight) {
       if (_weightCtrl.text.isNotEmpty) {
         setState(
-          () => _errorMsg = "Mínimo ${_barWeight}${_useLbs ? 'lbs' : 'kg'}",
+          () => _errorMsg = "Mínimo $_barWeight${_useLbs ? 'lbs' : 'kg'}",
         );
       }
       return;
@@ -184,7 +184,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                 width: double.infinity,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: CustomPaint(
@@ -227,7 +227,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                     ),
                     decoration: BoxDecoration(
                       color: active
-                          ? widget.accentColor.withOpacity(0.2)
+                          ? widget.accentColor.withValues(alpha: 0.2)
                           : Colors.black12,
                       border: Border.all(
                         color: active ? widget.accentColor : Colors.white10,
@@ -235,7 +235,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text(
-                      "${_formatNum(weight)}",
+                      _formatNum(weight),
                       style: TextStyle(
                         fontSize: 10,
                         color: active ? Colors.white : Colors.white38,
@@ -320,7 +320,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: active
-              ? widget.accentColor.withOpacity(0.3)
+              ? widget.accentColor.withValues(alpha: 0.3)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
@@ -352,23 +352,25 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
         int count = counts[weight]!;
         Color color = Colors.grey;
         if (_useLbs) {
-          if (weight >= 45)
+          if (weight >= 45) {
             color = Colors.blue;
-          else if (weight >= 35)
+          } else if (weight >= 35) {
             color = Colors.yellow;
-          else if (weight >= 25)
-            color = Colors.green;
-          else if (weight >= 10)
+          } else if (weight >= 25) {
             color = Colors.white;
+          } else if (weight >= 10) {
+            color = Colors.white;
+          }
         } else {
-          if (weight >= 25)
+          if (weight >= 25) {
             color = Colors.red;
-          else if (weight >= 20)
+          } else if (weight >= 20) {
             color = Colors.blue;
-          else if (weight >= 15)
+          } else if (weight >= 15) {
             color = Colors.yellow;
-          else if (weight >= 10)
+          } else if (weight >= 10) {
             color = Colors.green;
+          }
         }
 
         return Column(
@@ -386,7 +388,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
             ),
             const SizedBox(height: 4),
             Text(
-              "${_formatNum(weight)}",
+              _formatNum(weight),
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.bold,

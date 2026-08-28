@@ -43,7 +43,8 @@ class _TrainerProAppState extends State<TrainerProApp> {
   }
 
   Future<void> _cycleTheme() async {
-    final nextTheme = AppTheme.values[(_currentTheme.index + 1) % AppTheme.values.length];
+    final nextTheme =
+        AppTheme.values[(_currentTheme.index + 1) % AppTheme.values.length];
     setState(() {
       _currentTheme = nextTheme;
     });
@@ -84,11 +85,17 @@ class _TrainerProAppState extends State<TrainerProApp> {
       useMaterial3: true,
       expansionTileTheme: const ExpansionTileThemeData(
         shape: Border.fromBorderSide(BorderSide(color: Colors.transparent)),
-        collapsedShape: Border.fromBorderSide(BorderSide(color: Colors.transparent)),
+        collapsedShape: Border.fromBorderSide(
+          BorderSide(color: Colors.transparent),
+        ),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: bg,
-        titleTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
         contentTextStyle: const TextStyle(color: Colors.white70, fontSize: 14),
       ),
     );
@@ -101,20 +108,25 @@ class _TrainerProAppState extends State<TrainerProApp> {
       debugShowCheckedModeBanner: false,
       theme: _getThemeData(),
       home: _showSplash
-          ? SplashScreen(
-              onDone: () => setState(() => _showSplash = false),
-            )
+          ? SplashScreen(onDone: () => setState(() => _showSplash = false))
           : StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Scaffold(
                     backgroundColor: Color(0xFF0A0E1A),
-                    body: Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6))),
+                    body: Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF3B82F6),
+                      ),
+                    ),
                   );
                 }
                 if (snapshot.hasData) {
-                  return MainScreen(currentTheme: _currentTheme, onToggleTheme: _cycleTheme);
+                  return MainScreen(
+                    currentTheme: _currentTheme,
+                    onToggleTheme: _cycleTheme,
+                  );
                 }
                 return const AuthScreen();
               },

@@ -51,15 +51,22 @@ class _AuthScreenState extends State<AuthScreen> {
     final pass = _passCtrl.text;
 
     if (!_isValidEmail(email)) {
-      setState(() { _error = 'Email no válido o dominio no permitido'; });
+      setState(() {
+        _error = 'Email no válido o dominio no permitido';
+      });
       return;
     }
     if (pass.length < 6) {
-      setState(() { _error = 'La contraseña debe tener al menos 6 caracteres'; });
+      setState(() {
+        _error = 'La contraseña debe tener al menos 6 caracteres';
+      });
       return;
     }
 
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       if (_isLogin) {
         final cred = await _auth.signInWithEmailAndPassword(
@@ -70,7 +77,8 @@ class _AuthScreenState extends State<AuthScreen> {
           await _auth.signOut();
           setState(() {
             _needsEmailVerification = true;
-            _error = 'Verifica tu correo electrónico. Revisa tu bandeja de entrada.';
+            _error =
+                'Verifica tu correo electrónico. Revisa tu bandeja de entrada.';
           });
           return;
         }
@@ -79,26 +87,43 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: pass,
         );
-        await cred.user?.updateDisplayName(_sanitizeInput(_nameCtrl.text.trim()));
+        await cred.user?.updateDisplayName(
+          _sanitizeInput(_nameCtrl.text.trim()),
+        );
         await _saveUserToFirestore(cred.user);
         await cred.user?.sendEmailVerification();
-        setState(() { _emailVerificationSent = true; });
+        setState(() {
+          _emailVerificationSent = true;
+        });
         await _auth.signOut();
       }
     } on FirebaseAuthException catch (e) {
-      setState(() { _error = _translateError(e.code); });
+      setState(() {
+        _error = _translateError(e.code);
+      });
     } catch (e) {
-      setState(() { _error = 'Error de autenticación'; });
+      setState(() {
+        _error = 'Error de autenticación';
+      });
     }
-    if (mounted) setState(() { _loading = false; });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   Future<void> _googleAuth() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final googleUser = await _google.signIn();
       if (googleUser == null) {
-        setState(() { _loading = false; });
+        setState(() {
+          _loading = false;
+        });
         return;
       }
       final googleAuth = await googleUser.authentication;
@@ -112,9 +137,39 @@ class _AuthScreenState extends State<AuthScreen> {
       }
       await _saveUserToFirestore(cred.user);
     } catch (e) {
-      setState(() { _error = 'Error al iniciar sesión con Google'; });
+      setState(() {
+        _error = 'Error al iniciar sesión con Google';
+      });
     }
-    if (mounted) setState(() { _loading = false; });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _guestAuth() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final cred = await _auth.signInAnonymously();
+      await _saveUserToFirestore(cred.user);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _error = _translateError(e.code);
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'No se pudo entrar como invitado';
+      });
+    }
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   String _sanitizeInput(String input) {
@@ -168,10 +223,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6).withOpacity(0.1),
+                    color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(LucideIcons.dumbbell, size: 40, color: Color(0xFF3B82F6)),
+                  child: const Icon(
+                    LucideIcons.dumbbell,
+                    size: 40,
+                    color: Color(0xFF3B82F6),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -190,23 +249,36 @@ class _AuthScreenState extends State<AuthScreen> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.greenAccent.withOpacity(0.1),
+                      color: Colors.greenAccent.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.greenAccent.withOpacity(0.3)),
+                      border: Border.all(
+                        color: Colors.greenAccent.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Column(
                       children: [
-                        const Icon(LucideIcons.mailCheck, color: Colors.greenAccent, size: 32),
+                        const Icon(
+                          LucideIcons.mailCheck,
+                          color: Colors.greenAccent,
+                          size: 32,
+                        ),
                         const SizedBox(height: 10),
                         const Text(
                           "Correo de verificación enviado",
-                          style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14),
+                          style: TextStyle(
+                            color: Colors.greenAccent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           "Revisa ${_emailCtrl.text.trim()} y haz click en el enlace para activar tu cuenta.",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white54, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 14),
                         SizedBox(
@@ -215,7 +287,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF3B82F6),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                             onPressed: () {
                               setState(() {
@@ -223,7 +297,14 @@ class _AuthScreenState extends State<AuthScreen> {
                                 _isLogin = true;
                               });
                             },
-                            child: const Text("INICIAR SESIÓN", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                            child: const Text(
+                              "INICIAR SESIÓN",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -233,7 +314,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   Text(
                     _needsEmailVerification
                         ? "Verifica tu correo para continuar"
-                        : (_isLogin ? "Inicia sesión para continuar" : "Crea tu cuenta"),
+                        : (_isLogin
+                              ? "Inicia sesión para continuar"
+                              : "Crea tu cuenta"),
                     style: const TextStyle(color: Colors.white38, fontSize: 13),
                   ),
                   const SizedBox(height: 40),
@@ -242,7 +325,12 @@ class _AuthScreenState extends State<AuthScreen> {
                     _buildField(_nameCtrl, "Nombre", LucideIcons.user),
                     const SizedBox(height: 14),
                   ],
-                  _buildField(_emailCtrl, "Email", LucideIcons.mail, keyboard: TextInputType.emailAddress),
+                  _buildField(
+                    _emailCtrl,
+                    "Email",
+                    LucideIcons.mail,
+                    keyboard: TextInputType.emailAddress,
+                  ),
                   const SizedBox(height: 14),
                   _buildField(
                     _passCtrl,
@@ -255,7 +343,8 @@ class _AuthScreenState extends State<AuthScreen> {
                         size: 18,
                         color: Colors.white38,
                       ),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
 
@@ -264,11 +353,19 @@ class _AuthScreenState extends State<AuthScreen> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent.withOpacity(0.1),
+                        color: Colors.redAccent.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                        border: Border.all(
+                          color: Colors.redAccent.withValues(alpha: 0.3),
+                        ),
                       ),
-                      child: Text(_error!, style: const TextStyle(color: Colors.redAccent, fontSize: 12)),
+                      child: Text(
+                        _error!,
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 12,
+                        ),
+                      ),
                     ),
                   ],
 
@@ -279,14 +376,28 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3B82F6),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       onPressed: _loading ? null : _emailAuth,
                       child: _loading
-                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
                           : Text(
                               _isLogin ? "INICIAR SESIÓN" : "REGISTRARSE",
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1, fontSize: 13),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                                fontSize: 13,
+                              ),
                             ),
                     ),
                   ),
@@ -297,7 +408,10 @@ class _AuthScreenState extends State<AuthScreen> {
                       const Expanded(child: Divider(color: Colors.white10)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text("O", style: TextStyle(color: Colors.white24, fontSize: 12)),
+                        child: Text(
+                          "O",
+                          style: TextStyle(color: Colors.white24, fontSize: 12),
+                        ),
                       ),
                       const Expanded(child: Divider(color: Colors.white10)),
                     ],
@@ -310,13 +424,42 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       onPressed: _loading ? null : _googleAuth,
-                      icon: const Icon(LucideIcons.chrome, size: 18, color: Colors.white70),
+                      icon: const Icon(
+                        LucideIcons.chrome,
+                        size: 18,
+                        color: Colors.white70,
+                      ),
                       label: const Text(
                         "Continuar con Google",
                         style: TextStyle(color: Colors.white70, fontSize: 13),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: _loading ? null : _guestAuth,
+                      icon: const Icon(
+                        LucideIcons.user,
+                        size: 18,
+                        color: Colors.white54,
+                      ),
+                      label: const Text(
+                        "Entrar como invitado",
+                        style: TextStyle(color: Colors.white54, fontSize: 13),
                       ),
                     ),
                   ),
@@ -330,12 +473,20 @@ class _AuthScreenState extends State<AuthScreen> {
                     }),
                     child: RichText(
                       text: TextSpan(
-                        text: _isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? ",
-                        style: const TextStyle(color: Colors.white38, fontSize: 12),
+                        text: _isLogin
+                            ? "¿No tienes cuenta? "
+                            : "¿Ya tienes cuenta? ",
+                        style: const TextStyle(
+                          color: Colors.white38,
+                          fontSize: 12,
+                        ),
                         children: [
                           TextSpan(
                             text: _isLogin ? "Regístrate" : "Inicia sesión",
-                            style: const TextStyle(color: Color(0xFF3B82F6), fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Color(0xFF3B82F6),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -382,7 +533,10 @@ class _AuthScreenState extends State<AuthScreen> {
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: Color(0xFF3B82F6)),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
     );
   }

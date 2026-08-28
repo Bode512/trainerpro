@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'dart:math' as math;
 
 class AnimatedBottomNav extends StatelessWidget {
@@ -21,7 +20,7 @@ class AnimatedBottomNav extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(bottom: 36, top: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A0E1A).withOpacity(0.95),
+        color: const Color(0xFF0A0E1A).withValues(alpha: 0.95),
         border: const Border(
           top: BorderSide(color: Colors.white10, width: 0.5),
         ),
@@ -42,7 +41,7 @@ class AnimatedBottomNav extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isActive
-                    ? accentColor.withOpacity(0.15)
+                    ? accentColor.withValues(alpha: 0.15)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -124,20 +123,26 @@ class _StaggeredListViewState extends State<StaggeredListView>
     _controller = AnimationController(
       vsync: this,
       duration:
-          widget.staggerDuration * widget.children.length + widget.slideDuration,
+          widget.staggerDuration * widget.children.length +
+          widget.slideDuration,
     );
 
     _animations = List.generate(widget.children.length, (i) {
-      final start = (i * widget.staggerDuration.inMilliseconds) /
+      final start =
+          (i * widget.staggerDuration.inMilliseconds) /
           _controller.duration!.inMilliseconds;
-      final end = ((i * widget.staggerDuration.inMilliseconds) +
+      final end =
+          ((i * widget.staggerDuration.inMilliseconds) +
               widget.slideDuration.inMilliseconds) /
           _controller.duration!.inMilliseconds;
       return Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _controller,
-          curve: Interval(start.clamp(0, 1), end.clamp(0, 1),
-              curve: Curves.easeOutCubic),
+          curve: Interval(
+            start.clamp(0, 1),
+            end.clamp(0, 1),
+            curve: Curves.easeOutCubic,
+          ),
         ),
       );
     });
@@ -200,9 +205,10 @@ class _GlowPulseState extends State<GlowPulse>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _animation = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _controller.repeat(reverse: true);
   }
 
@@ -222,8 +228,9 @@ class _GlowPulseState extends State<GlowPulse>
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(
-                    widget.intensity * _animation.value),
+                color: widget.color.withValues(
+                  alpha: widget.intensity * _animation.value,
+                ),
                 blurRadius: 20 * _animation.value,
                 spreadRadius: 2 * _animation.value,
               ),
@@ -264,9 +271,10 @@ class _PressableScaleState extends State<PressableScale>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _animation = Tween<double>(begin: 1.0, end: widget.scale).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: widget.scale,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -287,10 +295,7 @@ class _PressableScaleState extends State<PressableScale>
       child: AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _animation.value,
-            child: widget.child,
-          );
+          return Transform.scale(scale: _animation.value, child: widget.child);
         },
         child: widget.child,
       ),
@@ -438,7 +443,7 @@ class _CircularTimerPainter extends CustomPainter {
     // Glow effect when expanded
     if (isExpanded) {
       final glowPaint = Paint()
-        ..color = accentColor.withOpacity(0.15 * pulseScale)
+        ..color = accentColor.withValues(alpha: 0.15 * pulseScale)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 12
         ..strokeCap = StrokeCap.round;
@@ -489,17 +494,10 @@ class AnimatedCounter extends StatelessWidget {
             begin: const Offset(0, 0.5),
             end: Offset.zero,
           ).animate(anim),
-          child: FadeTransition(
-            opacity: anim,
-            child: child,
-          ),
+          child: FadeTransition(opacity: anim, child: child),
         );
       },
-      child: Text(
-        '$value',
-        key: ValueKey(value),
-        style: style,
-      ),
+      child: Text('$value', key: ValueKey(value), style: style),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,44 +12,48 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _scale;
-  late final Animation<double> _opacity;
-  late final Animation<double> _rotate;
-  late final Animation<Offset> _slide;
+  late final Animation<double> _titleOpacity;
+  late final Animation<Offset> _titleSlide;
+  late final Animation<double> _lineWidth;
+  late final Animation<double> _taglineOpacity;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2200),
+      duration: const Duration(milliseconds: 1600),
     );
 
-    _scale = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
-    _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _titleOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
+        curve: const Interval(0.0, 0.55, curve: Curves.easeOut),
       ),
     );
-    _rotate = Tween<double>(begin: -0.4, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-    _slide = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
+    _titleSlide = Tween<Offset>(begin: const Offset(0, 0.25), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.0, 0.55, curve: Curves.easeOutCubic),
+          ),
+        );
+    _lineWidth = Tween<double>(begin: 0.0, end: 56.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.3, 1.0, curve: Curves.easeOutCubic),
+        curve: const Interval(0.45, 0.8, curve: Curves.easeOutCubic),
+      ),
+    );
+    _taglineOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
       ),
     );
 
     _controller.forward();
 
-    Future.delayed(const Duration(milliseconds: 2600), () async {
+    Future.delayed(const Duration(milliseconds: 2000), () async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('trainer_splash_seen', true);
       if (mounted) widget.onDone();
@@ -71,64 +74,45 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _rotate.value,
-                  child: Transform.scale(
-                    scale: _scale.value,
-                    child: Opacity(
-                      opacity: _opacity.value,
-                      child: Container(
-                        padding: const EdgeInsets.all(28),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.12),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF3B82F6).withOpacity(0.35),
-                              blurRadius: 30,
-                              spreadRadius: 4,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          LucideIcons.dumbbell,
-                          size: 72,
-                          color: Color(0xFF3B82F6),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 28),
             SlideTransition(
-              position: _slide,
+              position: _titleSlide,
               child: FadeTransition(
-                opacity: _opacity,
+                opacity: _titleOpacity,
                 child: const Text(
                   "TRAINER PRO",
                   style: TextStyle(
                     color: Color(0xFF3B82F6),
-                    fontSize: 32,
+                    fontSize: 34,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 4,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            AnimatedBuilder(
+              animation: _lineWidth,
+              builder: (context, child) {
+                return Container(
+                  height: 2,
+                  width: _lineWidth.value,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF3B82F6),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             FadeTransition(
-              opacity: _opacity,
+              opacity: _taglineOpacity,
               child: const Text(
                 "TU GYM EN EL BOLSILLO",
                 style: TextStyle(
                   color: Colors.white38,
                   fontSize: 11,
-                  letterSpacing: 2,
+                  letterSpacing: 3,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

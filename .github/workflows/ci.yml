@@ -2,38 +2,65 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
-    branches: [main]
+    branches: ["**"]
 
 permissions:
   contents: read
 
 jobs:
   analyze:
-    name: Analyze & Test
+    name: Analyze, Format & Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          sdk: 'stable' # esto haria que la version de flutter sea la correcta
-      - run: flutter pub get
-      - run: flutter analyze --no-pub
-      - run: flutter test --no-pub
+          channel: "stable"
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Flutter analyze
+        run: flutter analyze --no-pub
+
+      - name: Run tests
+        run: flutter test --no-pub
 
   build-android:
-    name: Build Android
+    name: Build Android APK
     runs-on: ubuntu-latest
     needs: analyze
+    if: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          sdk: 'stable' # esto haria que la version de flutter sea la correcta
-      - run: flutter pub get
-      - run: flutter build apk --release --no-pub
-      - uses: actions/upload-artifact@v4
+          channel: "stable"
+          cache: true
+
+      - name: Restore google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > android/app/google-services.json
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release --no-pub
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
