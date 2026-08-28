@@ -406,7 +406,9 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
   }
 
   String _formatNum(double n) {
-    if (n % 1 == 0) return n.toInt().toString();
+    if (n % 1 == 0) {
+      return n.toInt().toString();
+    }
     return n.toString();
   }
 }

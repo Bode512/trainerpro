@@ -56,7 +56,9 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(milliseconds: 2000), () async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('trainer_splash_seen', true);
-      if (mounted) widget.onDone();
+      if (mounted) {
+        widget.onDone();
+      }
     });
   }
 
@@ -97,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 2,
                   width: _lineWidth.value,
                   decoration: BoxDecoration(
-                    color: Color(0xFF3B82F6),
+                    color: const Color(0xFF3B82F6),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 );

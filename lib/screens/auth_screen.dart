@@ -40,9 +40,13 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   bool _isValidEmail(String email) {
-    if (!_emailRegExp.hasMatch(email)) return false;
+    if (!_emailRegExp.hasMatch(email)) {
+      return false;
+    }
     final domain = email.split('@').last.toLowerCase();
-    if (_blockedDomains.contains(domain)) return false;
+    if (_blockedDomains.contains(domain)) {
+      return false;
+    }
     return true;
   }
 
@@ -177,7 +181,9 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _saveUserToFirestore(User? user) async {
-    if (user == null) return;
+    if (user == null) {
+      return;
+    }
     final doc = FirebaseFirestore.instance.collection('users').doc(user.uid);
     final snapshot = await doc.get();
     if (!snapshot.exists) {

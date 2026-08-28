@@ -403,7 +403,9 @@ class _MainScreenState extends State<MainScreen>
           _useCustomApiKey = config['useCustomApiKey'] ?? false;
           _customApiKey = config['customApiKey'] ?? '';
 
-          if (_userGroups.isEmpty) _isFirstTime = true;
+          if (_userGroups.isEmpty) {
+            _isFirstTime = true;
+          }
         } else {
           _isFirstTime = true;
         }
@@ -865,7 +867,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<void> _scheduleTimerAlarm(DateTime scheduledTime) async {
-    if (!_enableNotifications) return;
+    if (!_enableNotifications) {
+      return;
+    }
     try {
       await _notificationsPlugin.zonedSchedule(
         id: 99,
@@ -955,7 +959,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<void> _updateNotificationProgress(int current, int total) async {
-    if (!_enableNotifications) return;
+    if (!_enableNotifications) {
+      return;
+    }
 
     final elapsed = _workoutStartTime != null
         ? DateTime.now().difference(_workoutStartTime!)
@@ -991,7 +997,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<void> _triggerNotification() async {
-    if (!_enableNotifications) return;
+    if (!_enableNotifications) {
+      return;
+    }
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
           'rest_timer_channel',
@@ -1018,7 +1026,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<void> _playTimerSound() async {
-    if (!_enableSound) return;
+    if (!_enableSound) {
+      return;
+    }
     try {
       final player = AudioPlayer();
       String soundAsset;
@@ -1092,7 +1102,9 @@ class _MainScreenState extends State<MainScreen>
 
   // --- LOGICA ENTRENAMIENTO ---
   String _formatNum(double n) {
-    if (n % 1 == 0) return n.toInt().toString();
+    if (n % 1 == 0) {
+      return n.toInt().toString();
+    }
     return n.toString();
   }
 
@@ -1317,12 +1329,16 @@ class _MainScreenState extends State<MainScreen>
   }
 
   ExerciseSet? _getPB(String exName) {
-    if (exName.isEmpty) return null;
+    if (exName.isEmpty) {
+      return null;
+    }
     List<ExerciseSet> allSets = _sessions
         .expand((s) => s.exercises)
         .where((e) => e.name == exName.toUpperCase())
         .toList();
-    if (allSets.isEmpty) return null;
+    if (allSets.isEmpty) {
+      return null;
+    }
 
     return allSets.reduce((a, b) {
       return a.effectiveScore > b.effectiveScore ? a : b;
@@ -1331,7 +1347,9 @@ class _MainScreenState extends State<MainScreen>
 
   // --- LOGICA GESTIÓN RUTINAS ---
   void _moveGroup(int index, int delta) {
-    if (index + delta < 0 || index + delta >= _userGroups.length) return;
+    if (index + delta < 0 || index + delta >= _userGroups.length) {
+      return;
+    }
     setState(() {
       final item = _userGroups.removeAt(index);
       _userGroups.insert(index + delta, item);
@@ -1341,7 +1359,9 @@ class _MainScreenState extends State<MainScreen>
 
   void _reorderExercises(String group, int oldIndex, int newIndex) {
     setState(() {
-      if (newIndex > oldIndex) newIndex -= 1;
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
       final items = _exerciseDb[group]!;
       final item = items.removeAt(oldIndex);
       items.insert(newIndex, item);
@@ -1439,11 +1459,15 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void _renameRoutine(String oldName, String newName) {
-    if (newName.isEmpty || oldName == newName) return;
+    if (newName.isEmpty || oldName == newName) {
+      return;
+    }
     newName = newName.toUpperCase();
     setState(() {
       int idx = _userGroups.indexOf(oldName);
-      if (idx != -1) _userGroups[idx] = newName;
+      if (idx != -1) {
+        _userGroups[idx] = newName;
+      }
       if (_exerciseDb.containsKey(oldName)) {
         _exerciseDb[newName] = _exerciseDb.remove(oldName)!;
       }
@@ -1451,10 +1475,14 @@ class _MainScreenState extends State<MainScreen>
         _archivedExercises[newName] = _archivedExercises.remove(oldName)!;
       }
       _weeklyPlan.forEach((key, value) {
-        if (value == oldName) _weeklyPlan[key] = newName;
+        if (value == oldName) {
+          _weeklyPlan[key] = newName;
+        }
       });
       for (var session in _sessions) {
-        if (session.type == oldName) session.type = newName;
+        if (session.type == oldName) {
+          session.type = newName;
+        }
       }
       _saveConfig();
       _saveSessions();
@@ -1689,7 +1717,9 @@ class _MainScreenState extends State<MainScreen>
         ),
       );
     }
-    if (_isFirstTime) return _buildOnboarding();
+    if (_isFirstTime) {
+      return _buildOnboarding();
+    }
 
     return Scaffold(
       body: Stack(
@@ -1940,7 +1970,9 @@ class _MainScreenState extends State<MainScreen>
                       onTap: () {
                         _setupInitialRoutine(entry.value);
                         setState(() => _showSettings = false);
-                        if (Navigator.canPop(context)) Navigator.pop(context);
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -2360,8 +2392,12 @@ class _MainScreenState extends State<MainScreen>
 
   // --- PESTAÑA 1: HOY / ENTRENAR ---
   Widget _buildAddTab() {
-    if (_isSessionActive && !_showSettings) return _buildActiveWorkoutView();
-    if (_showSettings) return _buildFullSettings();
+    if (_isSessionActive && !_showSettings) {
+      return _buildActiveWorkoutView();
+    }
+    if (_showSettings) {
+      return _buildFullSettings();
+    }
 
     final suggestion = _getSuggestion();
     return ListView(
@@ -3020,7 +3056,9 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _syncDataToFirestore({bool showFeedback = true}) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      return;
+    }
     if (showFeedback) {
       ScaffoldMessenger.of(
         context,
@@ -3055,15 +3093,21 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _loadDataFromFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      return;
+    }
     try {
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
-      if (!doc.exists || doc.data() == null) return;
+      if (!doc.exists || doc.data() == null) {
+        return;
+      }
       final data = doc.data()!;
-      if (data['sessions'] == null && data['groups'] == null) return;
+      if (data['sessions'] == null && data['groups'] == null) {
+        return;
+      }
 
       // No sobrescribir los datos locales del dispositivo (evita "volver atrás")
       final prefs = await SharedPreferences.getInstance();
@@ -3072,7 +3116,9 @@ class _MainScreenState extends State<MainScreen>
       final hasLocalData =
           (localSessions != null && localSessions != '[]') ||
           (localConfig != null && localConfig.contains('"groups"'));
-      if (hasLocalData) return;
+      if (hasLocalData) {
+        return;
+      }
 
       if (data['sessions'] != null) {
         await prefs.setString('trainer_sessions', jsonEncode(data['sessions']));
@@ -3091,7 +3137,9 @@ class _MainScreenState extends State<MainScreen>
         final config = configStr != null
             ? jsonDecode(configStr) as Map<String, dynamic>
             : {};
-        if (data['groups'] != null) config['groups'] = data['groups'];
+        if (data['groups'] != null) {
+          config['groups'] = data['groups'];
+        }
         if (data['exerciseDb'] != null) {
           config['exercises'] = data['exerciseDb'];
         }
@@ -3232,7 +3280,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void _generateAndShareRoutine(String key) {
-    if (!_customTemplates.containsKey(key)) return;
+    if (!_customTemplates.containsKey(key)) {
+      return;
+    }
 
     final template = _customTemplates[key]!;
     final data = {'type': 'single_routine', 'name': key, 'content': template};
@@ -3288,7 +3338,9 @@ class _MainScreenState extends State<MainScreen>
             onPressed: () {
               try {
                 String base64Str = ctrl.text.trim();
-                if (base64Str.isEmpty) return;
+                if (base64Str.isEmpty) {
+                  return;
+                }
 
                 String jsonStr = utf8.decode(base64Decode(base64Str));
                 Map<String, dynamic> data = jsonDecode(jsonStr);
@@ -3436,7 +3488,9 @@ class _MainScreenState extends State<MainScreen>
           double rm = 0;
           double w = double.tryParse(wCtrl.text) ?? 0;
           double r = double.tryParse(rCtrl.text) ?? 0;
-          if (w > 0 && r > 0) rm = w * (1 + r / 30);
+          if (w > 0 && r > 0) {
+            rm = w * (1 + r / 30);
+          }
 
           return AlertDialog(
             title: const Text("Calculadora 1RM"),
@@ -4076,8 +4130,12 @@ class _MainScreenState extends State<MainScreen>
       'Muy intenso': 1.9,
     }[activity]!;
     double tdee = bmr * mult;
-    if (goal == 'Perder') tdee *= 0.85;
-    if (goal == 'Ganar') tdee *= 1.15;
+    if (goal == 'Perder') {
+      tdee *= 0.85;
+    }
+    if (goal == 'Ganar') {
+      tdee *= 1.15;
+    }
     final protein = w * 2.0;
     final fat = tdee * 0.25 / 9;
     final carbs = (tdee - (protein * 4) - (fat * 9)) / 4;
@@ -4559,7 +4617,9 @@ class _MainScreenState extends State<MainScreen>
             children: [
               Autocomplete<String>(
                 optionsBuilder: (TextEditingValue value) {
-                  if (value.text == '') return const Iterable<String>.empty();
+                  if (value.text == '') {
+                    return const Iterable<String>.empty();
+                  }
                   return _globalExerciseList.where((String option) {
                     return option.contains(value.text.toUpperCase());
                   });
@@ -6604,7 +6664,9 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _sendChatMessage() async {
     final text = _chatInputController.text.trim();
-    if (text.isEmpty || _chatLoading) return;
+    if (text.isEmpty || _chatLoading) {
+      return;
+    }
 
     FocusScope.of(context).unfocus();
     _chatInputController.clear();
@@ -7265,7 +7327,9 @@ class _MainScreenState extends State<MainScreen>
       items: navItems,
       onTap: (i) {
         final pageIdx = _labelToPage(navItems[i].label);
-        if (_isSessionActive) _saveDraft();
+        if (_isSessionActive) {
+          _saveDraft();
+        }
         setState(() {
           _activeTab = pageIdx;
           _showSettings = false;
@@ -7564,7 +7628,9 @@ class _ThinkingDotState extends State<_ThinkingDot>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     Future.delayed(Duration(milliseconds: widget.delay), () {
-      if (mounted) _controller.repeat(reverse: true);
+      if (mounted) {
+        _controller.repeat(reverse: true);
+      }
     });
   }
 

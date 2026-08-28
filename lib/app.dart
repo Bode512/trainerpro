@@ -28,7 +28,9 @@ class _TrainerProAppState extends State<TrainerProApp> {
     final prefs = await SharedPreferences.getInstance();
     final seen = prefs.getBool('trainer_splash_seen') ?? false;
     if (seen) {
-      if (mounted) setState(() => _showSplash = false);
+      if (mounted) {
+        setState(() => _showSplash = false);
+      }
     }
   }
 
