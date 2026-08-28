@@ -1,25 +1,48 @@
 # Trainer Pro
 
-**AI-powered fitness tracking app for serious lifters.**
+![Dart](https://img.shields.io/badge/language-Dart-0175C2)
+![Framework](https://img.shields.io/badge/framework-Flutter-02569B)
+![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey)
+![Database](https://img.shields.io/badge/database-Firestore-FFCA28)
+![Status](https://img.shields.io/badge/status-in%20development-yellow)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+AI-powered fitness tracking app for serious lifters.
 
 Trainer Pro is a Flutter application that helps users log workouts, track progress over time, and get AI-generated coaching advice through a Gemini-powered chatbot. Data is synced to Firebase Cloud Firestore for cloud backup and multi-device access.
 
 ---
 
+## Table of contents
+
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Build](#build)
+- [Security](#security)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Features
 
-- **Training Sessions** — Log workouts with sets, reps, weight, and notes. Supports custom exercise templates and weekly planning.
-- **Exercise Database** — Built-in library of exercises with the ability to add custom entries.
-- **Rest Timer** — Configurable countdown timer with audio alerts, draggable overlay, and background persistence.
-- **Progress Tracking** — Charts (via `fl_chart`) showing volume, weight, and estimated 1RM over time. Filterable by exercise and date range.
-- **AI Chatbot** — Gemini-powered conversational assistant for form tips, programming advice, and motivation. Supports multiple conversations.
-- **Plate Calculator** — Quick tool to calculate plate combinations for a target weight.
+- **Training sessions** — Log workouts with sets, reps, weight, and notes. Supports custom exercise templates and weekly planning.
+- **Exercise database** — Built-in library of exercises with the ability to add custom entries.
+- **Rest timer** — Configurable countdown timer with audio alerts, draggable overlay, and background persistence.
+- **Progress tracking** — Charts (via `fl_chart`) showing volume, weight, and estimated 1RM over time. Filterable by exercise and date range.
+- **AI chatbot** — Gemini-powered conversational assistant for form tips, programming advice, and motivation. Supports multiple conversations.
+- **Plate calculator** — Quick tool to calculate plate combinations for a target weight.
 - **Firebase Auth** — Email/password registration with verification, plus Google Sign-In.
-- **Cloud Sync** — Workout history and user data synced to Firestore with strict security rules.
-- **Multiple Themes** — Five built-in dark themes (Deep Slate, Cyber Neon, Crimson Blood, Toxic Green, Solar Flare) with persistent selection.
+- **Cloud sync** — Workout history and user data synced to Firestore with strict security rules.
+- **Multiple themes** — Five built-in dark themes (Deep Slate, Cyber Neon, Crimson Blood, Toxic Green, Solar Flare) with persistent selection.
 - **Notifications** — Local notifications for timer alerts.
 
-## Tech Stack
+---
+
+## Tech stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -31,8 +54,10 @@ Trainer Pro is a Flutter application that helps users log workouts, track progre
 | Charts | fl_chart |
 | Icons | Lucide Icons, Cupertino Icons |
 | Audio | audioplayers |
-| Local Storage | SharedPreferences |
+| Local storage | SharedPreferences |
 | Notifications | flutter_local_notifications |
+
+---
 
 ## Architecture
 
@@ -53,12 +78,16 @@ lib/
     └── animated_widgets.dart         # Reusable animated components
 ```
 
+---
+
 ## Prerequisites
 
 - Flutter SDK 3.x (channel stable)
 - Dart SDK >= 3.10.4
 - A Firebase project with Auth and Firestore enabled
 - A Gemini API key (optional, for chatbot features)
+
+---
 
 ## Installation
 
@@ -79,6 +108,8 @@ flutter pub get
 flutter run
 ```
 
+---
+
 ## Build
 
 ```bash
@@ -92,6 +123,8 @@ flutter build appbundle --release
 flutter build ios --release
 ```
 
+---
+
 ## Security
 
 - Firestore rules enforce per-user document access only.
@@ -102,9 +135,13 @@ flutter build ios --release
 
 See [SECURITY.md](SECURITY.md) for details.
 
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
 
 ## License
 
