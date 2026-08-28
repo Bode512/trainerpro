@@ -1359,9 +1359,6 @@ class _MainScreenState extends State<MainScreen>
 
   void _reorderExercises(String group, int oldIndex, int newIndex) {
     setState(() {
-      if (newIndex > oldIndex) {
-        newIndex -= 1;
-      }
       final items = _exerciseDb[group]!;
       final item = items.removeAt(oldIndex);
       items.insert(newIndex, item);
@@ -4477,7 +4474,7 @@ class _MainScreenState extends State<MainScreen>
         ReorderableListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          onReorder: (oldIndex, newIndex) =>
+          onReorderItem: (oldIndex, newIndex) =>
               _reorderExercises(name, oldIndex, newIndex),
           children: [
             ...(_exerciseDb[name] ?? []).map(
@@ -4996,7 +4993,7 @@ class _MainScreenState extends State<MainScreen>
                 height: 45,
                 child: ReorderableListView(
                   scrollDirection: Axis.horizontal,
-                  onReorder: (oldIndex, newIndex) =>
+                  onReorderItem: (oldIndex, newIndex) =>
                       _reorderExercises(_activeWorkoutType, oldIndex, newIndex),
                   children: activeExercises
                       .map(
