@@ -19,8 +19,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.4'
-          channel: 'stable'
+          sdk: 'stable' # esto haria que la version de flutter sea la correcta
 
       - name: Install dependencies
         run: flutter pub get
