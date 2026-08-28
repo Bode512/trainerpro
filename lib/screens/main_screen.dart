@@ -625,6 +625,9 @@ class _MainScreenState extends State<MainScreen>
       'type': _activeWorkoutType,
       'exercises': _currentSessionExercises.map((e) => e.toJson()).toList(),
       'selectedExercise': _selectedExercise,
+      'weightCtrl': _weightCtrl.text,
+      'repsCtrl': _repsCtrl.text,
+      'noteCtrl': _noteCtrl.text,
       'timestamp': DateTime.now().toIso8601String(),
     };
     await prefs.setString('trainer_draft_data', jsonEncode(draftData));
@@ -660,6 +663,9 @@ class _MainScreenState extends State<MainScreen>
                 ? _exerciseDb[_activeWorkoutType]!.first
                 : '';
           }
+          if (draft['weightCtrl'] != null) _weightCtrl.text = draft['weightCtrl'];
+          if (draft['repsCtrl'] != null) _repsCtrl.text = draft['repsCtrl'];
+          if (draft['noteCtrl'] != null) _noteCtrl.text = draft['noteCtrl'];
         });
       } catch (e) {
         _clearDraft();
@@ -2884,9 +2890,6 @@ class _MainScreenState extends State<MainScreen>
 
       if (mounted) {
         setState(() {});
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Datos restaurados desde la nube ✓")),
-        );
       }
     } catch (e) {
       debugPrint("Error loading from Firestore: $e");
@@ -6709,6 +6712,7 @@ class _MainScreenState extends State<MainScreen>
       items: navItems,
       onTap: (i) {
         final pageIdx = _labelToPage(navItems[i].label);
+        if (_isSessionActive) _saveDraft();
         setState(() {
           _activeTab = pageIdx;
           _showSettings = false;
