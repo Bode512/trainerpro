@@ -322,6 +322,7 @@ class _MainScreenState extends State<MainScreen>
     _loadChatHistory();
     _loadDraft(); // Restaura el entrenamiento en curso si la app se cerró
     _loadDataFromFirestore();
+    _retryPendingSync();
   }
 
   @override
@@ -346,6 +347,7 @@ class _MainScreenState extends State<MainScreen>
       }
     } else if (state == AppLifecycleState.resumed) {
       _checkPersistentTimer();
+      _retryPendingSync();
     }
   }
 
@@ -817,6 +819,7 @@ class _MainScreenState extends State<MainScreen>
   // --- LOGICA TIMER ---
   void _startRestTimer({int? customSeconds, bool persist = true}) async {
     _restTimer?.cancel();
+    await _notificationsPlugin.cancelAll();
     _secondsLeft = customSeconds ?? _defaultRestSeconds;
     _totalRestSeconds = _secondsLeft;
 
@@ -876,6 +879,7 @@ class _MainScreenState extends State<MainScreen>
         title: 'A ENTRENAR',
         body: 'Tu descanso ha terminado',
         scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+        payload: jsonEncode({'type': 'timer_alarm'}),
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'rest_timer_channel',
@@ -903,7 +907,9 @@ class _MainScreenState extends State<MainScreen>
           InitializationSettings(android: initializationSettingsAndroid);
       await _notificationsPlugin.initialize(
         settings: initializationSettings,
-        onDidReceiveNotificationResponse: (details) {},
+        onDidReceiveNotificationResponse: (details) {
+          _handleNotificationTap(details.payload);
+        },
       );
 
       // Create notification channels explicitly
@@ -943,6 +949,29 @@ class _MainScreenState extends State<MainScreen>
       }
     } catch (e) {
       debugPrint("Notification init error: $e");
+    }
+  }
+
+  void _handleNotificationTap(String? payload) {
+    if (payload == null) return;
+    try {
+      final data = jsonDecode(payload);
+      if (data['type'] == 'timer_alarm' || data['type'] == 'timer_complete') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _activeTab = 0;
+              _showTimer = true;
+              _isTimerExpanded = true;
+            });
+            if (_pageController.hasClients) {
+              _pageController.jumpToPage(0);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint("Notification tap error: $e");
     }
   }
 
@@ -1022,6 +1051,7 @@ class _MainScreenState extends State<MainScreen>
       title: '¡A ENTRENAR!',
       body: 'Tu descanso ha terminado. Entreno: ${_formatDuration(elapsed)}',
       notificationDetails: platformChannelSpecifics,
+      payload: jsonEncode({'type': 'timer_complete'}),
     );
   }
 
@@ -3051,10 +3081,10 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  Future<void> _syncDataToFirestore({bool showFeedback = true}) async {
+  Future<bool> _syncDataToFirestore({bool showFeedback = true}) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return;
+      return false;
     }
     if (showFeedback) {
       ScaffoldMessenger.of(
@@ -3074,17 +3104,31 @@ class _MainScreenState extends State<MainScreen>
         'emailVerified': user.emailVerified,
         'lastSync': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
-      if (mounted) {
+      if (showFeedback && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Datos subidos correctamente ✓")),
+          const SnackBar(content: Text("Sincronizado ✓")),
         );
       }
+      return true;
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error al subir: $e")));
+      if (showFeedback && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al sincronizar: $e")),
+        );
       }
+      return false;
+    }
+  }
+
+  Future<void> _retryPendingSync() async {
+    final prefs = await SharedPreferences.getInstance();
+    final pending = prefs.getBool('pending_sync') ?? false;
+    if (!pending) return;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final synced = await _syncDataToFirestore(showFeedback: false);
+    if (synced) {
+      await prefs.remove('pending_sync');
     }
   }
 
@@ -5671,18 +5715,18 @@ class _MainScreenState extends State<MainScreen>
             child: const Text('CANCELAR'),
           ),
           TextButton(
-            onPressed: () {
-              // Borrar para siempre
+            onPressed: () async {
               _clearDraft();
               _restTimer?.cancel();
-              _notificationsPlugin.cancel(id: 99);
-              final prefs = SharedPreferences.getInstance();
-              prefs.then((p) => p.remove('timer_end_time'));
+              await _notificationsPlugin.cancelAll();
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('timer_end_time');
               setState(() {
                 _isSessionActive = false;
                 _currentSessionExercises.clear();
                 _showTimer = false;
                 _isTimerExpanded = false;
+                _workoutStartTime = null;
               });
               Navigator.pop(c);
             },
@@ -5692,10 +5736,12 @@ class _MainScreenState extends State<MainScreen>
             ),
           ),
           TextButton(
-            onPressed: () {
-              _saveDraft(); // Guardar antes de salir
+            onPressed: () async {
+              await _saveDraft();
               _restTimer?.cancel();
-              _notificationsPlugin.cancel(id: 99);
+              await _notificationsPlugin.cancelAll();
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('timer_end_time');
               setState(() {
                 _isSessionActive = false;
                 _showTimer = false;
@@ -5718,7 +5764,7 @@ class _MainScreenState extends State<MainScreen>
 
   void _finishWorkout() async {
     _restTimer?.cancel();
-    _notificationsPlugin.cancel(id: 99);
+    await _notificationsPlugin.cancelAll();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('timer_end_time');
 
@@ -5732,20 +5778,22 @@ class _MainScreenState extends State<MainScreen>
           date: DateTime.now(),
         ),
       );
-      _saveSessions();
-      _syncDataToFirestore(
-        showFeedback: false,
-      ); // Auto-backup silencioso en la nube
+      await _saveSessions();
+
+      final synced = await _syncDataToFirestore(showFeedback: false);
+      if (!synced) {
+        await prefs.setBool('pending_sync', true);
+      }
     }
     _clearDraft();
     setState(() {
       _currentSessionExercises.clear();
       _isSessionActive = false;
-      _activeTab = 1; // Pestaña Historial
+      _activeTab = 1;
       _showTimer = false;
       _isTimerExpanded = false;
+      _workoutStartTime = null;
 
-      // Force page switch to ensure view updates
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_pageController.hasClients) {
           _pageController.jumpToPage(1);
