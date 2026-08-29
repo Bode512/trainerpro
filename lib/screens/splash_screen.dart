@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   final VoidCallback onDone;
@@ -12,6 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  late final Animation<double> _iconScale;
   late final Animation<double> _titleOpacity;
   late final Animation<Offset> _titleSlide;
   late final Animation<double> _lineWidth;
@@ -22,26 +24,33 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1600),
+      duration: const Duration(milliseconds: 1800),
+    );
+
+    _iconScale = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeOutBack),
+      ),
     );
 
     _titleOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.55, curve: Curves.easeOut),
+        curve: const Interval(0.15, 0.55, curve: Curves.easeOut),
       ),
     );
-    _titleSlide = Tween<Offset>(begin: const Offset(0, 0.25), end: Offset.zero)
-        .animate(
+    _titleSlide =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _controller,
-            curve: const Interval(0.0, 0.55, curve: Curves.easeOutCubic),
+            curve: const Interval(0.15, 0.55, curve: Curves.easeOutCubic),
           ),
         );
-    _lineWidth = Tween<double>(begin: 0.0, end: 56.0).animate(
+    _lineWidth = Tween<double>(begin: 0.0, end: 48.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.45, 0.8, curve: Curves.easeOutCubic),
+        curve: const Interval(0.4, 0.75, curve: Curves.easeOutCubic),
       ),
     );
     _taglineOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -53,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Future.delayed(const Duration(milliseconds: 2000), () async {
+    Future.delayed(const Duration(milliseconds: 2200), () async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('trainer_splash_seen', true);
       if (mounted) {
@@ -70,28 +79,49 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final palette = getPalette(AppTheme.deepSlate);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E1A),
+      backgroundColor: palette.scaffoldBg,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ScaleTransition(
+              scale: _iconScale,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: palette.accent.withValues(alpha: 0.1),
+                  border: Border.all(
+                    color: palette.accent.withValues(alpha: 0.2),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(
+                  Icons.fitness_center,
+                  size: 32,
+                  color: palette.accent,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
             SlideTransition(
               position: _titleSlide,
               child: FadeTransition(
                 opacity: _titleOpacity,
-                child: const Text(
+                child: Text(
                   "TRAINER PRO",
-                  style: TextStyle(
-                    color: Color(0xFF3B82F6),
-                    fontSize: 34,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 4,
+                  style: AppleDesignSystem.title1.copyWith(
+                    color: palette.accent,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             AnimatedBuilder(
               animation: _lineWidth,
               builder: (context, child) {
@@ -99,22 +129,26 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 2,
                   width: _lineWidth.value,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6),
-                    borderRadius: BorderRadius.circular(2),
+                    gradient: LinearGradient(
+                      colors: [
+                        palette.accent.withValues(alpha: 0.0),
+                        palette.accent,
+                        palette.accent.withValues(alpha: 0.0),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(1),
                   ),
                 );
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             FadeTransition(
               opacity: _taglineOpacity,
-              child: const Text(
+              child: Text(
                 "TU GYM EN EL BOLSILLO",
-                style: TextStyle(
-                  color: Colors.white38,
-                  fontSize: 11,
-                  letterSpacing: 3,
-                  fontWeight: FontWeight.w500,
+                style: AppleDesignSystem.caption3.copyWith(
+                  color: palette.textTertiary,
+                  letterSpacing: 2.5,
                 ),
               ),
             ),

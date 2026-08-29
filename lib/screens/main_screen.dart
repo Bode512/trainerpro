@@ -247,20 +247,8 @@ class _MainScreenState extends State<MainScreen>
   int _historyCarouselIndex = 0; // Track carousel position
 
   // --- GETTERS ESTÉTICOS ---
-  Color get _accentColor {
-    switch (widget.currentTheme) {
-      case AppTheme.cyberNeon:
-        return const Color(0xFF00F5FF);
-      case AppTheme.crimsonBlood:
-        return const Color(0xFFFF3131);
-      case AppTheme.toxicGreen:
-        return const Color(0xFF22C55E);
-      case AppTheme.solarFlare:
-        return const Color(0xFFF59E0B);
-      default:
-        return const Color(0xFF3B82F6);
-    }
-  }
+  ThemePalette get _palette => getPalette(widget.currentTheme);
+  Color get _accentColor => _palette.accent;
 
   // Pinned Notes State
   Map<String, String> _pinnedNotes = {};
@@ -277,20 +265,7 @@ class _MainScreenState extends State<MainScreen>
   // Phase 2: Pinned Notes
   Map<String, String> _exerciseNotes = {};
 
-  Color get _cardColor {
-    switch (widget.currentTheme) {
-      case AppTheme.cyberNeon:
-        return const Color(0xFF121212);
-      case AppTheme.crimsonBlood:
-        return const Color(0xFF2A1515);
-      case AppTheme.toxicGreen:
-        return const Color(0xFF051105);
-      case AppTheme.solarFlare:
-        return const Color(0xFF1A0F00);
-      default:
-        return const Color(0xFF0F172A);
-    }
-  }
+  Color get _cardColor => _palette.cardBg;
 
   // --- CICLO DE VIDA ---
   @override
@@ -590,11 +565,11 @@ class _MainScreenState extends State<MainScreen>
         content: TextField(
           controller: noteInput,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: "Ej. Asiento en 4, Agarre ancho...",
-            hintStyle: TextStyle(color: Colors.white24),
+            hintStyle: TextStyle(color: _palette.textQuaternary),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white10),
+              borderSide: BorderSide(color: _palette.separator),
             ),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
@@ -1088,7 +1063,6 @@ class _MainScreenState extends State<MainScreen>
           _timerSoundType = value;
           _saveConfig();
         });
-        // Preview sound
         final player = AudioPlayer();
         String asset;
         switch (value) {
@@ -1105,25 +1079,20 @@ class _MainScreenState extends State<MainScreen>
           Future.delayed(const Duration(seconds: 2), () => player.dispose());
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: AppleDesignSystem.animFast,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? _accentColor.withValues(alpha: 0.2)
-              : Colors.white.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected
-                ? _accentColor.withValues(alpha: 0.5)
-                : Colors.white10,
-          ),
+              ? _accentColor.withValues(alpha: 0.15)
+              : _palette.fillSecondary,
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusS),
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: isSelected ? _accentColor : Colors.white54,
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          style: AppleDesignSystem.caption1.copyWith(
+            color: isSelected ? _accentColor : _palette.textTertiary,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ),
@@ -1279,9 +1248,9 @@ class _MainScreenState extends State<MainScreen>
                       decimal: true,
                     ),
                     style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Peso",
-                      labelStyle: TextStyle(color: Colors.white54),
+                      labelStyle: TextStyle(color: _palette.textTertiary),
                     ),
                   ),
                 ),
@@ -1293,9 +1262,9 @@ class _MainScreenState extends State<MainScreen>
                       decimal: true,
                     ),
                     style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Reps",
-                      labelStyle: TextStyle(color: Colors.white54),
+                      labelStyle: TextStyle(color: _palette.textTertiary),
                     ),
                   ),
                 ),
@@ -1305,9 +1274,9 @@ class _MainScreenState extends State<MainScreen>
             TextField(
               controller: nCtrl,
               style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Nota",
-                labelStyle: TextStyle(color: Colors.white54),
+                labelStyle: TextStyle(color: _palette.textTertiary),
               ),
             ),
           ],
@@ -1321,16 +1290,16 @@ class _MainScreenState extends State<MainScreen>
               });
               Navigator.pop(c);
             },
-            child: const Text(
+            child: Text(
               "ELIMINAR",
-              style: TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: _palette.error),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(c),
-            child: const Text(
+            child: Text(
               "CANCELAR",
-              style: TextStyle(color: Colors.white24),
+              style: TextStyle(color: _palette.textQuaternary),
             ),
           ),
           TextButton(
@@ -1436,9 +1405,9 @@ class _MainScreenState extends State<MainScreen>
               });
               Navigator.pop(c);
             },
-            child: const Text(
+            child: Text(
               'BORRAR',
-              style: TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: _palette.error),
             ),
           ),
         ],
@@ -1614,9 +1583,9 @@ class _MainScreenState extends State<MainScreen>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'Guarda tu estructura actual para usarla después de un reinicio.',
-              style: TextStyle(fontSize: 12, color: Colors.white54),
+              style: TextStyle(fontSize: 12, color: _palette.textTertiary),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -1649,7 +1618,7 @@ class _MainScreenState extends State<MainScreen>
                     content: Text(
                       'Plantilla "${ctrl.text}" guardada para siempre.',
                     ),
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppleDesignSystem.greenSuccess,
                   ),
                 );
               }
@@ -1682,13 +1651,13 @@ class _MainScreenState extends State<MainScreen>
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Plantilla "$key" eliminada.'),
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor: _palette.error,
                 ),
               );
             },
             child: const Text(
               'ELIMINAR',
-              style: TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: _palette.error),
             ),
           ),
         ],
@@ -1701,6 +1670,7 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     if (_loading) {
       return Scaffold(
+        backgroundColor: _palette.scaffoldBg,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1715,16 +1685,16 @@ class _MainScreenState extends State<MainScreen>
                       boxShadow: [
                         BoxShadow(
                           color: _accentColor.withValues(
-                            alpha: 0.3 * _glowController.value,
+                            alpha: 0.25 * _glowController.value,
                           ),
-                          blurRadius: 30 * _glowController.value,
-                          spreadRadius: 5 * _glowController.value,
+                          blurRadius: 24 * _glowController.value,
+                          spreadRadius: 4 * _glowController.value,
                         ),
                       ],
                     ),
                     child: Icon(
-                      LucideIcons.dumbbell,
-                      size: 48,
+                      Icons.fitness_center,
+                      size: 40,
                       color: _accentColor,
                     ),
                   );
@@ -1732,10 +1702,10 @@ class _MainScreenState extends State<MainScreen>
               ),
               const SizedBox(height: 24),
               SizedBox(
-                width: 40,
-                height: 40,
+                width: 28,
+                height: 28,
                 child: CircularProgressIndicator(
-                  strokeWidth: 3,
+                  strokeWidth: 2.5,
                   color: _accentColor,
                 ),
               ),
@@ -1749,6 +1719,7 @@ class _MainScreenState extends State<MainScreen>
     }
 
     return Scaffold(
+      backgroundColor: _palette.scaffoldBg,
       body: Stack(
         children: [
           Column(
@@ -1792,17 +1763,19 @@ class _MainScreenState extends State<MainScreen>
       'PERSONALIZADO',
     ];
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: _palette.scaffoldBg,
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppleDesignSystem.spacing28,
+        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 60),
+              SizedBox(height: MediaQuery.of(context).padding.top + 48),
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 1000),
+                duration: const Duration(milliseconds: 800),
                 curve: Curves.easeOutBack,
                 builder: (context, value, child) {
                   return Transform.scale(
@@ -1817,56 +1790,48 @@ class _MainScreenState extends State<MainScreen>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
+                    color: _accentColor.withValues(alpha: 0.1),
                     border: Border.all(
-                      color: _accentColor.withValues(alpha: 0.3),
+                      color: _accentColor.withValues(alpha: 0.2),
+                      width: 1,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _accentColor.withValues(alpha: 0.2),
-                        blurRadius: 30,
-                        spreadRadius: 5,
-                      ),
-                    ],
                   ),
                   child: Icon(
-                    LucideIcons.dumbbell,
-                    size: 50,
+                    Icons.fitness_center,
+                    size: 40,
                     color: _accentColor,
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 24),
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 800),
+                duration: const Duration(milliseconds: 700),
                 curve: Curves.easeOut,
                 builder: (context, value, child) {
                   return Opacity(
                     opacity: value,
                     child: Transform.translate(
-                      offset: Offset(0, 20 * (1 - value)),
+                      offset: Offset(0, 16 * (1 - value)),
                       child: child,
                     ),
                   );
                 },
                 child: Column(
                   children: [
-                    const Text(
+                    Text(
                       'ESTRUCTURA DE RUTINA',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
-                        letterSpacing: 2,
+                      style: AppleDesignSystem.title2.copyWith(
+                        letterSpacing: 1,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'Selecciona una base para comenzar.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        fontSize: 12,
+                      style: AppleDesignSystem.footnote.copyWith(
+                        color: _palette.textTertiary,
                       ),
                     ),
                   ],
@@ -1877,32 +1842,29 @@ class _MainScreenState extends State<MainScreen>
               if (_customTemplates.isNotEmpty) ...[
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0, end: 1),
-                  duration: const Duration(milliseconds: 600),
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOut,
                   builder: (context, value, child) {
                     return Opacity(opacity: value, child: child);
                   },
-                  child: const Text(
+                  child: Text(
                     'MIS PLANTILLAS GUARDADAS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      letterSpacing: 2,
+                    style: AppleDesignSystem.overline.copyWith(
+                      color: _palette.textTertiary,
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 ..._customTemplates.keys.map(
                   (name) => TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 450),
                     curve: Curves.easeOutCubic,
                     builder: (context, value, child) {
                       return Opacity(
                         opacity: value,
                         child: Transform.translate(
-                          offset: Offset(0, 15 * (1 - value)),
+                          offset: Offset(0, 12 * (1 - value)),
                           child: child,
                         ),
                       );
@@ -1922,29 +1884,26 @@ class _MainScreenState extends State<MainScreen>
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 15,
+                                  vertical: 14,
                                 ),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.blueAccent.withValues(alpha: 0.3),
-                                      Colors.blueAccent.withValues(alpha: 0.15),
-                                    ],
+                                  color: _accentColor.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(
+                                    AppleDesignSystem.radiusM,
                                   ),
-                                  borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: Colors.blueAccent.withValues(
-                                      alpha: 0.3,
+                                    color: _accentColor.withValues(
+                                      alpha: 0.2,
                                     ),
+                                    width: 0.5,
                                   ),
                                 ),
                                 child: Text(
                                   name,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Colors.blueAccent,
+                                  style: AppleDesignSystem.subheadline.copyWith(
+                                    color: _accentColor,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -1954,14 +1913,18 @@ class _MainScreenState extends State<MainScreen>
                           PressableScale(
                             onTap: () => _deleteCustomTemplate(name),
                             child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.redAccent.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(10),
+                              padding: const EdgeInsets.all(
+                                AppleDesignSystem.spacing10,
                               ),
-                              child: const Icon(
+                              decoration: BoxDecoration(
+                                color: _palette.error.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(
+                                  AppleDesignSystem.radiusS,
+                                ),
+                              ),
+                              child: Icon(
                                 LucideIcons.trash2,
-                                color: Colors.redAccent,
+                                color: _palette.error,
                                 size: 18,
                               ),
                             ),
@@ -1972,20 +1935,23 @@ class _MainScreenState extends State<MainScreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-                Divider(color: Colors.white.withValues(alpha: 0.1)),
+                Container(
+                  height: 0.5,
+                  color: _palette.separator.withValues(alpha: 0.5),
+                ),
                 const SizedBox(height: 20),
               ],
 
               ...routines.asMap().entries.map(
                 (entry) => TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0, end: 1),
-                  duration: Duration(milliseconds: 500 + entry.key * 100),
+                  duration: Duration(milliseconds: 450 + entry.key * 80),
                   curve: Curves.easeOutCubic,
                   builder: (context, value, child) {
                     return Opacity(
                       opacity: value,
                       child: Transform.translate(
-                        offset: Offset(0, 20 * (1 - value)),
+                        offset: Offset(0, 16 * (1 - value)),
                         child: child,
                       ),
                     );
@@ -2002,28 +1968,17 @@ class _MainScreenState extends State<MainScreen>
                         }
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          color: _cardColor,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.08),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: AppleComponents.card(
+                          palette: _palette,
+                          radius: AppleDesignSystem.radiusL,
                         ),
                         child: Text(
                           entry.value,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: Colors.white,
+                          style: AppleDesignSystem.subheadline.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: _palette.textPrimary,
                           ),
                         ),
                       ),
@@ -2031,6 +1986,7 @@ class _MainScreenState extends State<MainScreen>
                   ),
                 ),
               ),
+              const SizedBox(height: 48),
             ],
           ),
         ),
@@ -2047,7 +2003,7 @@ class _MainScreenState extends State<MainScreen>
       return GestureDetector(
         onTap: () => setState(() => _isTimerExpanded = false),
         child: Container(
-          color: Colors.black.withValues(alpha: 0.95),
+          color: _palette.scaffoldBg.withValues(alpha: 0.98),
           width: double.infinity,
           height: double.infinity,
           child: Column(
@@ -2061,9 +2017,11 @@ class _MainScreenState extends State<MainScreen>
                 isExpanded: true,
               ),
               const SizedBox(height: 40),
-              const Text(
+              Text(
                 "TOCA PARA MINIMIZAR",
-                style: TextStyle(color: Colors.white24, fontSize: 10),
+                style: AppleDesignSystem.overline.copyWith(
+                  color: _palette.textQuaternary,
+                ),
               ),
               const SizedBox(height: 30),
               Row(
@@ -2083,16 +2041,15 @@ class _MainScreenState extends State<MainScreen>
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.white10),
+                      padding: const EdgeInsets.all(AppleDesignSystem.spacing14),
+                      decoration: AppleComponents.card(
+                        palette: _palette,
+                        radius: AppleDesignSystem.radiusM,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         LucideIcons.minusCircle,
                         size: 30,
-                        color: Colors.white38,
+                        color: _palette.textTertiary,
                       ),
                     ),
                   ),
@@ -2111,12 +2068,14 @@ class _MainScreenState extends State<MainScreen>
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: _accentColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(14),
+                      padding: const EdgeInsets.all(AppleDesignSystem.spacing14),
+                      decoration: AppleComponents.card(
+                        palette: _palette,
+                        radius: AppleDesignSystem.radiusM,
+                      ).copyWith(
                         border: Border.all(
                           color: _accentColor.withValues(alpha: 0.3),
+                          width: 0.5,
                         ),
                       ),
                       child: Icon(
@@ -2129,12 +2088,10 @@ class _MainScreenState extends State<MainScreen>
                 ],
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 "TIEMPOS RÁPIDOS",
-                style: TextStyle(
-                  color: Colors.white38,
-                  fontSize: 9,
-                  letterSpacing: 1.5,
+                style: AppleDesignSystem.overline.copyWith(
+                  color: _palette.textTertiary,
                 ),
               ),
               const SizedBox(height: 10),
@@ -2157,22 +2114,18 @@ class _MainScreenState extends State<MainScreen>
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
+                          horizontal: AppleDesignSystem.spacing14,
+                          vertical: AppleDesignSystem.spacing10,
                         ),
-                        decoration: BoxDecoration(
-                          color: _accentColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: _accentColor.withValues(alpha: 0.3),
-                          ),
+                        decoration: AppleComponents.card(
+                          palette: _palette,
+                          radius: AppleDesignSystem.radiusS,
                         ),
                         child: Text(
                           "${min}m",
-                          style: TextStyle(
+                          style: AppleDesignSystem.caption1.copyWith(
                             color: _accentColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -2186,7 +2139,6 @@ class _MainScreenState extends State<MainScreen>
       );
     }
 
-    // Minimized pill - draggable
     double posX = _timerPosX;
     double posY = _timerPosY;
     if (posX == -1) {
@@ -2215,18 +2167,28 @@ class _MainScreenState extends State<MainScreen>
           });
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _accentColor.withValues(alpha: 0.5)),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppleDesignSystem.spacing12,
+            vertical: AppleDesignSystem.spacing6,
+          ),
+          decoration: AppleComponents.card(
+            palette: _palette,
+            radius: AppleDesignSystem.radiusL,
+          ).copyWith(
+            border: Border.all(
+              color: _accentColor.withValues(alpha: 0.4),
+              width: 0.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: _accentColor.withValues(alpha: 0.2),
-                blurRadius: 10,
+                color: _accentColor.withValues(alpha: 0.15),
+                blurRadius: 12,
                 spreadRadius: 1,
               ),
-              const BoxShadow(color: Colors.black45, blurRadius: 8),
+              BoxShadow(
+                color: _palette.shadowPrimary,
+                blurRadius: 8,
+              ),
             ],
           ),
           child: Row(
@@ -2242,16 +2204,9 @@ class _MainScreenState extends State<MainScreen>
               const SizedBox(width: 6),
               Text(
                 "${(_secondsLeft ~/ 60)}:${(_secondsLeft % 60).toString().padLeft(2, '0')}",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  shadows: [
-                    Shadow(
-                      color: _accentColor.withValues(alpha: 0.3),
-                      blurRadius: 6,
-                    ),
-                  ],
+                style: AppleDesignSystem.caption1.copyWith(
+                  color: _palette.textPrimary,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(width: 6),
@@ -2268,12 +2223,12 @@ class _MainScreenState extends State<MainScreen>
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(5),
+                    color: _palette.fillSecondary,
+                    borderRadius: BorderRadius.circular(AppleDesignSystem.radiusXS),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     LucideIcons.x,
-                    color: Colors.white24,
+                    color: _palette.textQuaternary,
                     size: 10,
                   ),
                 ),
@@ -2309,17 +2264,25 @@ class _MainScreenState extends State<MainScreen>
         return Opacity(
           opacity: _headerAnimController.value,
           child: Transform.translate(
-            offset: Offset(0, -20 * (1 - _headerAnimController.value)),
+            offset: Offset(0, -15 * (1 - _headerAnimController.value)),
             child: child,
           ),
         );
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 60, 24, 20),
+        padding: EdgeInsets.fromLTRB(
+          AppleDesignSystem.spacing20,
+          MediaQuery.of(context).padding.top + AppleDesignSystem.spacing8,
+          AppleDesignSystem.spacing20,
+          AppleDesignSystem.spacing12,
+        ),
         decoration: BoxDecoration(
-          color: _cardColor.withValues(alpha: 0.8),
-          border: const Border(
-            bottom: BorderSide(color: Colors.white10, width: 0.3),
+          color: _palette.surfaceBg.withValues(alpha: 0.88),
+          border: Border(
+            bottom: BorderSide(
+              color: _palette.separator.withValues(alpha: 0.5),
+              width: 0.5,
+            ),
           ),
         ),
         child: Row(
@@ -2328,42 +2291,20 @@ class _MainScreenState extends State<MainScreen>
             PressableScale(
               onTap: widget.onToggleTheme,
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(AppleDesignSystem.spacing10),
                 decoration: BoxDecoration(
                   color: _accentColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _accentColor.withValues(alpha: 0.2),
-                  ),
+                  borderRadius: BorderRadius.circular(AppleDesignSystem.radiusS),
                 ),
                 child: Icon(themeIcon, color: _accentColor, size: 20),
               ),
             ),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic,
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'TRAINER',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  TextSpan(
-                    text: ' PRO',
-                    style: TextStyle(
-                      color: _accentColor,
-                      shadows: [
-                        Shadow(
-                          color: _accentColor.withValues(alpha: 0.5),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            Text(
+              'TRAINER PRO',
+              style: AppleDesignSystem.headline.copyWith(
+                color: _palette.textPrimary,
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.w800,
               ),
             ),
             _activeTab == 0
@@ -2372,19 +2313,23 @@ class _MainScreenState extends State<MainScreen>
                           onTap: () =>
                               setState(() => _showSettings = !_showSettings),
                           child: Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(
+                              AppleDesignSystem.spacing10,
+                            ),
                             decoration: BoxDecoration(
                               color: _showSettings
-                                  ? _accentColor.withValues(alpha: 0.2)
-                                  : Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(12),
+                                  ? _accentColor.withValues(alpha: 0.15)
+                                  : _palette.fill,
+                              borderRadius: BorderRadius.circular(
+                                AppleDesignSystem.radiusS,
+                              ),
                             ),
                             child: Icon(
                               _showSettings ? LucideIcons.x : LucideIcons.edit3,
                               size: 18,
                               color: _showSettings
                                   ? _accentColor
-                                  : Colors.white24,
+                                  : _palette.textTertiary,
                             ),
                           ),
                         )
@@ -2392,12 +2337,16 @@ class _MainScreenState extends State<MainScreen>
                           onTap: () =>
                               setState(() => _showSettings = !_showSettings),
                           child: Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(
+                              AppleDesignSystem.spacing10,
+                            ),
                             decoration: BoxDecoration(
                               color: _showSettings
-                                  ? _accentColor.withValues(alpha: 0.2)
-                                  : Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(12),
+                                  ? _accentColor.withValues(alpha: 0.15)
+                                  : _palette.fill,
+                              borderRadius: BorderRadius.circular(
+                                AppleDesignSystem.radiusS,
+                              ),
                             ),
                             child: Icon(
                               _showSettings
@@ -2406,11 +2355,11 @@ class _MainScreenState extends State<MainScreen>
                               size: 18,
                               color: _showSettings
                                   ? _accentColor
-                                  : Colors.white24,
+                                  : _palette.textTertiary,
                             ),
                           ),
                         ))
-                : const SizedBox(width: 48),
+                : const SizedBox(width: 40),
           ],
         ),
       ),
@@ -2428,7 +2377,7 @@ class _MainScreenState extends State<MainScreen>
 
     final suggestion = _getSuggestion();
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
       children: [
         if (_hasDraft)
           TweenAnimationBuilder<double>(
@@ -2439,56 +2388,55 @@ class _MainScreenState extends State<MainScreen>
               return Opacity(
                 opacity: value.clamp(0.0, 1.0),
                 child: Transform.translate(
-                  offset: Offset(0, -10 * (1 - value)),
+                  offset: Offset(0, -8 * (1 - value)),
                   child: child,
                 ),
               );
             },
             child: Container(
-              margin: const EdgeInsets.only(bottom: 25),
-              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 24),
+              padding: const EdgeInsets.all(AppleDesignSystem.spacing16),
               decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.08),
-                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: _palette.warning.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusL),
+                border: Border.all(
+                  color: _palette.warning.withValues(alpha: 0.2),
+                  width: 0.5,
+                ),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      color: _palette.warning.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(
+                        AppleDesignSystem.radiusS,
+                      ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       LucideIcons.alertCircle,
-                      color: Colors.orange,
+                      color: _palette.warning,
                       size: 18,
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "ENTRENAMIENTO PENDIENTE",
-                          style: TextStyle(
-                            color: Colors.orange,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
+                          style: AppleDesignSystem.overline.copyWith(
+                            color: _palette.warning,
                           ),
                         ),
+                        const SizedBox(height: 2),
                         Text(
                           "Tienes una sesión sin finalizar.",
-                          style: TextStyle(color: Colors.white38, fontSize: 10),
+                          style: AppleDesignSystem.caption1.copyWith(
+                            color: _palette.textTertiary,
+                          ),
                         ),
                       ],
                     ),
@@ -2501,15 +2449,16 @@ class _MainScreenState extends State<MainScreen>
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        color: _palette.error.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(
+                          AppleDesignSystem.radiusXS,
+                        ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "BORRAR",
-                        style: TextStyle(
-                          color: Colors.redAccent,
+                        style: AppleDesignSystem.overline.copyWith(
+                          color: _palette.error,
                           fontSize: 9,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -2523,20 +2472,22 @@ class _MainScreenState extends State<MainScreen>
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(8),
+                        color: _palette.warning,
+                        borderRadius: BorderRadius.circular(
+                          AppleDesignSystem.radiusXS,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.orange.withValues(alpha: 0.3),
+                            color: _palette.warning.withValues(alpha: 0.25),
                             blurRadius: 8,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: const Text(
+                      child: Text(
                         "RECUPERAR",
-                        style: TextStyle(
+                        style: AppleDesignSystem.overline.copyWith(
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
                           fontSize: 9,
                         ),
                       ),
@@ -2547,76 +2498,70 @@ class _MainScreenState extends State<MainScreen>
             ),
           ),
 
-        GestureDetector(
+        PressableScale(
           onTap: () => suggestion['type'] == 'DESCANSO'
               ? null
               : _startWorkout(suggestion['type']!),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              gradient: suggestion['type'] == 'DESCANSO'
-                  ? LinearGradient(colors: [_cardColor, Colors.black])
-                  : LinearGradient(
+            duration: AppleDesignSystem.animMedium,
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing28),
+            decoration: suggestion['type'] == 'DESCANSO'
+                ? AppleComponents.card(palette: _palette, radius: AppleDesignSystem.radiusXXL)
+                : BoxDecoration(
+                    gradient: LinearGradient(
                       colors: [
-                        _accentColor.withValues(alpha: 0.8),
+                        _accentColor.withValues(alpha: 0.85),
                         _accentColor,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-              borderRadius: BorderRadius.circular(40),
-              boxShadow: suggestion['type'] != 'DESCANSO'
-                  ? [
+                    borderRadius: BorderRadius.circular(
+                      AppleDesignSystem.radiusXXL,
+                    ),
+                    boxShadow: [
                       BoxShadow(
-                        color: _accentColor.withValues(alpha: 0.3),
+                        color: _accentColor.withValues(alpha: 0.25),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
-                    ]
-                  : [],
-            ),
+                    ],
+                  ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'RECOMENDACIÓN',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _palette.fillSecondary.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(
+                      AppleDesignSystem.radiusPill,
                     ),
-                  ],
+                  ),
+                  child: Text(
+                    'RECOMENDACIÓN',
+                    style: AppleDesignSystem.overline.copyWith(
+                      color: Colors.white,
+                      fontSize: 9,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 Text(
                   suggestion['type']!,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
+                  style: AppleDesignSystem.title1.copyWith(
                     color: Colors.white,
-                    letterSpacing: 1,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   suggestion['reason']!,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Colors.white,
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textSecondary,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -2624,63 +2569,53 @@ class _MainScreenState extends State<MainScreen>
             ),
           ),
         ),
-        const SizedBox(height: 35),
-        const Text(
+        const SizedBox(height: 32),
+        Text(
           'MIS RUTINAS ACTIVAS',
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.white38,
-            letterSpacing: 2,
+          style: AppleDesignSystem.overline.copyWith(
+            color: _palette.textTertiary,
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 14),
         ..._userGroups.asMap().entries.map(
           (entry) => TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
-            duration: Duration(milliseconds: 400 + entry.key * 100),
+            duration: Duration(milliseconds: 400 + entry.key * 80),
             curve: Curves.easeOutCubic,
             builder: (context, value, child) {
               return Opacity(
                 opacity: value,
                 child: Transform.translate(
-                  offset: Offset(0, 20 * (1 - value)),
+                  offset: Offset(0, 16 * (1 - value)),
                   child: child,
                 ),
               );
             },
             child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: _cardColor,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: AppleComponents.card(
+                palette: _palette,
+                radius: AppleDesignSystem.radiusL,
               ),
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 4,
+                  horizontal: AppleDesignSystem.spacing20,
+                  vertical: AppleDesignSystem.spacing4,
                 ),
                 title: Text(
                   entry.value,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Colors.white,
+                  style: AppleDesignSystem.subheadline.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: _palette.textPrimary,
                   ),
                 ),
                 trailing: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: _accentColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppleDesignSystem.radiusXS,
+                    ),
                   ),
                   child: Icon(
                     LucideIcons.chevronRight,
@@ -2700,15 +2635,19 @@ class _MainScreenState extends State<MainScreen>
   // --- PESTAÑA TOOLS ---
   Widget _buildToolsTab() {
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
       children: [
         Container(
           margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _accentColor.withValues(alpha: 0.3)),
+          padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
+          decoration: AppleComponents.card(
+            palette: _palette,
+            radius: AppleDesignSystem.radiusXL,
+          ).copyWith(
+            border: Border.all(
+              color: _accentColor.withValues(alpha: 0.2),
+              width: 0.5,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2717,76 +2656,62 @@ class _MainScreenState extends State<MainScreen>
                 children: [
                   Icon(LucideIcons.share2, color: _accentColor, size: 20),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     "COMPARTIR RUTINAS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.white,
+                    style: AppleDesignSystem.headline.copyWith(
+                      color: _palette.textPrimary,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
-              // BOTON 1: COMPARTIR GRUPO/DÍA (Antiguo exportar)
-              // BOTON UNIFICADO V4: COMPARTIR
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _accentColor.withValues(alpha: 0.2),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  minimumSize: const Size(double.infinity, 45),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  icon: const Icon(LucideIcons.share2, size: 16),
+                  label: Text(
+                    "COMPARTIR...",
+                    style: AppleDesignSystem.caption3.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: _showUnifiedShareDialog,
                 ),
-                icon: const Icon(
-                  LucideIcons.share2,
-                  size: 16,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  "COMPARTIR...",
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                ),
-                onPressed: _showUnifiedShareDialog,
               ),
               const SizedBox(height: 10),
-              // BOTON 3: IMPORTAR
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white10,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  minimumSize: const Size(double.infinity, 45),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton.icon(
+                  icon: const Icon(LucideIcons.download, size: 16),
+                  label: Text(
+                    "IMPORTAR CÓDIGO",
+                    style: AppleDesignSystem.caption3.copyWith(
+                      color: _palette.textPrimary,
+                    ),
+                  ),
+                  onPressed: _showImportDialog,
                 ),
-                icon: const Icon(
-                  LucideIcons.download,
-                  size: 16,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  "IMPORTAR CÓDIGO",
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                ),
-                onPressed: _showImportDialog,
               ),
             ],
           ),
         ),
 
-        const Text(
+        Text(
           "HERRAMIENTAS",
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.white38,
-            letterSpacing: 2,
+          style: AppleDesignSystem.overline.copyWith(
+            color: _palette.textTertiary,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
 
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
-          mainAxisSpacing: 15,
-          crossAxisSpacing: 15,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
           childAspectRatio: 1.1,
           children: [
             _toolCard("Calculadora 1RM", LucideIcons.calculator, _show1RMTool),
@@ -2806,44 +2731,36 @@ class _MainScreenState extends State<MainScreen>
           ],
         ),
 
-        const SizedBox(height: 25),
-        const Text(
+        const SizedBox(height: 28),
+        Text(
           "AJUSTES DE LA APP",
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.white38,
-            letterSpacing: 2,
+          style: AppleDesignSystem.overline.copyWith(
+            color: _palette.textTertiary,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          padding: const EdgeInsets.all(AppleDesignSystem.spacing4),
+          decoration: AppleComponents.card(
+            palette: _palette,
+            radius: AppleDesignSystem.radiusXL,
           ),
           child: Column(
             children: [
               SwitchListTile(
-                title: const Text(
+                title: Text(
                   "Vibración",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: AppleDesignSystem.subheadline.copyWith(
+                    color: _palette.textPrimary,
+                  ),
                 ),
-                subtitle: const Text(
+                subtitle: Text(
                   "Vibrar al terminar el descanso",
-                  style: TextStyle(color: Colors.white54, fontSize: 10),
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textTertiary,
+                  ),
                 ),
                 value: _enableVibration,
-                activeThumbColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _enableVibration = val;
@@ -2851,18 +2768,21 @@ class _MainScreenState extends State<MainScreen>
                   });
                 },
               ),
-              const Divider(color: Colors.white10, height: 1),
+              AppleComponents.separator(palette: _palette),
               SwitchListTile(
-                title: const Text(
+                title: Text(
                   "Sonido",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: AppleDesignSystem.subheadline.copyWith(
+                    color: _palette.textPrimary,
+                  ),
                 ),
-                subtitle: const Text(
+                subtitle: Text(
                   "Sonar al terminar el descanso",
-                  style: TextStyle(color: Colors.white54, fontSize: 10),
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textTertiary,
+                  ),
                 ),
                 value: _enableSound,
-                activeThumbColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _enableSound = val;
@@ -2873,17 +2793,19 @@ class _MainScreenState extends State<MainScreen>
               if (_enableSound) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
+                    horizontal: AppleDesignSystem.spacing16,
+                    vertical: AppleDesignSystem.spacing4,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         "Tipo de sonido",
-                        style: TextStyle(color: Colors.white54, fontSize: 10),
+                        style: AppleDesignSystem.caption1.copyWith(
+                          color: _palette.textTertiary,
+                        ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
                           _soundOption('alarm', 'Alarma'),
@@ -2898,21 +2820,23 @@ class _MainScreenState extends State<MainScreen>
                 ),
                 const SizedBox(height: 4),
               ],
-              const Divider(color: Colors.white10, height: 1),
+              AppleComponents.separator(palette: _palette),
               SwitchListTile(
-                title: const Text(
+                title: Text(
                   "Notificaciones",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: AppleDesignSystem.subheadline.copyWith(
+                    color: _palette.textPrimary,
+                  ),
                 ),
-                subtitle: const Text(
+                subtitle: Text(
                   "Mostrar notificación persistente del timer",
-                  style: TextStyle(color: Colors.white54, fontSize: 10),
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textTertiary,
+                  ),
                 ),
                 value: _enableNotifications,
-                activeThumbColor: _accentColor,
                 onChanged: (val) async {
                   if (val) {
-                    // Request permission first
                     final android = _notificationsPlugin
                         .resolvePlatformSpecificImplementation<
                           AndroidFlutterLocalNotificationsPlugin
@@ -2923,9 +2847,12 @@ class _MainScreenState extends State<MainScreen>
                       if (granted != true) {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
                                 "Permiso de notificaciones denegado. Actívalo en Ajustes.",
+                                style: AppleDesignSystem.footnote.copyWith(
+                                  color: _palette.textPrimary,
+                                ),
                               ),
                             ),
                           );
@@ -2945,6 +2872,9 @@ class _MainScreenState extends State<MainScreen>
                           val
                               ? "Notificaciones activadas."
                               : "Notificaciones desactivadas.",
+                          style: AppleDesignSystem.footnote.copyWith(
+                            color: _palette.textPrimary,
+                          ),
                         ),
                       ),
                     );
@@ -2955,22 +2885,23 @@ class _MainScreenState extends State<MainScreen>
           ),
         ),
 
-        const SizedBox(height: 30),
-        _settingTitle('CUENTA'),
+        const SizedBox(height: 28),
+        AppleComponents.sectionHeader('CUENTA', _palette),
         Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          padding: const EdgeInsets.all(AppleDesignSystem.spacing4),
+          decoration: AppleComponents.card(
+            palette: _palette,
+            radius: AppleDesignSystem.radiusXL,
           ),
           child: _buildAuthSection(),
         ),
 
-        const SizedBox(height: 30),
+        const SizedBox(height: 28),
         Text(
           "v2.0.0",
-          style: TextStyle(color: Colors.white12, fontSize: 10),
+          style: AppleDesignSystem.caption1.copyWith(
+            color: _palette.textQuaternary,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 40),
@@ -2985,47 +2916,57 @@ class _MainScreenState extends State<MainScreen>
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundColor: _accentColor.withValues(alpha: 0.2),
+              backgroundColor: _accentColor.withValues(alpha: 0.15),
               child: Text(
                 (user.displayName ?? user.email ?? 'U')[0].toUpperCase(),
-                style: TextStyle(
+                style: AppleDesignSystem.subheadline.copyWith(
                   color: _accentColor,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             title: Text(
               user.displayName ?? user.email ?? 'Usuario',
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: AppleDesignSystem.subheadline.copyWith(
+                color: _palette.textPrimary,
+              ),
             ),
             subtitle: Text(
               user.email ?? '',
-              style: const TextStyle(color: Colors.white38, fontSize: 11),
+              style: AppleDesignSystem.caption1.copyWith(
+                color: _palette.textTertiary,
+              ),
             ),
           ),
-          const Divider(color: Colors.white10, height: 1),
+          AppleComponents.separator(palette: _palette),
           ListTile(
             leading: Icon(LucideIcons.cloud, color: _accentColor, size: 18),
-            title: const Text(
+            title: Text(
               "Subir datos a la nube",
-              style: TextStyle(color: Colors.white, fontSize: 13),
+              style: AppleDesignSystem.subheadline.copyWith(
+                color: _palette.textPrimary,
+              ),
             ),
-            subtitle: const Text(
+            subtitle: Text(
               "Guardar progreso en tu cuenta",
-              style: TextStyle(color: Colors.white38, fontSize: 10),
+              style: AppleDesignSystem.caption2.copyWith(
+                color: _palette.textTertiary,
+              ),
             ),
             onTap: _syncDataToFirestore,
           ),
-          const Divider(color: Colors.white10, height: 1),
+          AppleComponents.separator(palette: _palette),
           ListTile(
-            leading: const Icon(
+            leading: Icon(
               LucideIcons.logOut,
-              color: Colors.redAccent,
+              color: _palette.error,
               size: 18,
             ),
-            title: const Text(
+            title: Text(
               "Cerrar sesión",
-              style: TextStyle(color: Colors.redAccent, fontSize: 13),
+              style: AppleDesignSystem.subheadline.copyWith(
+                color: _palette.error,
+              ),
             ),
             onTap: () async {
               await FirebaseAuth.instance.signOut();
@@ -3038,12 +2979,18 @@ class _MainScreenState extends State<MainScreen>
     return Column(
       children: [
         const SizedBox(height: 8),
-        Icon(LucideIcons.userCircle, size: 32, color: Colors.white24),
+        Icon(
+          LucideIcons.userCircle,
+          size: 32,
+          color: _palette.fillSecondary,
+        ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           "Inicia sesión para guardar\ntu progreso en la nube",
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white38, fontSize: 12),
+          style: AppleDesignSystem.subheadline.copyWith(
+            color: _palette.textTertiary,
+          ),
         ),
         const SizedBox(height: 12),
         Padding(
@@ -3055,7 +3002,7 @@ class _MainScreenState extends State<MainScreen>
                 backgroundColor: _accentColor,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
                 ),
               ),
               onPressed: () async {
@@ -3065,12 +3012,10 @@ class _MainScreenState extends State<MainScreen>
                 );
                 setState(() {});
               },
-              child: const Text(
+              child: Text(
                 "INICIAR SESIÓN / REGISTRARSE",
-                style: TextStyle(
+                style: AppleDesignSystem.caption3.copyWith(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 11,
                 ),
               ),
             ),
@@ -3215,9 +3160,9 @@ class _MainScreenState extends State<MainScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "Elige un grupo muscular para compartir:",
-                style: TextStyle(fontSize: 12, color: Colors.white54),
+                style: TextStyle(fontSize: 12, color: _palette.textTertiary),
               ),
               const SizedBox(height: 10),
               ..._userGroups.map(
@@ -3226,10 +3171,10 @@ class _MainScreenState extends State<MainScreen>
                     g,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     LucideIcons.copy,
                     size: 16,
-                    color: Colors.white54,
+                    color: _palette.fillSecondary,
                   ),
                   onTap: () {
                     List<String> exercises = _exerciseDb[g] ?? [];
@@ -3349,9 +3294,9 @@ class _MainScreenState extends State<MainScreen>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               "Pega el código aquí:",
-              style: TextStyle(fontSize: 12, color: Colors.white54),
+              style: TextStyle(fontSize: 12, color: _palette.textTertiary),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -3360,7 +3305,7 @@ class _MainScreenState extends State<MainScreen>
               style: const TextStyle(fontSize: 12),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white10,
+                fillColor: _palette.fillSecondary,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -3421,13 +3366,13 @@ class _MainScreenState extends State<MainScreen>
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Rutina completa importada."),
-                                backgroundColor: Colors.green,
+                                backgroundColor: AppleDesignSystem.greenSuccess,
                               ),
                             );
                           },
                           child: const Text(
                             "IMPORTAR TODO",
-                            style: TextStyle(color: Colors.redAccent),
+                            style: TextStyle(color: _palette.error),
                           ),
                         ),
                       ],
@@ -3454,7 +3399,7 @@ class _MainScreenState extends State<MainScreen>
                   Navigator.pop(c);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppleDesignSystem.greenSuccess,
                       content: Text("Grupo '$finalName' añadido."),
                     ),
                   );
@@ -3479,17 +3424,9 @@ class _MainScreenState extends State<MainScreen>
     return PressableScale(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: _cardColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white10),
-          boxShadow: [
-            BoxShadow(
-              color: _accentColor.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
+        decoration: AppleComponents.card(
+          palette: _palette,
+          radius: AppleDesignSystem.radiusL,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -3498,19 +3435,18 @@ class _MainScreenState extends State<MainScreen>
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _accentColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: _accentColor.withValues(alpha: 0.15)),
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
               ),
               child: Icon(icon, size: 24, color: _accentColor),
             ),
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
+              style: AppleDesignSystem.caption1.copyWith(
+                color: _palette.textPrimary,
+                fontWeight: FontWeight.w600,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -3561,7 +3497,7 @@ class _MainScreenState extends State<MainScreen>
                 ),
                 const Text(
                   "1RM Estimado (Epley)",
-                  style: TextStyle(color: Colors.white54, fontSize: 10),
+                  style: TextStyle(color: _palette.textTertiary, fontSize: 10),
                 ),
               ],
             ),
@@ -3599,7 +3535,7 @@ class _MainScreenState extends State<MainScreen>
       } else if (weight == 10) {
         height = 80;
         width = 8;
-        color = Colors.green;
+        color = AppleDesignSystem.greenSuccess;
       } else if (weight == 5) {
         height = 50;
         width = 5;
@@ -3621,7 +3557,7 @@ class _MainScreenState extends State<MainScreen>
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(2),
-          border: Border.all(color: Colors.white24, width: 0.5),
+          border: Border.all(color: _palette.separator, width: 0.5),
         ),
       );
     }
@@ -3662,7 +3598,7 @@ class _MainScreenState extends State<MainScreen>
               color = Colors.yellow;
             } else if (bmi < 25) {
               status = "Normal";
-              color = Colors.green;
+              color = AppleDesignSystem.greenSuccess;
             } else if (bmi < 30) {
               status = "Sobrepeso";
               color = Colors.orange;
@@ -3729,9 +3665,9 @@ class _MainScreenState extends State<MainScreen>
                       const SizedBox(height: 5),
                       Text(
                         isMale ? "Rango Hombre" : "Rango Mujer",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white38,
+                          color: _palette.textTertiary,
                         ),
                       ),
                     ],
@@ -3779,8 +3715,8 @@ class _MainScreenState extends State<MainScreen>
                     ),
                     subtitle: Text(
                       set.note,
-                      style: const TextStyle(
-                        color: Colors.white38,
+                      style: TextStyle(
+                        color: _palette.textTertiary,
                         fontSize: 10,
                       ),
                     ),
@@ -3788,7 +3724,7 @@ class _MainScreenState extends State<MainScreen>
                       icon: const Icon(
                         LucideIcons.edit2,
                         size: 14,
-                        color: Colors.blueAccent,
+                        color: _palette.info,
                       ),
                       onPressed: () {
                         // Edit single set
@@ -3874,7 +3810,7 @@ class _MainScreenState extends State<MainScreen>
                 },
                 child: const Text(
                   "GUARDAR CAMBIOS",
-                  style: TextStyle(color: Colors.green),
+                  style: TextStyle(color: AppleDesignSystem.greenSuccess),
                 ),
               ),
             ],
@@ -3921,11 +3857,11 @@ class _MainScreenState extends State<MainScreen>
                               ),
                               child: Column(
                                 children: [
-                                  Text(
+                                   Text(
                                     "$p%",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 10,
-                                      color: Colors.white54,
+                                      color: _palette.textTertiary,
                                     ),
                                   ),
                                   Text(
@@ -3970,7 +3906,7 @@ class _MainScreenState extends State<MainScreen>
       builder: (c) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            backgroundColor: const Color(0xFF121212),
+            backgroundColor: _palette.scaffoldBg,
             title: Row(
               children: [
                 Icon(LucideIcons.beef, color: _accentColor, size: 18),
@@ -4001,8 +3937,8 @@ class _MainScreenState extends State<MainScreen>
                           ),
                           decoration: InputDecoration(
                             labelText: "Peso (kg)",
-                            labelStyle: const TextStyle(
-                              color: Colors.white38,
+                            labelStyle: TextStyle(
+                              color: _palette.textTertiary,
                               fontSize: 11,
                             ),
                             filled: true,
@@ -4029,8 +3965,8 @@ class _MainScreenState extends State<MainScreen>
                           ),
                           decoration: InputDecoration(
                             labelText: "Altura (cm)",
-                            labelStyle: const TextStyle(
-                              color: Colors.white38,
+                            labelStyle: TextStyle(
+                              color: _palette.textTertiary,
                               fontSize: 11,
                             ),
                             filled: true,
@@ -4055,8 +3991,8 @@ class _MainScreenState extends State<MainScreen>
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: InputDecoration(
                       labelText: "Edad",
-                      labelStyle: const TextStyle(
-                        color: Colors.white38,
+                      labelStyle: TextStyle(
+                        color: _palette.textTertiary,
                         fontSize: 11,
                       ),
                       filled: true,
@@ -4105,9 +4041,9 @@ class _MainScreenState extends State<MainScreen>
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(c),
-                child: const Text(
+                child: Text(
                   "CERRAR",
-                  style: TextStyle(color: Colors.white38),
+                  style: TextStyle(color: _palette.textTertiary),
                 ),
               ),
             ],
@@ -4132,7 +4068,7 @@ class _MainScreenState extends State<MainScreen>
       child: DropdownButton<String>(
         value: value,
         isExpanded: true,
-        dropdownColor: const Color(0xFF1A1F2E),
+        dropdownColor: _palette.cardBgElevated,
         underline: const SizedBox(),
         style: const TextStyle(color: Colors.white, fontSize: 13),
         items: options
@@ -4157,7 +4093,7 @@ class _MainScreenState extends State<MainScreen>
     if (w <= 0 || h <= 0 || a <= 0) {
       return const Text(
         "Completa los datos para ver resultados",
-        style: TextStyle(color: Colors.white24, fontSize: 11),
+        style: TextStyle(color: _palette.textQuaternary, fontSize: 11),
       );
     }
     double bmr = gender == 'Hombre'
@@ -4206,7 +4142,7 @@ class _MainScreenState extends State<MainScreen>
               _macroItem(
                 "Carbos",
                 "${carbs.round().clamp(0, 9999)}g",
-                Colors.orangeAccent,
+                _palette.warning,
               ),
               _macroItem("Grasa", "${fat.round()}g", Colors.pinkAccent),
             ],
@@ -4229,7 +4165,7 @@ class _MainScreenState extends State<MainScreen>
         ),
         Text(
           label,
-          style: const TextStyle(color: Colors.white38, fontSize: 10),
+           style: TextStyle(color: _palette.textTertiary, fontSize: 10),
         ),
       ],
     );
@@ -4238,33 +4174,44 @@ class _MainScreenState extends State<MainScreen>
   // --- CONFIGURACIÓN ---
   Widget _buildFullSettings() {
     return ListView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
       children: [
         if (_isSessionActive) ...[
           TextButton.icon(
             onPressed: () => setState(() => _showSettings = false),
             icon: const Icon(LucideIcons.arrowLeft, size: 14),
-            label: const Text('VOLVER AL ENTRENAMIENTO'),
+            label: Text(
+              'VOLVER AL ENTRENAMIENTO',
+              style: AppleDesignSystem.caption1.copyWith(color: _accentColor),
+            ),
           ),
           const SizedBox(height: 10),
         ],
         _settingTitle('DESCANSO ENTRE SERIES'),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          margin: const EdgeInsets.only(top: 10, bottom: 25),
-          decoration: BoxDecoration(
-            color: _cardColor,
-            borderRadius: BorderRadius.circular(15),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppleDesignSystem.spacing20,
+            vertical: AppleDesignSystem.spacing5,
+          ),
+          margin: const EdgeInsets.only(
+            top: AppleDesignSystem.spacing10,
+            bottom: AppleDesignSystem.spacing25,
+          ),
+          decoration: AppleComponents.card(
+            palette: _palette,
+            radius: AppleDesignSystem.radiusL,
           ),
           child: Row(
             children: [
               Text(
                 '${_defaultRestSeconds}s',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: AppleDesignSystem.headline.copyWith(
+                  color: _palette.textPrimary,
+                ),
               ),
               const Spacer(),
               IconButton(
-                icon: const Icon(LucideIcons.minus),
+                icon: Icon(LucideIcons.minus, color: _palette.textSecondary),
                 onPressed: () => setState(() {
                   _defaultRestSeconds = (_defaultRestSeconds - 10).clamp(
                     30,
@@ -4274,7 +4221,7 @@ class _MainScreenState extends State<MainScreen>
                 }),
               ),
               IconButton(
-                icon: const Icon(LucideIcons.plus),
+                icon: Icon(LucideIcons.plus, color: _palette.textSecondary),
                 onPressed: () => setState(() {
                   _defaultRestSeconds = (_defaultRestSeconds + 10).clamp(
                     30,
@@ -4311,7 +4258,9 @@ class _MainScreenState extends State<MainScreen>
                 icon: Icon(LucideIcons.plus, size: 12, color: _accentColor),
                 label: Text(
                   'AÑADIR NUEVA',
-                  style: TextStyle(fontSize: 9, color: _accentColor),
+                  style: AppleDesignSystem.overline.copyWith(
+                    color: _accentColor,
+                  ),
                 ),
               ),
             ],
@@ -4327,28 +4276,30 @@ class _MainScreenState extends State<MainScreen>
 
         Container(
           width: double.infinity,
-          margin: const EdgeInsets.only(top: 10, bottom: 10),
+          margin: const EdgeInsets.only(
+            top: AppleDesignSystem.spacing10,
+            bottom: AppleDesignSystem.spacing10,
+          ),
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blueAccent.withValues(alpha: 0.1),
-              side: BorderSide(color: Colors.blueAccent.withValues(alpha: 0.3)),
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              backgroundColor: _palette.info.withValues(alpha: 0.08),
+              side: BorderSide(
+                color: _palette.info.withValues(alpha: 0.2),
+                width: 0.5,
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: AppleDesignSystem.spacing16,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusL),
               ),
             ),
             onPressed: _saveCurrentAsTemplate,
-            icon: const Icon(
-              LucideIcons.save,
-              size: 16,
-              color: Colors.blueAccent,
-            ),
-            label: const Text(
+            icon: Icon(LucideIcons.save, size: 16, color: _palette.info),
+            label: Text(
               'GUARDAR ESTADO ACTUAL COMO PLANTILLA',
-              style: TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
+              style: AppleDesignSystem.caption3.copyWith(
+                color: _palette.info,
               ),
             ),
           ),
@@ -4356,31 +4307,33 @@ class _MainScreenState extends State<MainScreen>
 
         Container(
           width: double.infinity,
-          margin: const EdgeInsets.only(top: 5, bottom: 40),
+          margin: const EdgeInsets.only(
+            top: 5,
+            bottom: AppleDesignSystem.spacing40,
+          ),
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent.withValues(alpha: 0.05),
-              side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.3)),
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              backgroundColor: _palette.error.withValues(alpha: 0.05),
+              side: BorderSide(
+                color: _palette.error.withValues(alpha: 0.2),
+                width: 0.5,
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: AppleDesignSystem.spacing16,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusL),
               ),
             ),
             onPressed: () => showDialog(
               context: context,
               builder: (c) => _buildOnboarding(),
             ),
-            icon: const Icon(
-              LucideIcons.refreshCw,
-              size: 16,
-              color: Colors.redAccent,
-            ),
-            label: const Text(
+            icon: Icon(LucideIcons.refreshCw, size: 16, color: _palette.error),
+            label: Text(
               'REESTABLECER ESTRUCTURA BASE',
-              style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
+              style: AppleDesignSystem.caption3.copyWith(
+                color: _palette.error,
               ),
             ),
           ),
@@ -4391,11 +4344,8 @@ class _MainScreenState extends State<MainScreen>
 
   Widget _settingTitle(String t) => Text(
     t,
-    style: const TextStyle(
-      fontSize: 10,
-      fontWeight: FontWeight.bold,
-      color: Colors.white38,
-      letterSpacing: 1.5,
+    style: AppleDesignSystem.overline.copyWith(
+      color: _palette.textTertiary,
     ),
   );
 
@@ -4405,16 +4355,19 @@ class _MainScreenState extends State<MainScreen>
         _plannerMode = m;
         _saveConfig();
       }),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15),
+      child: AnimatedContainer(
+        duration: AppleDesignSystem.animFast,
+        padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: _plannerMode == m ? _accentColor : _cardColor,
-          borderRadius: BorderRadius.circular(12),
+          color: _plannerMode == m ? _accentColor : _palette.fill,
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
         ),
         child: Center(
           child: Text(
             l,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            style: AppleDesignSystem.overline.copyWith(
+              color: _plannerMode == m ? Colors.white : _palette.textTertiary,
+            ),
           ),
         ),
       ),
@@ -4423,25 +4376,34 @@ class _MainScreenState extends State<MainScreen>
 
   Widget _daySelector(String day) => Container(
     margin: const EdgeInsets.only(bottom: 8),
-    padding: const EdgeInsets.symmetric(horizontal: 15),
-    decoration: BoxDecoration(
-      color: _cardColor,
-      borderRadius: BorderRadius.circular(12),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: AppleComponents.card(
+      palette: _palette,
+      radius: AppleDesignSystem.radiusM,
     ),
     child: Row(
       children: [
-        Expanded(child: Text(day, style: const TextStyle(fontSize: 12))),
+        Expanded(
+          child: Text(
+            day,
+            style: AppleDesignSystem.subheadline.copyWith(
+              color: _palette.textPrimary,
+            ),
+          ),
+        ),
         DropdownButton<String>(
           value: _weeklyPlan[day],
           underline: const SizedBox(),
-          dropdownColor: _cardColor,
+          dropdownColor: _palette.cardBgElevated,
           items: ['DESCANSO', ..._userGroups]
               .map(
                 (g) => DropdownMenuItem(
                   value: g,
                   child: Text(
                     g,
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
+                    style: AppleDesignSystem.caption1.copyWith(
+                      color: _palette.textPrimary,
+                    ),
                   ),
                 ),
               )
@@ -4457,11 +4419,10 @@ class _MainScreenState extends State<MainScreen>
 
   Widget _groupConfigCard(int idx, String name) => Container(
     margin: const EdgeInsets.only(bottom: 15),
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: _cardColor,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+    padding: const EdgeInsets.all(AppleDesignSystem.spacing16),
+    decoration: AppleComponents.card(
+      palette: _palette,
+      radius: AppleDesignSystem.radiusXL,
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4471,46 +4432,42 @@ class _MainScreenState extends State<MainScreen>
             Expanded(
               child: Text(
                 name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 14,
-                  letterSpacing: 1,
+                style: AppleDesignSystem.headline.copyWith(
+                  color: _palette.textPrimary,
                 ),
               ),
             ),
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 LucideIcons.edit2,
                 size: 16,
-                color: Colors.white38,
+                color: _palette.textTertiary,
               ),
               onPressed: () => _promptRenameGroup(name),
             ),
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 LucideIcons.trash2,
                 size: 16,
-                color: Colors.redAccent,
+                color: _palette.error,
               ),
               onPressed: () => _promptDeleteGroup(idx, name),
             ),
             IconButton(
-              icon: const Icon(LucideIcons.arrowUp, size: 16),
+              icon: Icon(LucideIcons.arrowUp, size: 16, color: _palette.textSecondary),
               onPressed: () => _moveGroup(idx, -1),
             ),
             IconButton(
-              icon: const Icon(LucideIcons.arrowDown, size: 16),
+              icon: Icon(LucideIcons.arrowDown, size: 16, color: _palette.textSecondary),
               onPressed: () => _moveGroup(idx, 1),
             ),
           ],
         ),
         const SizedBox(height: 10),
-        const Text(
+        Text(
           'EJERCICIOS ACTIVOS (MANTÉN PARA REORDENAR)',
-          style: TextStyle(
-            fontSize: 8,
-            color: Colors.white24,
-            fontWeight: FontWeight.bold,
+          style: AppleDesignSystem.caption2.copyWith(
+            color: _palette.textQuaternary,
           ),
         ),
         const SizedBox(height: 8),
@@ -4526,37 +4483,42 @@ class _MainScreenState extends State<MainScreen>
                 key: ValueKey("cfg-$name-$ex"),
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(
+                leading: Icon(
                   LucideIcons.gripVertical,
                   size: 14,
-                  color: Colors.white10,
+                  color: _palette.fillSecondary,
                 ),
-                title: Text(ex, style: const TextStyle(fontSize: 10)),
+                title: Text(
+                  ex,
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textPrimary,
+                  ),
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         LucideIcons.edit2,
                         size: 12,
-                        color: Colors.white38,
+                        color: _palette.textTertiary,
                       ),
                       onPressed: () => _renameExercise(name, ex),
                     ),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         LucideIcons.trash2,
                         size: 12,
-                        color: Colors.redAccent,
+                        color: _palette.error,
                       ),
                       onPressed: () =>
                           _deleteExercisePermanently(name, ex, false),
                     ),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         LucideIcons.archive,
                         size: 12,
-                        color: Colors.orangeAccent,
+                        color: _palette.warning,
                       ),
                       onPressed: () => _archiveExercise(name, ex),
                     ),
@@ -4569,18 +4531,19 @@ class _MainScreenState extends State<MainScreen>
 
         TextButton.icon(
           onPressed: () => _promptAddExercise(name),
-          icon: const Icon(LucideIcons.plus, size: 14),
-          label: const Text("AÑADIR EJERCICIO", style: TextStyle(fontSize: 10)),
+          icon: Icon(LucideIcons.plus, size: 14, color: _accentColor),
+          label: Text(
+            "AÑADIR EJERCICIO",
+            style: AppleDesignSystem.overline.copyWith(color: _accentColor),
+          ),
         ),
 
         if (_archivedExercises[name]?.isNotEmpty == true) ...[
           const SizedBox(height: 15),
-          const Text(
+          Text(
             'ARCHIVADOS',
-            style: TextStyle(
-              fontSize: 8,
-              color: Colors.orangeAccent,
-              fontWeight: FontWeight.bold,
+            style: AppleDesignSystem.overline.copyWith(
+              color: _palette.warning,
             ),
           ),
           const SizedBox(height: 8),
@@ -4593,18 +4556,17 @@ class _MainScreenState extends State<MainScreen>
                         _deleteExercisePermanently(name, ex, true),
                     onTap: () => _unarchiveExercise(name, ex),
                     child: Chip(
-                      backgroundColor: Colors.white10,
+                      backgroundColor: _palette.fill,
                       label: Text(
                         ex,
-                        style: const TextStyle(
-                          fontSize: 8,
-                          color: Colors.white38,
+                        style: AppleDesignSystem.caption2.copyWith(
+                          color: _palette.textTertiary,
                         ),
                       ),
-                      avatar: const Icon(
+                      avatar: Icon(
                         LucideIcons.rotateCcw,
                         size: 10,
-                        color: Colors.white38,
+                        color: _palette.textTertiary,
                       ),
                     ),
                   ),
@@ -4675,7 +4637,7 @@ class _MainScreenState extends State<MainScreen>
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: 'Escribe ej: "PRESS"',
-                          hintStyle: const TextStyle(color: Colors.white24),
+                          hintStyle: TextStyle(color: _palette.textQuaternary),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                               color: _accentColor.withValues(alpha: 0.3),
@@ -4693,7 +4655,7 @@ class _MainScreenState extends State<MainScreen>
               onPressed: () => Navigator.pop(c),
               child: const Text(
                 'CANCELAR',
-                style: TextStyle(color: Colors.white24),
+                style: TextStyle(color: _palette.textQuaternary),
               ),
             ),
             TextButton(
@@ -4730,7 +4692,7 @@ class _MainScreenState extends State<MainScreen>
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: 'Ej: BRAZO, PIERNA, FULL BODY...',
-            hintStyle: const TextStyle(color: Colors.white24),
+            hintStyle: TextStyle(color: _palette.textQuaternary),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: _accentColor.withValues(alpha: 0.3),
@@ -4743,7 +4705,7 @@ class _MainScreenState extends State<MainScreen>
             onPressed: () => Navigator.pop(c),
             child: const Text(
               'CANCELAR',
-              style: TextStyle(color: Colors.white24),
+              style: TextStyle(color: _palette.textQuaternary),
             ),
           ),
           TextButton(
@@ -4815,7 +4777,7 @@ class _MainScreenState extends State<MainScreen>
             onPressed: () => Navigator.pop(c),
             child: const Text(
               'CANCELAR',
-              style: TextStyle(color: Colors.white24),
+              style: TextStyle(color: _palette.textQuaternary),
             ),
           ),
           TextButton(
@@ -4828,7 +4790,7 @@ class _MainScreenState extends State<MainScreen>
             },
             child: const Text(
               'ELIMINAR',
-              style: TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: _palette.error),
             ),
           ),
         ],
@@ -4895,14 +4857,16 @@ class _MainScreenState extends State<MainScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(LucideIcons.alertTriangle, color: Colors.orange),
-            const Text(
+            Icon(LucideIcons.alertTriangle, color: _palette.warning),
+            Text(
               "Esta rutina no tiene ejercicios.",
-              style: TextStyle(color: Colors.white),
+              style: AppleDesignSystem.subheadline.copyWith(
+                color: _palette.textPrimary,
+              ),
             ),
             TextButton(
               onPressed: () => setState(() => _showSettings = true),
-              child: const Text("AÑADIR EJERCICIOS"),
+              child: Text("AÑADIR EJERCICIOS"),
             ),
           ],
         ),
@@ -4912,12 +4876,17 @@ class _MainScreenState extends State<MainScreen>
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
+          padding: const EdgeInsets.fromLTRB(
+            AppleDesignSystem.spacing24,
+            AppleDesignSystem.spacing10,
+            AppleDesignSystem.spacing24,
+            AppleDesignSystem.spacing16,
+          ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 _accentColor.withValues(alpha: 0.05),
-                Colors.transparent,
+                _palette.scaffoldBg,
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -4943,12 +4912,11 @@ class _MainScreenState extends State<MainScreen>
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     'ENTRENANDO',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1,
+                    style: AppleDesignSystem.title3.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: _palette.textPrimary,
                     ),
                   ),
                 ],
@@ -4957,9 +4925,9 @@ class _MainScreenState extends State<MainScreen>
                 children: [
                   IconButton(
                     onPressed: _exitWorkout,
-                    icon: const Icon(
+                    icon: Icon(
                       LucideIcons.logOut,
-                      color: Colors.white24,
+                      color: _palette.textQuaternary,
                       size: 20,
                     ),
                   ),
@@ -4976,42 +4944,32 @@ class _MainScreenState extends State<MainScreen>
                     onTap: _finishWorkout,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                        horizontal: AppleDesignSystem.spacing16,
+                        vertical: AppleDesignSystem.spacing8,
                       ),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(
+                          AppleDesignSystem.radiusPill,
+                        ),
                         border: Border.all(
-                          color: Colors.redAccent.withValues(alpha: 0.5),
+                          color: _palette.error.withValues(alpha: 0.4),
+                          width: 0.5,
                         ),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.redAccent.withValues(alpha: 0.2),
-                            Colors.redAccent.withValues(alpha: 0.1),
-                          ],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.redAccent.withValues(alpha: 0.15),
-                            blurRadius: 8,
-                          ),
-                        ],
+                        color: _palette.error.withValues(alpha: 0.08),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             LucideIcons.check,
                             size: 14,
-                            color: Colors.redAccent,
+                            color: _palette.error,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             'FINALIZAR',
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w900,
+                            style: AppleDesignSystem.overline.copyWith(
+                              color: _palette.error,
                             ),
                           ),
                         ],
@@ -5025,13 +4983,17 @@ class _MainScreenState extends State<MainScreen>
         ),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppleDesignSystem.spacing24,
+            ),
             children: [
-              const Text(
+              Text(
                 'TUS EJERCICIOS (MANTÉN PARA REORDENAR)',
-                style: TextStyle(fontSize: 8, color: Colors.white24),
+                style: AppleDesignSystem.caption2.copyWith(
+                  color: _palette.textQuaternary,
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppleDesignSystem.spacing10),
 
               SizedBox(
                 height: 45,
@@ -5054,31 +5016,35 @@ class _MainScreenState extends State<MainScreen>
                           child: Container(
                             margin: const EdgeInsets.only(right: 8),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
+                              horizontal: AppleDesignSystem.spacing14,
+                              vertical: AppleDesignSystem.spacing8,
                             ),
                             decoration: BoxDecoration(
                               color: _selectedExercise == ex
                                   ? _accentColor
-                                  : _cardColor,
-                              borderRadius: BorderRadius.circular(10),
+                                  : _palette.fill,
+                              borderRadius: BorderRadius.circular(
+                                AppleDesignSystem.radiusS,
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (_selectedExercise == ex)
-                                  const Icon(
+                                  Icon(
                                     LucideIcons.gripVertical,
                                     size: 10,
-                                    color: Colors.white38,
+                                    color: _palette.fillSecondary.withValues(alpha: 0.5),
                                   ),
                                 if (_selectedExercise == ex)
                                   const SizedBox(width: 4),
                                 Text(
                                   ex,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                  style: AppleDesignSystem.caption1.copyWith(
+                                    color: _selectedExercise == ex
+                                        ? Colors.white
+                                        : _palette.textSecondary,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 if (_getPB(ex) != null) ...[
@@ -5086,7 +5052,7 @@ class _MainScreenState extends State<MainScreen>
                                   const Icon(
                                     LucideIcons.trophy,
                                     size: 10,
-                                    color: Colors.amber,
+                                    color: AppleDesignSystem.amberGold,
                                   ),
                                 ],
                               ],
@@ -5099,7 +5065,6 @@ class _MainScreenState extends State<MainScreen>
               ),
 
               const SizedBox(height: 15),
-              // PINNED NOTE DISPLAY
               if (_selectedExercise.isNotEmpty)
                 GestureDetector(
                   onTap: () => _promptEditNote(_selectedExercise),
@@ -5107,18 +5072,18 @@ class _MainScreenState extends State<MainScreen>
                     width: double.infinity,
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: AppleDesignSystem.spacing16,
+                      vertical: AppleDesignSystem.spacing12,
                     ),
-                    decoration: BoxDecoration(
-                      color: _exerciseNotes.containsKey(_selectedExercise)
-                          ? Colors.amber.withValues(alpha: 0.1)
-                          : Colors.white.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(12),
+                    decoration: AppleComponents.card(
+                      palette: _palette,
+                      radius: AppleDesignSystem.radiusL,
+                    ).copyWith(
                       border: Border.all(
                         color: _exerciseNotes.containsKey(_selectedExercise)
-                            ? Colors.amber.withValues(alpha: 0.3)
-                            : Colors.white10,
+                            ? AppleDesignSystem.amberGold.withValues(alpha: 0.3)
+                            : _palette.separator,
+                        width: 0.5,
                       ),
                     ),
                     child: Row(
@@ -5127,20 +5092,21 @@ class _MainScreenState extends State<MainScreen>
                           LucideIcons.stickyNote,
                           size: 16,
                           color: _exerciseNotes.containsKey(_selectedExercise)
-                              ? Colors.amber
-                              : Colors.white24,
+                              ? AppleDesignSystem.amberGold
+                              : _palette.textQuaternary,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             _exerciseNotes[_selectedExercise] ??
-                                "Toque para añadir una nota fija (e.g. ajustes de máquina)...",
-                            style: TextStyle(
-                              fontSize: 12,
+                                "Toque para añadir una nota fija...",
+                            style: AppleDesignSystem.caption1.copyWith(
                               color:
                                   _exerciseNotes.containsKey(_selectedExercise)
-                                  ? Colors.amber.withValues(alpha: 0.9)
-                                  : Colors.white24,
+                                  ? AppleDesignSystem.amberGold.withValues(
+                                      alpha: 0.9,
+                                    )
+                                  : _palette.textQuaternary,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -5151,10 +5117,10 @@ class _MainScreenState extends State<MainScreen>
                 ),
 
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: _cardColor,
-                  borderRadius: BorderRadius.circular(15),
+                padding: const EdgeInsets.all(AppleDesignSystem.spacing16),
+                decoration: AppleComponents.card(
+                  palette: _palette,
+                  radius: AppleDesignSystem.radiusL,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -5164,12 +5130,10 @@ class _MainScreenState extends State<MainScreen>
                       children: [
                         Row(
                           children: [
-                            const Text(
+                            Text(
                               "HISTORIAL",
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.white38,
-                                fontWeight: FontWeight.bold,
+                              style: AppleDesignSystem.overline.copyWith(
+                                color: _palette.textTertiary,
                               ),
                             ),
                             if (pb != null) ...[
@@ -5180,10 +5144,11 @@ class _MainScreenState extends State<MainScreen>
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: Colors.amber.withValues(alpha: 0.5),
+                                  color: AppleDesignSystem.amberGold.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    AppleDesignSystem.radiusXS,
                                   ),
                                 ),
                                 child: Row(
@@ -5191,15 +5156,13 @@ class _MainScreenState extends State<MainScreen>
                                     const Icon(
                                       LucideIcons.trophy,
                                       size: 10,
-                                      color: Colors.amber,
+                                      color: AppleDesignSystem.amberGold,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       "RÉCORD: ${_formatNum(pb.weight)} KG x ${_formatNum(pb.reps)}",
-                                      style: const TextStyle(
-                                        color: Colors.amber,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
+                                      style: AppleDesignSystem.overline.copyWith(
+                                        color: AppleDesignSystem.amberGold,
                                       ),
                                     ),
                                   ],
@@ -5208,7 +5171,6 @@ class _MainScreenState extends State<MainScreen>
                             ],
                           ],
                         ),
-                        // CAROUSEL NAV
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -5216,15 +5178,13 @@ class _MainScreenState extends State<MainScreen>
                               LucideIcons.chevronLeft,
                               size: 14,
                               color: _historyCarouselIndex > 0
-                                  ? Colors.white
+                                  ? _palette.textSecondary
                                   : Colors.transparent,
                             ),
                             Text(
-                              // FIX V8: Show Index of VIEWED set, not CURRENT active set.
                               " ${_historyCarouselIndex + 1}/${historySets.length} ",
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.white54,
+                              style: AppleDesignSystem.caption2.copyWith(
+                                color: _palette.textTertiary,
                               ),
                             ),
                             Icon(
@@ -5232,7 +5192,7 @@ class _MainScreenState extends State<MainScreen>
                               size: 14,
                               color:
                                   _historyCarouselIndex < historySets.length - 1
-                                  ? Colors.white
+                                  ? _palette.textSecondary
                                   : Colors.transparent,
                             ),
                           ],
@@ -5241,68 +5201,60 @@ class _MainScreenState extends State<MainScreen>
                     ),
                     const SizedBox(height: 12),
 
-                    // CAROUSEL CONTENT (PageView)
                     SizedBox(
-                      height: 120, // Fixed height for carousel
+                      height: 120,
                       child: PageView.builder(
                         controller: _historyPageController,
                         itemCount: historySets.length,
-                        reverse:
-                            false, // Set 1 is Left (Page 0). Swipe Right -> Set 2.
+                        reverse: false,
                         onPageChanged: (idx) {
                           setState(() => _historyCarouselIndex = idx);
                         },
                         itemBuilder: (context, idx) {
-                          // We want to show sets in some order.
-                          // historySets is usually filtered from _getLastSessionSets which returns LIST.
-                          // Actually, user wants "Desliza izquierda/derecha para ver TODAS las series anteriores".
-                          // _getLastSessionSets only returns one session. We might need MORE.
-                          // If they mean "sets from ALL sessions", that's a lot of data.
-                          // "ver anteriores o posteriores series del ultimo entreno". ok, Last Session is enough.
-
                           final hSet = historySets[idx];
 
                           return GestureDetector(
-                            onTap: () {
-                              // "Smart Copy" logic handled by buttons below now
-                            },
+                            onTap: () {},
                             child: Container(
                               width: double.infinity,
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              padding: const EdgeInsets.all(15),
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              padding: const EdgeInsets.all(
+                                AppleDesignSystem.spacing16,
+                              ),
                               decoration: BoxDecoration(
-                                color: _accentColor.withValues(alpha: 0.1),
-                                border: Border.all(
-                                  color: _accentColor.withValues(alpha: 0.3),
+                                color: _accentColor.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(
+                                  AppleDesignSystem.radiusM,
                                 ),
-                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: _accentColor.withValues(alpha: 0.2),
+                                  width: 0.5,
+                                ),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     "SERIE ${idx + 1} (${hSet.date.day}/${hSet.date.month})",
-                                    style: TextStyle(
+                                    style: AppleDesignSystem.overline.copyWith(
                                       color: _accentColor,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 5),
                                   Text(
                                     "${_formatNum(hSet.weight)}kg x ${_formatNum(hSet.reps)}",
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                    style: AppleDesignSystem.title2.copyWith(
+                                      color: _palette.textPrimary,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   if (hSet.note.isNotEmpty)
                                     Text(
                                       "Nota: ${hSet.note}",
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 10,
+                                      style: AppleDesignSystem.caption2.copyWith(
+                                        color: _palette.textTertiary,
                                         fontStyle: FontStyle.italic,
                                       ),
                                     ),
@@ -5314,25 +5266,24 @@ class _MainScreenState extends State<MainScreen>
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // SMART COPY BUTTONS
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (historySets.isNotEmpty)
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white10,
-                              foregroundColor: Colors.white,
+                              backgroundColor: _palette.fill,
+                              foregroundColor: _palette.textPrimary,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
                                 vertical: 5,
                               ),
                               minimumSize: const Size(0, 30),
                             ),
-                            icon: const Icon(LucideIcons.copy, size: 12),
+                            icon: Icon(LucideIcons.copy, size: 12),
                             label: Text(
                               "COPIAR: ${_formatNum(historySets[_historyCarouselIndex].weight)}kg",
-                              style: const TextStyle(fontSize: 10),
+                              style: AppleDesignSystem.caption2,
                             ),
                             onPressed: () {
                               setState(() {
@@ -5349,11 +5300,6 @@ class _MainScreenState extends State<MainScreen>
                             },
                           ),
                         const SizedBox(width: 10),
-                        // FIX V7: Show button even if nextWeight is arguably null to debug, OR relax condition.
-                        // Ideally we want to show it if we have a suggestion.
-                        // Let's assume historySets.last is the "previous session" reference.
-                        // FIX V9: Dynamic Suggested Weight
-                        // Use the suggestion from the VIEWED set (carousel index), not just the last one.
                         if (historySets.isNotEmpty &&
                             _historyCarouselIndex < historySets.length &&
                             historySets[_historyCarouselIndex].nextWeight !=
@@ -5361,7 +5307,7 @@ class _MainScreenState extends State<MainScreen>
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _accentColor.withValues(
-                                alpha: 0.2,
+                                alpha: 0.12,
                               ),
                               foregroundColor: _accentColor,
                               padding: const EdgeInsets.symmetric(
@@ -5373,7 +5319,7 @@ class _MainScreenState extends State<MainScreen>
                             icon: const Icon(LucideIcons.trendingUp, size: 12),
                             label: Text(
                               "SUGERIDO: ${_formatNum(historySets[_historyCarouselIndex].nextWeight!)}kg",
-                              style: const TextStyle(fontSize: 10),
+                              style: AppleDesignSystem.caption2,
                             ),
                             onPressed: () {
                               setState(() {
@@ -5416,19 +5362,16 @@ class _MainScreenState extends State<MainScreen>
               const SizedBox(height: 15),
               TextField(
                 controller: _noteCtrl,
-                style: const TextStyle(fontSize: 12),
-                decoration: InputDecoration(
+                style: AppleDesignSystem.caption1.copyWith(
+                  color: _palette.textPrimary,
+                ),
+                decoration: AppleComponents.inputDecoration(
+                  palette: _palette,
                   hintText: 'OPINIÓN / NOTA DE LA SERIE',
-                  filled: true,
-                  fillColor: _cardColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
+                  accentColor: _accentColor,
                 ),
               ),
               const SizedBox(height: 10),
-              // ADJUSTMENT UI 2.0 (Updated)
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -5451,28 +5394,28 @@ class _MainScreenState extends State<MainScreen>
                         value: 1.25,
                         child: Text(
                           "+ 1.25 kg",
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(color: AppleDesignSystem.greenSuccess),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 2.5,
                         child: Text(
                           "+ 2.5 kg",
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(color: AppleDesignSystem.greenSuccess),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 5.0,
                         child: Text(
                           "+ 5.0 kg",
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(color: AppleDesignSystem.greenSuccess),
                         ),
                       ),
                       const PopupMenuItem(
                         value: 10.0,
                         child: Text(
                           "+ 10.0 kg",
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(color: AppleDesignSystem.greenSuccess),
                         ),
                       ),
                       const PopupMenuDivider(),
@@ -5500,22 +5443,27 @@ class _MainScreenState extends State<MainScreen>
                     ],
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+                        horizontal: AppleDesignSystem.spacing12,
+                        vertical: AppleDesignSystem.spacing8,
                       ),
                       decoration: BoxDecoration(
                         color: _adjustmentIncrement == 0
-                            ? _cardColor
+                            ? _palette.fill
                             : (_adjustmentIncrement > 0
-                                  ? Colors.green.withValues(alpha: 0.2)
-                                  : Colors.red.withValues(alpha: 0.2)),
-                        borderRadius: BorderRadius.circular(20),
+                                  ? AppleDesignSystem.greenSuccess.withValues(
+                                      alpha: 0.12,
+                                    )
+                                  : _palette.error.withValues(alpha: 0.12)),
+                        borderRadius: BorderRadius.circular(
+                          AppleDesignSystem.radiusPill,
+                        ),
                         border: Border.all(
                           color: _adjustmentIncrement == 0
-                              ? Colors.white24
+                              ? _palette.separator
                               : (_adjustmentIncrement > 0
-                                    ? Colors.green
-                                    : Colors.red),
+                                    ? AppleDesignSystem.greenSuccess
+                                    : _palette.error),
+                          width: 0.5,
                         ),
                       ),
                       child: Row(
@@ -5528,10 +5476,10 @@ class _MainScreenState extends State<MainScreen>
                                       : LucideIcons.trendingDown),
                             size: 16,
                             color: _adjustmentIncrement == 0
-                                ? Colors.white
+                                ? _palette.textSecondary
                                 : (_adjustmentIncrement > 0
-                                      ? Colors.green
-                                      : Colors.red),
+                                      ? AppleDesignSystem.greenSuccess
+                                      : _palette.error),
                           ),
                           const SizedBox(width: 8),
                           Text(
@@ -5540,14 +5488,13 @@ class _MainScreenState extends State<MainScreen>
                                 : (_adjustmentIncrement > 0
                                       ? "+ ${_formatNum(_adjustmentIncrement)} KG"
                                       : "- ${_formatNum(_adjustmentIncrement.abs())} KG"),
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                            style: AppleDesignSystem.caption1.copyWith(
+                              fontWeight: FontWeight.w700,
                               color: _adjustmentIncrement == 0
-                                  ? Colors.white
+                                  ? _palette.textPrimary
                                   : (_adjustmentIncrement > 0
-                                        ? Colors.green
-                                        : Colors.red),
+                                        ? AppleDesignSystem.greenSuccess
+                                        : _palette.error),
                             ),
                           ),
                         ],
@@ -5561,17 +5508,21 @@ class _MainScreenState extends State<MainScreen>
                 onTap: _addSet,
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppleDesignSystem.spacing16,
+                  ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        _accentColor.withValues(alpha: 0.8),
+                        _accentColor.withValues(alpha: 0.85),
                         _accentColor,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(
+                      AppleDesignSystem.radiusL,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: _accentColor.withValues(alpha: 0.3),
@@ -5580,18 +5531,15 @@ class _MainScreenState extends State<MainScreen>
                       ),
                     ],
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(LucideIcons.check, size: 18, color: Colors.white),
-                      SizedBox(width: 10),
+                      const Icon(LucideIcons.check, size: 18, color: Colors.white),
+                      const SizedBox(width: 10),
                       Text(
                         'GUARDAR SERIE',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                        style: AppleDesignSystem.headline.copyWith(
                           color: Colors.white,
-                          fontSize: 14,
-                          letterSpacing: 1,
                         ),
                       ),
                     ],
@@ -5599,7 +5547,6 @@ class _MainScreenState extends State<MainScreen>
                 ),
               ),
               const SizedBox(height: 25),
-              // LISTA DE SERIES ACTUALES
               ..._currentSessionExercises.asMap().entries.map((entry) {
                 int idx = entry.key;
                 ExerciseSet s = entry.value;
@@ -5620,13 +5567,10 @@ class _MainScreenState extends State<MainScreen>
                     onTap: () => _promptEditSet(idx),
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: _cardColor.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.05),
-                        ),
+                      padding: const EdgeInsets.all(AppleDesignSystem.spacing16),
+                      decoration: AppleComponents.card(
+                        palette: _palette,
+                        radius: AppleDesignSystem.radiusL,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -5640,13 +5584,13 @@ class _MainScreenState extends State<MainScreen>
                                 ),
                                 decoration: BoxDecoration(
                                   color: _accentColor.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(
+                                    AppleDesignSystem.radiusXS,
+                                  ),
                                 ),
                                 child: Text(
                                   "#${idx + 1}",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                  style: AppleDesignSystem.overline.copyWith(
                                     color: _accentColor,
                                   ),
                                 ),
@@ -5655,23 +5599,22 @@ class _MainScreenState extends State<MainScreen>
                               Expanded(
                                 child: Text(
                                   "${s.name}: ${_formatNum(s.weight)}kg x ${_formatNum(s.reps)}",
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                                  style: AppleDesignSystem.caption1.copyWith(
+                                    color: _palette.textPrimary,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
-                              const Icon(
+                              Icon(
                                 LucideIcons.edit2,
                                 size: 10,
-                                color: Colors.white12,
+                                color: _palette.fillSecondary,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 s.time,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white24,
+                                style: AppleDesignSystem.caption2.copyWith(
+                                  color: _palette.textQuaternary,
                                 ),
                               ),
                             ],
@@ -5681,9 +5624,8 @@ class _MainScreenState extends State<MainScreen>
                               padding: const EdgeInsets.only(top: 6),
                               child: Text(
                                 s.note,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white54,
+                                style: AppleDesignSystem.caption2.copyWith(
+                                  color: _palette.textTertiary,
                                   fontStyle: FontStyle.italic,
                                 ),
                               ),
@@ -5732,7 +5674,7 @@ class _MainScreenState extends State<MainScreen>
             },
             child: const Text(
               'BORRAR TODO',
-              style: TextStyle(color: Colors.redAccent, fontSize: 11),
+              style: TextStyle(color: _palette.error, fontSize: 11),
             ),
           ),
           TextButton(
@@ -5908,24 +5850,21 @@ class _MainScreenState extends State<MainScreen>
               children: [
                 Icon(
                   LucideIcons.calendarX,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: _palette.fillSecondary,
                   size: 48,
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'SIN ACTIVIDAD',
-                  style: TextStyle(
-                    color: Colors.white12,
-                    fontSize: 10,
-                    letterSpacing: 3,
-                    fontWeight: FontWeight.bold,
+                  style: AppleDesignSystem.overline.copyWith(
+                    color: _palette.textQuaternary,
                   ),
                 ),
               ],
             ),
           )
         : ListView.builder(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
             itemCount: _sessions.length,
             itemBuilder: (c, i) {
               final session = _sessions[i];
@@ -5937,42 +5876,31 @@ class _MainScreenState extends State<MainScreen>
                   return Opacity(
                     opacity: value,
                     child: Transform.translate(
-                      offset: Offset(0, 20 * (1 - value)),
+                      offset: Offset(0, 16 * (1 - value)),
                       child: child,
                     ),
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: _cardColor,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.05),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: AppleComponents.card(
+                    palette: _palette,
+                    radius: AppleDesignSystem.radiusL,
                   ),
                   child: ExpansionTile(
                     maintainState: true,
                     iconColor: _accentColor,
                     title: Text(
                       session.type,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                      style: AppleDesignSystem.subheadline.copyWith(
+                        color: _palette.textPrimary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     subtitle: Text(
                       "${session.date.day}/${session.date.month} - ${session.exercises.length} series",
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Colors.white24,
+                      style: AppleDesignSystem.caption1.copyWith(
+                        color: _palette.textTertiary,
                       ),
                     ),
                     trailing: Row(
@@ -5987,10 +5915,10 @@ class _MainScreenState extends State<MainScreen>
                           onPressed: () => _showSessionOptions(i),
                         ),
                         IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             LucideIcons.copy,
                             size: 16,
-                            color: Colors.white38,
+                            color: _palette.textTertiary,
                           ),
                           onPressed: () {
                             String summary =
@@ -6007,18 +5935,21 @@ class _MainScreenState extends State<MainScreen>
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: _accentColor,
-                                content: const Text(
+                                content: Text(
                                   "Resumen copiado al portapapeles",
+                                  style: AppleDesignSystem.footnote.copyWith(
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             );
                           },
                         ),
                         IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             LucideIcons.trash2,
                             size: 16,
-                            color: Colors.white24,
+                            color: _palette.textQuaternary,
                           ),
                           onPressed: () => _deleteSession(i),
                         ),
@@ -6031,24 +5962,22 @@ class _MainScreenState extends State<MainScreen>
                             onLongPress: () => _editHistorySet(session, s),
                             title: Text(
                               "${s.name}: ${_formatNum(s.weight)}kg x ${_formatNum(s.reps)}",
-                              style: const TextStyle(
-                                fontSize: 11,
+                              style: AppleDesignSystem.caption1.copyWith(
+                                color: _palette.textPrimary,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             trailing: Text(
                               s.time,
-                              style: const TextStyle(
-                                fontSize: 9,
-                                color: Colors.white12,
+                              style: AppleDesignSystem.caption2.copyWith(
+                                color: _palette.textQuaternary,
                               ),
                             ),
                             subtitle: s.note.isNotEmpty
                                 ? Text(
                                     "Nota: ${s.note}",
-                                    style: const TextStyle(
-                                      color: Colors.white54,
-                                      fontSize: 10,
+                                    style: AppleDesignSystem.caption2.copyWith(
+                                      color: _palette.textTertiary,
                                       fontStyle: FontStyle.italic,
                                     ),
                                   )
@@ -6067,24 +5996,25 @@ class _MainScreenState extends State<MainScreen>
   Widget _buildStatsTab() {
     return Column(
       children: [
-        // INTERRUPTOR DE MODO DE GRÁFICA
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(
+            vertical: AppleDesignSystem.spacing10,
+            horizontal: AppleDesignSystem.spacing20,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 _statsUseFirstSet ? "PRIMERA SERIE" : "TODAS LAS SERIES",
-                style: TextStyle(
+                style: AppleDesignSystem.caption1.copyWith(
                   color: _accentColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(width: 10),
               Switch(
                 value: _statsUseFirstSet,
-                activeThumbColor: _accentColor,
+                activeColor: _accentColor,
                 onChanged: (val) {
                   setState(() {
                     _statsUseFirstSet = val;
@@ -6097,22 +6027,22 @@ class _MainScreenState extends State<MainScreen>
 
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
             children: _userGroups
                 .map(
                   (g) => Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: _cardColor,
-                      borderRadius: BorderRadius.circular(20),
+                    margin: const EdgeInsets.only(bottom: 14),
+                    decoration: AppleComponents.card(
+                      palette: _palette,
+                      radius: AppleDesignSystem.radiusXL,
                     ),
                     child: ExpansionTile(
                       maintainState: true,
                       title: Text(
                         g,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
+                        style: AppleDesignSystem.subheadline.copyWith(
+                          color: _palette.textPrimary,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       children: (_exerciseDb[g] ?? []).map((ex) {
@@ -6121,11 +6051,9 @@ class _MainScreenState extends State<MainScreen>
                             .expand((s) => s.exercises)
                             .where((e) => e.name == ex.toUpperCase())
                             .toList();
-                        // Ordenar historial cronológicamente (antiguo -> nuevo) para la gráfica,
-                        // pero reversed para la lista se maneja dentro de _buildStatDetail
                         history.sort(
                           (a, b) => a.date.compareTo(b.date),
-                        ); // Ensure chronological for graph
+                        );
                         return _buildStatDetail(ex, pb, history);
                       }).toList(),
                     ),
@@ -6201,19 +6129,24 @@ class _MainScreenState extends State<MainScreen>
       maintainState: true,
       title: Text(
         ex,
-        style: const TextStyle(fontSize: 11, color: Colors.white60),
+        style: AppleDesignSystem.caption1.copyWith(
+          color: _palette.textSecondary,
+        ),
       ),
       trailing: Text(
         pb != null
             ? "${_formatNum(pb.weight)}kg x ${_formatNum(pb.reps)}"
             : "-",
-        style: TextStyle(color: _accentColor, fontWeight: FontWeight.bold),
+        style: AppleDesignSystem.caption1.copyWith(
+          color: _accentColor,
+          fontWeight: FontWeight.w700,
+        ),
       ),
       children: [
         if (spots.isNotEmpty) ...[
           Container(
             height: 200,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(show: false),
@@ -6231,7 +6164,7 @@ class _MainScreenState extends State<MainScreen>
                       getDotPainter: (spot, percent, barData, index) =>
                           FlDotCirclePainter(
                             radius: 3,
-                            color: Colors.white,
+                            color: _palette.background,
                             strokeWidth: 0,
                           ),
                     ),
@@ -6245,53 +6178,56 @@ class _MainScreenState extends State<MainScreen>
             ),
           ),
         ] else
-          const Padding(
-            padding: EdgeInsets.all(20),
-            child: Text("Sin datos.", style: TextStyle(color: Colors.white24)),
-          ),
-
-        // HISTORIAL DEBAJO DE LA GRÁFICA (Adaptado)
-        if (historyDisplayItems.isNotEmpty) ...[
-          const Divider(color: Colors.white10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
             child: Text(
-              _statsUseFirstSet
-                  ? "HISTORIAL (Solo 1ª Serie)"
-                  : "HISTORIAL (Todas las series)",
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white54,
-                fontWeight: FontWeight.bold,
+              "Sin datos.",
+              style: AppleDesignSystem.caption1.copyWith(
+                color: _palette.textQuaternary,
               ),
             ),
           ),
 
-          // Invertimos la lista para mostrar lo más reciente arriba
+        if (historyDisplayItems.isNotEmpty) ...[
+          AppleComponents.separator(palette: _palette),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppleDesignSystem.spacing16,
+              vertical: AppleDesignSystem.spacing8,
+            ),
+            child: Text(
+              _statsUseFirstSet
+                  ? "HISTORIAL (Solo 1ª Serie)"
+                  : "HISTORIAL (Todas las series)",
+              style: AppleDesignSystem.overline.copyWith(
+                color: _palette.textTertiary,
+              ),
+            ),
+          ),
+
           ...historyDisplayItems.reversed.take(5).map((item) {
             if (item is ExerciseSet) {
-              // MODO PRIMERA SERIE
               return ListTile(
                 dense: true,
                 title: Text(
                   "${_formatNum(item.weight)}kg x ${_formatNum(item.reps)}",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 subtitle: Text(
                   "${item.date.day}/${item.date.month} - 1ª Serie",
-                  style: const TextStyle(fontSize: 10, color: Colors.white54),
+                  style: AppleDesignSystem.caption2.copyWith(
+                    color: _palette.textTertiary,
+                  ),
                 ),
               );
             } else {
-              // MODO TODAS LAS SERIES (Desglose completo)
               Map<String, dynamic> data = item as Map<String, dynamic>;
               DateTime d = data['date'];
               List<ExerciseSet> daySets = data['sets'];
 
-              // Crear string con todas las series: "60x10, 60x10, 50x8..."
               String setsString = daySets
                   .map((s) => "${_formatNum(s.weight)}x${_formatNum(s.reps)}")
                   .join(", ");
@@ -6300,15 +6236,16 @@ class _MainScreenState extends State<MainScreen>
                 dense: true,
                 title: Text(
                   setsString,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: _palette.textPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 subtitle: Text(
                   "${d.day}/${d.month} - Score Total: ${_formatNum(data['totalScore'])}",
-                  style: TextStyle(fontSize: 10, color: _accentColor),
+                  style: AppleDesignSystem.caption2.copyWith(
+                    color: _accentColor,
+                  ),
                 ),
               );
             }
@@ -6325,18 +6262,25 @@ class _MainScreenState extends State<MainScreen>
       behavior: HitTestBehavior.translucent,
       child: Column(
         children: [
-          // Header
           Container(
-            margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            margin: const EdgeInsets.fromLTRB(
+              AppleDesignSystem.spacing20,
+              AppleDesignSystem.spacing12,
+              AppleDesignSystem.spacing20,
+              0,
+            ),
+            padding: const EdgeInsets.all(AppleDesignSystem.spacing12),
+            decoration: AppleComponents.card(
+              palette: _palette,
+              radius: AppleDesignSystem.radiusL,
             ),
             child: Row(
               children: [
-                Icon(LucideIcons.messageCircle, size: 14, color: _accentColor),
+                Icon(
+                  LucideIcons.messageCircle,
+                  size: 14,
+                  color: _accentColor,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -6347,70 +6291,32 @@ class _MainScreenState extends State<MainScreen>
                               )['title'] ??
                               'ENTRENADOR IA')
                         : "ENTRENADOR IA",
-                    style: TextStyle(
+                    style: AppleDesignSystem.caption3.copyWith(
                       color: _accentColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                GestureDetector(
+                _chatIconButton(
+                  icon: _useCustomApiKey
+                      ? LucideIcons.key
+                      : LucideIcons.settings,
                   onTap: _showApiSettings,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _useCustomApiKey
-                          ? Colors.greenAccent.withValues(alpha: 0.15)
-                          : _accentColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      _useCustomApiKey ? LucideIcons.key : LucideIcons.settings,
-                      size: 16,
-                      color: _useCustomApiKey
-                          ? Colors.greenAccent
-                          : _accentColor,
-                    ),
-                  ),
+                  highlight: _useCustomApiKey,
                 ),
                 const SizedBox(width: 8),
-                GestureDetector(
+                _chatIconButton(
+                  icon: LucideIcons.messageSquarePlus,
                   onTap: _showConversationsList,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _accentColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      LucideIcons.messageSquarePlus,
-                      size: 16,
-                      color: _accentColor,
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 8),
-                GestureDetector(
+                _chatIconButton(
+                  icon: LucideIcons.plus,
                   onTap: _newConversation,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _accentColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      LucideIcons.plus,
-                      size: 16,
-                      color: _accentColor,
-                    ),
-                  ),
                 ),
               ],
             ),
           ),
-          // Chat messages
           Expanded(
             child: _chatMessages.isEmpty
                 ? Center(
@@ -6420,20 +6326,27 @@ class _MainScreenState extends State<MainScreen>
                         Icon(
                           LucideIcons.messageCircle,
                           size: 48,
-                          color: Colors.white10,
+                          color: _palette.fillSecondary,
                         ),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           "Pregúntame sobre\nentrenamiento y nutrición",
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white24, fontSize: 13),
+                          style: AppleDesignSystem.body.copyWith(
+                            color: _palette.textQuaternary,
+                          ),
                         ),
                       ],
                     ),
                   )
                 : ListView.builder(
                     controller: _chatScrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppleDesignSystem.spacing16,
+                      AppleDesignSystem.spacing20,
+                      AppleDesignSystem.spacing16,
+                      AppleDesignSystem.spacing12,
+                    ),
                     itemCount: _chatMessages.length,
                     itemBuilder: (context, index) {
                       final msg = _chatMessages[index];
@@ -6457,24 +6370,30 @@ class _MainScreenState extends State<MainScreen>
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
+                              horizontal: AppleDesignSystem.spacing14,
+                              vertical: AppleDesignSystem.spacing10,
                             ),
                             constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width * 0.8,
                             ),
-                            decoration: BoxDecoration(
-                              color: isUser
-                                  ? _accentColor.withValues(alpha: 0.2)
-                                  : _cardColor,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: isUser
-                                    ? _accentColor.withValues(alpha: 0.3)
-                                    : Colors.white.withValues(alpha: 0.05),
-                              ),
+                            decoration: isUser
+                                ? AppleComponents.card(
+                                    palette: _palette,
+                                    radius: AppleDesignSystem.radiusL,
+                                  ).copyWith(
+                                    border: Border.all(
+                                      color: _accentColor.withValues(alpha: 0.2),
+                                      width: 0.5,
+                                    ),
+                                  )
+                                : AppleComponents.card(
+                                    palette: _palette,
+                                    radius: AppleDesignSystem.radiusL,
+                                  ),
+                            child: _buildRichText(
+                              msg['content'] ?? '',
+                              isUser,
                             ),
-                            child: _buildRichText(msg['content'] ?? '', isUser),
                           ),
                         ),
                       );
@@ -6483,21 +6402,21 @@ class _MainScreenState extends State<MainScreen>
           ),
           if (_chatLoading)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppleDesignSystem.spacing20,
+                vertical: AppleDesignSystem.spacing6,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 10,
+                      horizontal: AppleDesignSystem.spacing14,
+                      vertical: AppleDesignSystem.spacing10,
                     ),
-                    decoration: BoxDecoration(
-                      color: _cardColor,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.05),
-                      ),
+                    decoration: AppleComponents.card(
+                      palette: _palette,
+                      radius: AppleDesignSystem.radiusL,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -6515,18 +6434,22 @@ class _MainScreenState extends State<MainScreen>
                 ],
               ),
             ),
-          // Input
           Container(
             padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              MediaQuery.of(context).viewInsets.bottom > 0 ? 8 : 36,
+              AppleDesignSystem.spacing16,
+              AppleDesignSystem.spacing8,
+              AppleDesignSystem.spacing16,
+              MediaQuery.of(context).viewInsets.bottom > 0
+                  ? AppleDesignSystem.spacing8
+                  : AppleDesignSystem.spacing36,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFF0A0E1A).withValues(alpha: 0.95),
-              border: const Border(
-                top: BorderSide(color: Colors.white10, width: 0.3),
+              color: _palette.surfaceBg.withValues(alpha: 0.95),
+              border: Border(
+                top: BorderSide(
+                  color: _palette.separator.withValues(alpha: 0.5),
+                  width: 0.3,
+                ),
               ),
             ),
             child: SafeArea(
@@ -6536,24 +6459,14 @@ class _MainScreenState extends State<MainScreen>
                   Expanded(
                     child: TextField(
                       controller: _chatInputController,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: AppleDesignSystem.subheadline.copyWith(
+                        color: _palette.textPrimary,
+                      ),
                       textInputAction: TextInputAction.send,
-                      decoration: InputDecoration(
+                      decoration: AppleComponents.inputDecoration(
+                        palette: _palette,
                         hintText: 'Pregunta sobre entrenamiento...',
-                        hintStyle: const TextStyle(
-                          color: Colors.white24,
-                          fontSize: 12,
-                        ),
-                        filled: true,
-                        fillColor: _cardColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
+                        accentColor: _accentColor,
                       ),
                       onSubmitted: (_) => _sendChatMessage(),
                     ),
@@ -6562,10 +6475,21 @@ class _MainScreenState extends State<MainScreen>
                   PressableScale(
                     onTap: _sendChatMessage,
                     child: Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(
+                        AppleDesignSystem.spacing10,
+                      ),
                       decoration: BoxDecoration(
                         color: _accentColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(
+                          AppleDesignSystem.radiusS,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _accentColor.withValues(alpha: 0.25),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: const Icon(
                         LucideIcons.send,
@@ -6583,6 +6507,30 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
+  Widget _chatIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+    bool highlight = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: highlight
+              ? AppleDesignSystem.greenSuccess.withValues(alpha: 0.15)
+              : _accentColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusS),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: highlight ? AppleDesignSystem.greenSuccess : _accentColor,
+        ),
+      ),
+    );
+  }
+
   Widget _buildRichText(String text, bool isUser) {
     final spans = <InlineSpan>[];
     final regex = RegExp(r'\*\*(.+?)\*\*');
@@ -6593,18 +6541,20 @@ class _MainScreenState extends State<MainScreen>
         spans.add(
           TextSpan(
             text: text.substring(lastEnd, match.start),
-            style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
+            style: AppleDesignSystem.subheadline.copyWith(
+              color: _palette.textPrimary,
+              height: 1.4,
+            ),
           ),
         );
       }
       spans.add(
         TextSpan(
           text: match.group(1),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 13,
+          style: AppleDesignSystem.subheadline.copyWith(
+            color: _palette.textPrimary,
             height: 1.4,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
       );
@@ -6615,7 +6565,10 @@ class _MainScreenState extends State<MainScreen>
       spans.add(
         TextSpan(
           text: text.substring(lastEnd),
-          style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
+          style: AppleDesignSystem.subheadline.copyWith(
+            color: _palette.textPrimary,
+            height: 1.4,
+          ),
         ),
       );
     }
@@ -6623,7 +6576,10 @@ class _MainScreenState extends State<MainScreen>
     if (spans.isEmpty) {
       return Text(
         text,
-        style: TextStyle(color: Colors.white, fontSize: 13, height: 1.4),
+        style: AppleDesignSystem.subheadline.copyWith(
+          color: _palette.textPrimary,
+          height: 1.4,
+        ),
       );
     }
 
@@ -6885,7 +6841,7 @@ class _MainScreenState extends State<MainScreen>
     final customKeyCtrl = TextEditingController(text: _customApiKey);
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: _palette.scaffoldBg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -6926,7 +6882,7 @@ class _MainScreenState extends State<MainScreen>
                       color: _cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.05),
+                        color: _palette.separator.withValues(alpha: 0.5),
                       ),
                     ),
                     child: Column(
@@ -6949,8 +6905,8 @@ class _MainScreenState extends State<MainScreen>
                                 ),
                                 subtitle: Text(
                                   "Usar la API integrada de la app",
-                                  style: const TextStyle(
-                                    color: Colors.white38,
+                                  style: TextStyle(
+                                    color: _palette.textTertiary,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -6960,7 +6916,7 @@ class _MainScreenState extends State<MainScreen>
                                   horizontal: 8,
                                 ),
                               ),
-                              const Divider(color: Colors.white10, height: 1),
+                              AppleComponents.separator(palette: _palette),
                               RadioListTile<bool>(
                                 value: true,
                                 title: const Text(
@@ -6970,10 +6926,10 @@ class _MainScreenState extends State<MainScreen>
                                     fontSize: 13,
                                   ),
                                 ),
-                                subtitle: const Text(
+                                subtitle: Text(
                                   "Usar tu propia clave de Google AI Studio",
                                   style: TextStyle(
-                                    color: Colors.white38,
+                                    color: _palette.textTertiary,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -6998,7 +6954,7 @@ class _MainScreenState extends State<MainScreen>
                       decoration: InputDecoration(
                         hintText: 'AIzaSy...',
                         hintStyle: const TextStyle(
-                          color: Colors.white24,
+                          color: _palette.textQuaternary,
                           fontSize: 12,
                         ),
                         filled: true,
@@ -7016,7 +6972,7 @@ class _MainScreenState extends State<MainScreen>
                     const SizedBox(height: 4),
                     const Text(
                       "Obtén tu clave gratis en aistudio.google.com/api-key",
-                      style: TextStyle(color: Colors.white24, fontSize: 9),
+                      style: TextStyle(color: _palette.textQuaternary, fontSize: 9),
                     ),
                   ],
                   const SizedBox(height: 16),
@@ -7058,7 +7014,7 @@ class _MainScreenState extends State<MainScreen>
   void _showConversationsList() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: _palette.scaffoldBg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -7077,7 +7033,7 @@ class _MainScreenState extends State<MainScreen>
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: _palette.fillSecondary,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -7129,7 +7085,7 @@ class _MainScreenState extends State<MainScreen>
                             child: Text(
                               "No hay conversaciones",
                               style: TextStyle(
-                                color: Colors.white24,
+                                color: _palette.textQuaternary,
                                 fontSize: 13,
                               ),
                             ),
@@ -7176,7 +7132,7 @@ class _MainScreenState extends State<MainScreen>
                                     size: 16,
                                     color: isActive
                                         ? _accentColor
-                                        : Colors.white24,
+                                        : _palette.fillSecondary,
                                   ),
                                   title: Text(
                                     title,
@@ -7195,7 +7151,7 @@ class _MainScreenState extends State<MainScreen>
                                   subtitle: Text(
                                     "$msgCount preguntas",
                                     style: const TextStyle(
-                                      color: Colors.white24,
+                                      color: _palette.textQuaternary,
                                       fontSize: 10,
                                     ),
                                   ),
@@ -7208,7 +7164,7 @@ class _MainScreenState extends State<MainScreen>
                                       : Icon(
                                           LucideIcons.chevronRight,
                                           size: 14,
-                                          color: Colors.white24,
+                                          color: _palette.fillSecondary,
                                         ),
                                 ),
                               );
@@ -7232,7 +7188,7 @@ class _MainScreenState extends State<MainScreen>
   ) {
     showModalBottomSheet(
       context: ctx,
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: _palette.scaffoldBg,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -7260,12 +7216,12 @@ class _MainScreenState extends State<MainScreen>
               ListTile(
                 leading: const Icon(
                   LucideIcons.trash2,
-                  color: Colors.redAccent,
+                  color: _palette.error,
                   size: 18,
                 ),
                 title: const Text(
                   "Eliminar",
-                  style: TextStyle(color: Colors.redAccent, fontSize: 14),
+                  style: TextStyle(color: _palette.error, fontSize: 14),
                 ),
                 onTap: () {
                   Navigator.pop(c);
@@ -7285,7 +7241,7 @@ class _MainScreenState extends State<MainScreen>
     showDialog(
       context: context,
       builder: (c) => AlertDialog(
-        backgroundColor: const Color(0xFF121212),
+        backgroundColor: _palette.scaffoldBg,
         title: Text(
           "RENOMBRAR",
           style: TextStyle(
@@ -7299,7 +7255,7 @@ class _MainScreenState extends State<MainScreen>
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: "Nombre de la conversación",
-            hintStyle: const TextStyle(color: Colors.white24),
+            hintStyle: TextStyle(color: _palette.textQuaternary),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: _accentColor.withValues(alpha: 0.3),
@@ -7315,7 +7271,7 @@ class _MainScreenState extends State<MainScreen>
             onPressed: () => Navigator.pop(c),
             child: const Text(
               "CANCELAR",
-              style: TextStyle(color: Colors.white38),
+              style: TextStyle(color: _palette.textTertiary),
             ),
           ),
           TextButton(
@@ -7369,6 +7325,7 @@ class _MainScreenState extends State<MainScreen>
     return AnimatedBottomNav(
       currentIndex: activeIdx,
       accentColor: _accentColor,
+      palette: _palette,
       items: navItems,
       onTap: (i) {
         final pageIdx = _labelToPage(navItems[i].label);
@@ -7394,31 +7351,14 @@ class _MainScreenState extends State<MainScreen>
         controller: ctrl,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+        style: AppleDesignSystem.subheadline.copyWith(
+          color: _palette.textPrimary,
+          fontWeight: FontWeight.w700,
         ),
-        decoration: InputDecoration(
+        decoration: AppleComponents.inputDecoration(
+          palette: _palette,
           labelText: label,
-          labelStyle: const TextStyle(
-            fontSize: 10,
-            color: Colors.white38,
-            fontWeight: FontWeight.bold,
-          ),
-          filled: true,
-          fillColor: _cardColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: _accentColor.withValues(alpha: 0.5)),
-          ),
+          accentColor: _accentColor,
         ),
       ),
     );
@@ -7491,7 +7431,7 @@ class _MainScreenState extends State<MainScreen>
               ),
               subtitle: const Text(
                 "Comparte toda tu estructura activa",
-                style: TextStyle(color: Colors.white38, fontSize: 10),
+                style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
               onTap: () {
                 Navigator.pop(c);
@@ -7506,7 +7446,7 @@ class _MainScreenState extends State<MainScreen>
               ),
               subtitle: const Text(
                 "Elige una plantilla de tus guardadas",
-                style: TextStyle(color: Colors.white38, fontSize: 10),
+                style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
               onTap: () {
                 Navigator.pop(c);
@@ -7521,7 +7461,7 @@ class _MainScreenState extends State<MainScreen>
               ),
               subtitle: const Text(
                 "Ej: Solo 'Pecho'",
-                style: TextStyle(color: Colors.white38, fontSize: 10),
+                style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
               onTap: () {
                 Navigator.pop(c);
@@ -7613,10 +7553,10 @@ class _MainScreenState extends State<MainScreen>
               },
             ),
             ListTile(
-              leading: const Icon(LucideIcons.list, color: Colors.blueAccent),
+              leading: Icon(LucideIcons.list, color: _palette.info),
               title: const Text(
                 "Editar Contenido",
-                style: TextStyle(color: Colors.blueAccent, fontSize: 12),
+                style: TextStyle(color: _palette.info, fontSize: 12),
               ),
               onTap: () {
                 Navigator.pop(c);
@@ -7624,10 +7564,10 @@ class _MainScreenState extends State<MainScreen>
               },
             ),
             ListTile(
-              leading: const Icon(LucideIcons.trash2, color: Colors.redAccent),
+              leading: Icon(LucideIcons.trash2, color: _palette.error),
               title: const Text(
                 "Eliminar Sesión",
-                style: TextStyle(color: Colors.redAccent, fontSize: 12),
+                style: TextStyle(color: _palette.error, fontSize: 12),
               ),
               onTap: () {
                 Navigator.pop(c);

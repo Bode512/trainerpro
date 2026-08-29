@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../theme/app_theme.dart';
 
 class PlateCalculatorDialog extends StatefulWidget {
   final Color accentColor;
@@ -26,7 +27,6 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
 
   bool _useLbs = false;
 
-  // Kg Inventory
   Map<double, bool> _inventoryKg = {
     25.0: true,
     20.0: true,
@@ -37,7 +37,6 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
     1.25: true,
   };
 
-  // Lbs Inventory
   Map<double, bool> _inventoryLbs = {
     45.0: true,
     35.0: true,
@@ -55,7 +54,6 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
 
   Future<void> _loadInventory() async {
     final prefs = await SharedPreferences.getInstance();
-    // Load Kg
     final savedKg = prefs.getString('trainer_plate_inventory_kg');
     if (savedKg != null) {
       final Map<String, dynamic> decoded = jsonDecode(savedKg);
@@ -65,7 +63,6 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
         );
       });
     }
-    // Load Lbs
     final savedLbs = prefs.getString('trainer_plate_inventory_lbs');
     if (savedLbs != null) {
       final Map<String, dynamic> decoded = jsonDecode(savedLbs);
@@ -83,7 +80,6 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
       _inventoryKg.map((key, value) => MapEntry(key.toString(), value)),
     );
     await prefs.setString('trainer_plate_inventory_kg', encodedKg);
-
     final encodedLbs = jsonEncode(
       _inventoryLbs.map((key, value) => MapEntry(key.toString(), value)),
     );
@@ -111,10 +107,8 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
     double weightToLoad = target - _barWeight;
     double perSide = weightToLoad / 2;
 
-    // Select Inventory
     final currentInventory = _useLbs ? _inventoryLbs : _inventoryKg;
 
-    // Get available plates sorted descending
     List<double> available =
         currentInventory.entries
             .where((e) => e.value)
@@ -147,22 +141,24 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
   @override
   Widget build(BuildContext context) {
     final currentInventory = _useLbs ? _inventoryLbs : _inventoryKg;
+    final palette = getPalette(AppTheme.deepSlate);
 
     return AlertDialog(
-      backgroundColor: widget.cardColor,
+      backgroundColor: palette.cardBg,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             "Calculadora",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: AppleDesignSystem.headline.copyWith(
+              color: palette.textPrimary,
+            ),
           ),
-          // LBS/KG TOGGLE
           Container(
-            height: 30,
+            height: 32,
             decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(8),
+              color: palette.fill,
+              borderRadius: BorderRadius.circular(AppleDesignSystem.radiusS),
             ),
             child: Row(
               children: [
@@ -177,15 +173,14 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // VISUAL BARBELL
             if (_calculatedPlates.isNotEmpty)
               Container(
-                height: 120, // Height for the visual
+                height: 120,
                 width: double.infinity,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(10),
+                  color: palette.fillSecondary,
+                  borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
                 ),
                 child: CustomPaint(
                   painter: BarbellPainter(
@@ -195,11 +190,11 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                   ),
                 ),
               ),
-
-            // INVENTORY TOGGLES
             Text(
               "Inventario (${_useLbs ? 'Lbs' : 'Kg'}):",
-              style: const TextStyle(fontSize: 10, color: Colors.white54),
+              style: AppleDesignSystem.caption1.copyWith(
+                color: palette.textTertiary,
+              ),
             ),
             const SizedBox(height: 5),
             Wrap(
@@ -208,7 +203,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
               alignment: WrapAlignment.center,
               children: currentInventory.keys.map((weight) {
                 bool active = currentInventory[weight]!;
-                return InkWell(
+                return GestureDetector(
                   onTap: () {
                     setState(() {
                       if (_useLbs) {
@@ -220,60 +215,51 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                       _calculatePlates();
                     });
                   },
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: AppleDesignSystem.animFast,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 10,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: active
-                          ? widget.accentColor.withValues(alpha: 0.2)
-                          : Colors.black12,
-                      border: Border.all(
-                        color: active ? widget.accentColor : Colors.white10,
+                          ? widget.accentColor.withValues(alpha: 0.15)
+                          : palette.fill,
+                      borderRadius: BorderRadius.circular(
+                        AppleDesignSystem.radiusXS,
                       ),
-                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text(
                       _formatNum(weight),
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: active ? Colors.white : Colors.white38,
-                        fontWeight: active
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                      style: AppleDesignSystem.caption1.copyWith(
+                        color: active
+                            ? widget.accentColor
+                            : palette.textTertiary,
+                        fontWeight:
+                            active ? FontWeight.w600 : FontWeight.w400,
                       ),
                     ),
                   ),
                 );
               }).toList(),
             ),
-            const SizedBox(height: 15),
-
+            const SizedBox(height: 16),
             TextField(
               controller: _weightCtrl,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              style: AppleDesignSystem.headline.copyWith(
+                color: palette.textPrimary,
               ),
               textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                labelText: "Peso Objetivo",
-                labelStyle: const TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Colors.black26,
+              decoration: AppleComponents.inputDecoration(
+                palette: palette,
+                hintText: "Peso Objetivo",
+              ).copyWith(
                 suffixText: _useLbs ? "lbs" : "kg",
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.white10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: widget.accentColor),
+                suffixStyle: AppleDesignSystem.caption1.copyWith(
+                  color: palette.textTertiary,
                 ),
               ),
               onChanged: (v) => _calculatePlates(),
@@ -283,17 +269,20 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   _errorMsg,
-                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: palette.error,
+                  ),
                 ),
               ),
             const SizedBox(height: 20),
-            // VISUALIZACIÓN (CAJAS AGRUPADAS - Texto)
             if (_calculatedPlates.isNotEmpty) _buildGroupedBoxes(),
             if (_calculatedPlates.isEmpty)
-              const Center(
+              Center(
                 child: Text(
                   "Solo barra",
-                  style: TextStyle(color: Colors.white54),
+                  style: AppleDesignSystem.caption1.copyWith(
+                    color: palette.textTertiary,
+                  ),
                 ),
               ),
           ],
@@ -309,6 +298,7 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
   }
 
   Widget _buildToggleBtn(String text, bool active) {
+    final palette = getPalette(AppTheme.deepSlate);
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -316,20 +306,19 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
           _calculatePlates();
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: AppleDesignSystem.animFast,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: active
-              ? widget.accentColor.withValues(alpha: 0.3)
+              ? widget.accentColor.withValues(alpha: 0.2)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusXS),
         ),
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: active ? widget.accentColor : Colors.white24,
+          style: AppleDesignSystem.caption3.copyWith(
+            color: active ? widget.accentColor : palette.textQuaternary,
           ),
         ),
       ),
@@ -337,11 +326,11 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
   }
 
   Widget _buildGroupedBoxes() {
+    final palette = getPalette(AppTheme.deepSlate);
     Map<double, int> counts = {};
     for (var p in _calculatedPlates) {
       counts[p] = (counts[p] ?? 0) + 1;
     }
-    // Sort keys descending
     List<double> keys = counts.keys.toList()..sort((a, b) => b.compareTo(a));
 
     return Wrap(
@@ -353,23 +342,23 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
         Color color = Colors.grey;
         if (_useLbs) {
           if (weight >= 45) {
-            color = Colors.blue;
+            color = const Color(0xFF0A84FF);
           } else if (weight >= 35) {
-            color = Colors.yellow;
+            color = palette.warning;
           } else if (weight >= 25) {
-            color = Colors.white;
+            color = palette.textPrimary;
           } else if (weight >= 10) {
-            color = Colors.white;
+            color = palette.textPrimary;
           }
         } else {
           if (weight >= 25) {
-            color = Colors.red;
+            color = palette.error;
           } else if (weight >= 20) {
-            color = Colors.blue;
+            color = const Color(0xFF0A84FF);
           } else if (weight >= 15) {
-            color = Colors.yellow;
+            color = palette.warning;
           } else if (weight >= 10) {
-            color = Colors.green;
+            color = palette.success;
           }
         }
 
@@ -378,26 +367,28 @@ class _PlateCalculatorDialogState extends State<PlateCalculatorDialog> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black45,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: color, width: 2),
+                color: palette.fillSecondary,
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusS),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
               ),
-              child: widget.getPlateVisual(
-                weight,
-              ), // Using the generic visual for reference
+              child: widget.getPlateVisual(weight),
             ),
             const SizedBox(height: 4),
             Text(
               _formatNum(weight),
-              style: TextStyle(
+              style: AppleDesignSystem.subheadline.copyWith(
                 color: color,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontWeight: FontWeight.w700,
               ),
             ),
             Text(
               "x $count",
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: AppleDesignSystem.caption1.copyWith(
+                color: palette.textTertiary,
+              ),
             ),
           ],
         );
@@ -426,83 +417,78 @@ class BarbellPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint barPaint = Paint()..color = Colors.grey;
+    final Paint barPaint = Paint()..color = const Color(0xFF636366);
     final double centerY = size.height / 2;
-    final double barHeight = 15.0;
+    final double barHeight = 12.0;
 
-    // Draw Bar Sleeve (left side only shown for simplicity, or we show one side)
-    // Let's show the right side sleeve starting from left
     canvas.drawRect(
       Rect.fromLTWH(0, centerY - barHeight / 2, size.width, barHeight),
       barPaint,
     );
 
-    // Draw Collar
     final double collarWidth = 10;
-    final double collarHeight = 30;
+    final double collarHeight = 28;
     canvas.drawRect(
       Rect.fromLTWH(10, centerY - collarHeight / 2, collarWidth, collarHeight),
-      Paint()..color = Colors.grey[700]!,
+      Paint()..color = const Color(0xFF48484A),
     );
 
-    double currentX = 10 + collarWidth + 2; // Start after collar
+    double currentX = 10 + collarWidth + 2;
 
     for (double p in plates) {
-      // Determine height and color based on weight
       double pHeight = 40;
       Color pColor = accentColor;
 
       if (isLbs) {
         if (p >= 45) {
           pHeight = 90;
-          pColor = Colors.blue;
+          pColor = const Color(0xFF0A84FF);
         } else if (p >= 35) {
           pHeight = 80;
-          pColor = Colors.yellow;
+          pColor = const Color(0xFFFFD60A);
         } else if (p >= 25) {
           pHeight = 70;
-          pColor = Colors.green;
+          pColor = const Color(0xFF30D158);
         } else if (p >= 10) {
           pHeight = 50;
-          pColor = Colors.white;
+          pColor = const Color(0xFFE5E5EA);
         } else {
           pHeight = 35;
-          pColor = Colors.grey;
+          pColor = const Color(0xFF8E8E93);
         }
       } else {
         if (p >= 25) {
           pHeight = 90;
-          pColor = Colors.red;
+          pColor = const Color(0xFFFF453A);
         } else if (p >= 20) {
           pHeight = 85;
-          pColor = Colors.blue;
+          pColor = const Color(0xFF0A84FF);
         } else if (p >= 15) {
           pHeight = 75;
-          pColor = Colors.yellow;
+          pColor = const Color(0xFFFFD60A);
         } else if (p >= 10) {
           pHeight = 65;
-          pColor = Colors.green;
+          pColor = const Color(0xFF30D158);
         } else if (p >= 5) {
           pHeight = 50;
-          pColor = Colors.white;
+          pColor = const Color(0xFFE5E5EA);
         } else {
           pHeight = 35;
-          pColor = Colors.grey;
+          pColor = const Color(0xFF8E8E93);
         }
       }
 
-      double pWidth = 15;
+      double pWidth = 14;
 
       canvas.drawRect(
         Rect.fromLTWH(currentX, centerY - pHeight / 2, pWidth, pHeight),
         Paint()..color = pColor,
       );
 
-      // Border
       canvas.drawRect(
         Rect.fromLTWH(currentX, centerY - pHeight / 2, pWidth, pHeight),
         Paint()
-          ..color = Colors.black45
+          ..color = Colors.black.withValues(alpha: 0.2)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1,
       );

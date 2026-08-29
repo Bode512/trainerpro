@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/app_theme.dart';
@@ -55,56 +56,221 @@ class _TrainerProAppState extends State<TrainerProApp> {
   }
 
   ThemeData _getThemeData() {
-    Color bg;
-    Color primary;
-    switch (_currentTheme) {
-      case AppTheme.cyberNeon:
-        bg = const Color(0xFF000000);
-        primary = const Color(0xFF00F5FF);
-        break;
-      case AppTheme.crimsonBlood:
-        bg = const Color(0xFF1A0B0B);
-        primary = const Color(0xFFFF3131);
-        break;
-      case AppTheme.toxicGreen:
-        bg = const Color(0xFF051105);
-        primary = const Color(0xFF22C55E);
-        break;
-      case AppTheme.solarFlare:
-        bg = const Color(0xFF120A00);
-        primary = const Color(0xFFF59E0B);
-        break;
-      default:
-        bg = const Color(0xFF020617);
-        primary = const Color(0xFF3B82F6);
-    }
+    final palette = getPalette(_currentTheme);
 
     return ThemeData(
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: bg,
-      primaryColor: primary,
-      fontFamily: 'Roboto',
+      scaffoldBackgroundColor: palette.scaffoldBg,
+      primaryColor: palette.accent,
+      fontFamily: '.SF Pro Display',
       useMaterial3: true,
-      expansionTileTheme: const ExpansionTileThemeData(
-        shape: Border.fromBorderSide(BorderSide(color: Colors.transparent)),
-        collapsedShape: Border.fromBorderSide(
-          BorderSide(color: Colors.transparent),
+      colorScheme: ColorScheme.dark(
+        primary: palette.accent,
+        secondary: palette.accentLight,
+        surface: palette.surfaceBg,
+        error: palette.error,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: palette.textPrimary,
+        onError: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
         ),
+        titleTextStyle: AppleDesignSystem.headline.copyWith(
+          color: palette.textPrimary,
+        ),
+        iconTheme: IconThemeData(color: palette.textPrimary),
+      ),
+      cardTheme: CardThemeData(
+        color: palette.cardBg,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusL),
+          side: BorderSide(
+            color: palette.separator.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+        ),
+        margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: bg,
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
+        backgroundColor: palette.cardBg,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusXL),
         ),
-        contentTextStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+        titleTextStyle: AppleDesignSystem.headline.copyWith(
+          color: palette.textPrimary,
+        ),
+        contentTextStyle: AppleDesignSystem.subheadline.copyWith(
+          color: palette.textSecondary,
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: palette.cardBg,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppleDesignSystem.radiusXL),
+          ),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: palette.cardBgElevated,
+        contentTextStyle: AppleDesignSystem.subheadline.copyWith(
+          color: palette.textPrimary,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return palette.accent;
+          }
+          return palette.textQuaternary;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return palette.accent.withValues(alpha: 0.3);
+          }
+          return palette.fill;
+        }),
+      ),
+      listTileTheme: ListTileThemeData(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppleDesignSystem.spacing16,
+        ),
+        titleTextStyle: AppleDesignSystem.subheadline.copyWith(
+          color: palette.textPrimary,
+        ),
+        subtitleTextStyle: AppleDesignSystem.caption1.copyWith(
+          color: palette.textTertiary,
+        ),
+        iconColor: palette.textSecondary,
+      ),
+      dividerTheme: DividerThemeData(
+        color: palette.separator.withValues(alpha: 0.5),
+        thickness: 0.5,
+        space: 0,
+      ),
+      expansionTileTheme: ExpansionTileThemeData(
+        backgroundColor: Colors.transparent,
+        collapsedBackgroundColor: Colors.transparent,
+        iconColor: palette.accent,
+        collapsedIconColor: palette.textTertiary,
+        textColor: palette.textPrimary,
+        collapsedTextColor: palette.textPrimary,
+        shape: const Border.fromBorderSide(BorderSide(color: Colors.transparent)),
+        collapsedShape: const Border.fromBorderSide(
+          BorderSide(color: Colors.transparent),
+        ),
+        tilePadding: const EdgeInsets.symmetric(
+          horizontal: AppleDesignSystem.spacing16,
+        ),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: palette.cardBg,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          side: BorderSide(
+            color: palette.separator.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: palette.accent,
+          textStyle: AppleDesignSystem.subheadline.copyWith(
+            color: palette.accent,
+          ),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: palette.accent,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppleDesignSystem.spacing24,
+            vertical: AppleDesignSystem.spacing14,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          ),
+          textStyle: AppleDesignSystem.subheadline.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: palette.textPrimary,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppleDesignSystem.spacing24,
+            vertical: AppleDesignSystem.spacing14,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          ),
+          side: BorderSide(
+            color: palette.separator.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+          textStyle: AppleDesignSystem.subheadline.copyWith(
+            color: palette.textPrimary,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: palette.fill,
+        hintStyle: AppleDesignSystem.caption1.copyWith(
+          color: palette.textQuaternary,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppleDesignSystem.spacing16,
+          vertical: AppleDesignSystem.spacing14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          borderSide: BorderSide(
+            color: palette.separator.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
+          borderSide: BorderSide(
+            color: palette.accent,
+            width: 1.5,
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final palette = getPalette(_currentTheme);
+
     return MaterialApp(
       title: 'Trainer Pro',
       debugShowCheckedModeBanner: false,
@@ -115,11 +281,16 @@ class _TrainerProAppState extends State<TrainerProApp> {
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Scaffold(
-                    backgroundColor: Color(0xFF0A0E1A),
+                  return Scaffold(
+                    backgroundColor: palette.scaffoldBg,
                     body: Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF3B82F6),
+                      child: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: palette.accent,
+                        ),
                       ),
                     ),
                   );

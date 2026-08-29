@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../theme/app_theme.dart';
 
 class AnimatedBottomNav extends StatelessWidget {
   final int currentIndex;
   final List<AnimatedNavItem> items;
   final Color accentColor;
   final ValueChanged<int> onTap;
+  final ThemePalette palette;
 
   const AnimatedBottomNav({
     super.key,
@@ -13,16 +15,23 @@ class AnimatedBottomNav extends StatelessWidget {
     required this.items,
     required this.accentColor,
     required this.onTap,
+    required this.palette,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 36, top: 12),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).padding.bottom + 8,
+        top: AppleDesignSystem.spacing8,
+      ),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A0E1A).withValues(alpha: 0.95),
-        border: const Border(
-          top: BorderSide(color: Colors.white10, width: 0.5),
+        color: palette.surfaceBg.withValues(alpha: 0.94),
+        border: Border(
+          top: BorderSide(
+            color: palette.separator.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
       ),
       child: Row(
@@ -33,46 +42,44 @@ class AnimatedBottomNav extends StatelessWidget {
             onTap: () => onTap(i),
             behavior: HitTestBehavior.opaque,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
+              duration: AppleDesignSystem.animMedium,
+              curve: AppleDesignSystem.curveSmooth,
               padding: EdgeInsets.symmetric(
-                horizontal: isActive ? 16 : 8,
-                vertical: 8,
+                horizontal: isActive ? 14 : 10,
+                vertical: AppleDesignSystem.spacing8,
               ),
               decoration: BoxDecoration(
                 color: isActive
-                    ? accentColor.withValues(alpha: 0.15)
+                    ? accentColor.withValues(alpha: 0.12)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(AppleDesignSystem.radiusPill),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AnimatedScale(
-                    scale: isActive ? 1.2 : 1.0,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    scale: isActive ? 1.15 : 1.0,
+                    duration: AppleDesignSystem.animNormal,
+                    curve: AppleDesignSystem.curveSpring,
                     child: Icon(
                       items[i].icon,
-                      color: isActive ? accentColor : Colors.white24,
-                      size: 20,
+                      color: isActive ? accentColor : palette.textQuaternary,
+                      size: 22,
                     ),
                   ),
                   AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
+                    duration: AppleDesignSystem.animMedium,
+                    curve: AppleDesignSystem.curveSmooth,
                     child: AnimatedOpacity(
                       opacity: isActive ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 200),
+                      duration: AppleDesignSystem.animFast,
                       child: isActive
                           ? Padding(
                               padding: const EdgeInsets.only(left: 8),
                               child: Text(
                                 items[i].label,
-                                style: TextStyle(
-                                  fontSize: 10,
+                                style: AppleDesignSystem.caption3.copyWith(
                                   color: accentColor,
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             )
@@ -104,8 +111,8 @@ class StaggeredListView extends StatefulWidget {
   const StaggeredListView({
     super.key,
     required this.children,
-    this.staggerDuration = const Duration(milliseconds: 60),
-    this.slideDuration = const Duration(milliseconds: 400),
+    this.staggerDuration = const Duration(milliseconds: 50),
+    this.slideDuration = const Duration(milliseconds: 350),
   });
 
   @override
@@ -141,7 +148,7 @@ class _StaggeredListViewState extends State<StaggeredListView>
           curve: Interval(
             start.clamp(0, 1),
             end.clamp(0, 1),
-            curve: Curves.easeOutCubic,
+            curve: AppleDesignSystem.curveSmooth,
           ),
         ),
       );
@@ -166,7 +173,7 @@ class _StaggeredListViewState extends State<StaggeredListView>
             return Opacity(
               opacity: _animations[i].value,
               child: Transform.translate(
-                offset: Offset(0, 30 * (1 - _animations[i].value)),
+                offset: Offset(0, 20 * (1 - _animations[i].value)),
                 child: child,
               ),
             );
@@ -225,7 +232,7 @@ class _GlowPulseState extends State<GlowPulse>
       builder: (context, child) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(AppleDesignSystem.radiusL),
             boxShadow: [
               BoxShadow(
                 color: widget.color.withValues(
@@ -254,8 +261,8 @@ class PressableScale extends StatefulWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.scale = 0.95,
-    this.duration = const Duration(milliseconds: 150),
+    this.scale = 0.96,
+    this.duration = const Duration(milliseconds: 120),
   });
 
   @override
@@ -335,7 +342,7 @@ class _CircularTimerState extends State<CircularTimer>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-    _pulseAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+    _pulseAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
     _pulseController.repeat(reverse: true);
@@ -352,10 +359,10 @@ class _CircularTimerState extends State<CircularTimer>
     return AnimatedBuilder(
       animation: _pulseAnimation,
       builder: (context, child) {
-        final size = widget.isExpanded ? 260.0 : 50.0;
+        final size = widget.isExpanded ? 260.0 : 48.0;
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOut,
+          duration: AppleDesignSystem.animMedium,
+          curve: AppleDesignSystem.curveSmooth,
           width: size,
           height: size,
           child: CustomPaint(
@@ -372,20 +379,18 @@ class _CircularTimerState extends State<CircularTimer>
                       children: [
                         Text(
                           "TIEMPO DE DESCANSO",
-                          style: TextStyle(
+                          style: AppleDesignSystem.caption3.copyWith(
                             color: widget.accentColor,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 3,
+                            letterSpacing: 2,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           "${(widget.secondsLeft ~/ 60)}:${(widget.secondsLeft % 60).toString().padLeft(2, '0')}",
-                          style: const TextStyle(
+                          style: AppleDesignSystem.largeTitle.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 56,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 52,
                           ),
                         ),
                       ],
@@ -417,18 +422,16 @@ class _CircularTimerPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width / 2) - 4;
 
-    // Background circle
     final bgPaint = Paint()
-      ..color = const Color(0xFF1A1F2E)
+      ..color = const Color(0xFF2C2C2E)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = isExpanded ? 6 : 3;
+      ..strokeWidth = isExpanded ? 5 : 2.5;
     canvas.drawCircle(center, radius, bgPaint);
 
-    // Progress arc
     final progressPaint = Paint()
       ..color = accentColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = isExpanded ? 6 : 3
+      ..strokeWidth = isExpanded ? 5 : 2.5
       ..strokeCap = StrokeCap.round;
 
     final sweepAngle = 2 * math.pi * progress;
@@ -440,12 +443,11 @@ class _CircularTimerPainter extends CustomPainter {
       progressPaint,
     );
 
-    // Glow effect when expanded
     if (isExpanded) {
       final glowPaint = Paint()
-        ..color = accentColor.withValues(alpha: 0.15 * pulseScale)
+        ..color = accentColor.withValues(alpha: 0.12 * pulseScale)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 12
+        ..strokeWidth = 10
         ..strokeCap = StrokeCap.round;
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
@@ -456,12 +458,11 @@ class _CircularTimerPainter extends CustomPainter {
       );
     }
 
-    // Center dot
     if (!isExpanded) {
       final dotPaint = Paint()
         ..color = accentColor
         ..style = PaintingStyle.fill;
-      canvas.drawCircle(center, 3 * pulseScale, dotPaint);
+      canvas.drawCircle(center, 2.5 * pulseScale, dotPaint);
     }
   }
 
@@ -481,7 +482,7 @@ class AnimatedCounter extends StatelessWidget {
     super.key,
     required this.value,
     this.style,
-    this.duration = const Duration(milliseconds: 400),
+    this.duration = const Duration(milliseconds: 350),
   });
 
   @override
@@ -491,7 +492,7 @@ class AnimatedCounter extends StatelessWidget {
       transitionBuilder: (child, anim) {
         return SlideTransition(
           position: Tween<Offset>(
-            begin: const Offset(0, 0.5),
+            begin: const Offset(0, 0.4),
             end: Offset.zero,
           ).animate(anim),
           child: FadeTransition(opacity: anim, child: child),

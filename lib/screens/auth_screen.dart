@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import '../theme/app_theme.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -11,7 +12,8 @@ class AuthScreen extends StatefulWidget {
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends State<AuthScreen>
+    with SingleTickerProviderStateMixin {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
@@ -31,11 +33,33 @@ class _AuthScreenState extends State<AuthScreen> {
 
   static const List<String> _blockedDomains = [];
 
+  late AnimationController _animController;
+  late Animation<double> _fadeAnim;
+  late Animation<Offset> _slideAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
+    );
+    _slideAnim =
+        Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero).animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
+    _animController.forward();
+  }
+
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _nameCtrl.dispose();
+    _animController.dispose();
     super.dispose();
   }
 
@@ -217,289 +241,318 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = getPalette(AppTheme.deepSlate);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E1A),
+      backgroundColor: palette.scaffoldBg,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    LucideIcons.dumbbell,
-                    size: 40,
-                    color: Color(0xFF3B82F6),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "TRAINER PRO",
-                  style: TextStyle(
-                    color: Color(0xFF3B82F6),
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 3,
-                  ),
-                ),
-                const SizedBox(height: 6),
-
-                if (_emailVerificationSent) ...[
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.greenAccent.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.greenAccent.withValues(alpha: 0.3),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppleDesignSystem.spacing28,
+            ),
+            child: FadeTransition(
+              opacity: _fadeAnim,
+              child: SlideTransition(
+                position: _slideAnim,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 32),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: palette.accent.withValues(alpha: 0.1),
+                        border: Border.all(
+                          color: palette.accent.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.fitness_center,
+                        size: 32,
+                        color: palette.accent,
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        const Icon(
-                          LucideIcons.mailCheck,
-                          color: Colors.greenAccent,
-                          size: 32,
+                    const SizedBox(height: 20),
+                    Text(
+                      "TRAINER PRO",
+                      style: AppleDesignSystem.title2.copyWith(
+                        color: palette.accent,
+                        letterSpacing: 2.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _needsEmailVerification
+                          ? "Verifica tu correo para continuar"
+                          : (_isLogin
+                                ? "Inicia sesión para continuar"
+                                : "Crea tu cuenta"),
+                      style: AppleDesignSystem.footnote.copyWith(
+                        color: palette.textTertiary,
+                      ),
+                    ),
+
+                    if (_emailVerificationSent) ...[
+                      const SizedBox(height: 32),
+                      Container(
+                        padding: const EdgeInsets.all(
+                          AppleDesignSystem.spacing20,
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          "Correo de verificación enviado",
-                          style: TextStyle(
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                        decoration: BoxDecoration(
+                          color: palette.success.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(
+                            AppleDesignSystem.radiusL,
+                          ),
+                          border: Border.all(
+                            color: palette.success.withValues(alpha: 0.2),
+                            width: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Revisa ${_emailCtrl.text.trim()} y haz click en el enlace para activar tu cuenta.",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 12,
-                          ),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: palette.success.withValues(alpha: 0.12),
+                              ),
+                              child: Icon(
+                                LucideIcons.mailCheck,
+                                color: palette.success,
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              "Correo de verificación enviado",
+                              style: AppleDesignSystem.subheadline.copyWith(
+                                color: palette.success,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Revisa ${_emailCtrl.text.trim()} y haz click en el enlace para activar tu cuenta.",
+                              textAlign: TextAlign.center,
+                              style: AppleDesignSystem.caption1.copyWith(
+                                color: palette.textTertiary,
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 44,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _emailVerificationSent = false;
+                                    _isLogin = true;
+                                  });
+                                },
+                                child: const Text(
+                                  "INICIAR SESIÓN",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 40),
+
+                      if (!_isLogin) ...[
+                        _buildField(_nameCtrl, "Nombre", LucideIcons.user),
                         const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 42,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF3B82F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                      ],
+                      _buildField(
+                        _emailCtrl,
+                        "Email",
+                        LucideIcons.mail,
+                        keyboard: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 14),
+                      _buildField(
+                        _passCtrl,
+                        "Contraseña",
+                        LucideIcons.lock,
+                        obscure: _obscurePassword,
+                        suffixIcon: GestureDetector(
+                          onTap: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
+                          child: Icon(
+                            _obscurePassword
+                                ? LucideIcons.eyeOff
+                                : LucideIcons.eye,
+                            size: 18,
+                            color: palette.textQuaternary,
+                          ),
+                        ),
+                      ),
+
+                      if (_error != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(
+                            AppleDesignSystem.spacing12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: palette.error.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(
+                              AppleDesignSystem.radiusS,
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _emailVerificationSent = false;
-                                _isLogin = true;
-                              });
-                            },
-                            child: const Text(
-                              "INICIAR SESIÓN",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                LucideIcons.alertCircle,
+                                size: 16,
+                                color: palette.error,
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _error!,
+                                  style: AppleDesignSystem.caption1.copyWith(
+                                    color: palette.error,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ] else ...[
-                  Text(
-                    _needsEmailVerification
-                        ? "Verifica tu correo para continuar"
-                        : (_isLogin
-                              ? "Inicia sesión para continuar"
-                              : "Crea tu cuenta"),
-                    style: const TextStyle(color: Colors.white38, fontSize: 13),
-                  ),
-                  const SizedBox(height: 40),
 
-                  if (!_isLogin) ...[
-                    _buildField(_nameCtrl, "Nombre", LucideIcons.user),
-                    const SizedBox(height: 14),
-                  ],
-                  _buildField(
-                    _emailCtrl,
-                    "Email",
-                    LucideIcons.mail,
-                    keyboard: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 14),
-                  _buildField(
-                    _passCtrl,
-                    "Contraseña",
-                    LucideIcons.lock,
-                    obscure: _obscurePassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword ? LucideIcons.eyeOff : LucideIcons.eye,
-                        size: 18,
-                        color: Colors.white38,
-                      ),
-                      onPressed: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                    ),
-                  ),
-
-                  if (_error != null) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.redAccent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.redAccent.withValues(alpha: 0.3),
+                      const SizedBox(height: 28),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: _loading ? null : _emailAuth,
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  _isLogin ? "INICIAR SESIÓN" : "REGISTRARSE",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.5,
+                                    fontSize: 14,
+                                  ),
+                                ),
                         ),
                       ),
-                      child: Text(
-                        _error!,
-                        style: const TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
 
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B82F6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed: _loading ? null : _emailAuth,
-                      child: _loading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : Text(
-                              _isLogin ? "INICIAR SESIÓN" : "REGISTRARSE",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                                fontSize: 13,
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 0.5,
+                              color: palette.separator.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppleDesignSystem.spacing16,
+                            ),
+                            child: Text(
+                              "O",
+                              style: AppleDesignSystem.caption1.copyWith(
+                                color: palette.textQuaternary,
                               ),
                             ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider(color: Colors.white10)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          "O",
-                          style: TextStyle(color: Colors.white24, fontSize: 12),
-                        ),
-                      ),
-                      const Expanded(child: Divider(color: Colors.white10)),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed: _loading ? null : _googleAuth,
-                      icon: const Icon(
-                        LucideIcons.globe,
-                        size: 18,
-                        color: Colors.white70,
-                      ),
-                      label: const Text(
-                        "Continuar con Google",
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: TextButton.icon(
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed: _loading ? null : _guestAuth,
-                      icon: const Icon(
-                        LucideIcons.user,
-                        size: 18,
-                        color: Colors.white54,
-                      ),
-                      label: const Text(
-                        "Entrar como invitado",
-                        style: TextStyle(color: Colors.white54, fontSize: 13),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      _isLogin = !_isLogin;
-                      _error = null;
-                      _needsEmailVerification = false;
-                    }),
-                    child: RichText(
-                      text: TextSpan(
-                        text: _isLogin
-                            ? "¿No tienes cuenta? "
-                            : "¿Ya tienes cuenta? ",
-                        style: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 12,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: _isLogin ? "Regístrate" : "Inicia sesión",
-                            style: const TextStyle(
-                              color: Color(0xFF3B82F6),
-                              fontWeight: FontWeight.bold,
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 0.5,
+                              color: palette.separator.withValues(alpha: 0.5),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ],
-              ],
+
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton.icon(
+                          onPressed: _loading ? null : _googleAuth,
+                          icon: const Icon(LucideIcons.globe, size: 18),
+                          label: const Text(
+                            "Continuar con Google",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: TextButton.icon(
+                          onPressed: _loading ? null : _guestAuth,
+                          icon: Icon(
+                            LucideIcons.user,
+                            size: 18,
+                            color: palette.textTertiary,
+                          ),
+                          label: Text(
+                            "Entrar como invitado",
+                            style: AppleDesignSystem.subheadline.copyWith(
+                              color: palette.textTertiary,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 28),
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          _isLogin = !_isLogin;
+                          _error = null;
+                          _needsEmailVerification = false;
+                        }),
+                        child: RichText(
+                          text: TextSpan(
+                            text: _isLogin
+                                ? "¿No tienes cuenta? "
+                                : "¿Ya tienes cuenta? ",
+                            style: AppleDesignSystem.footnote.copyWith(
+                              color: palette.textTertiary,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: _isLogin ? "Regístrate" : "Inicia sesión",
+                                style: AppleDesignSystem.footnote.copyWith(
+                                  color: palette.accent,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -515,34 +568,19 @@ class _AuthScreenState extends State<AuthScreen> {
     bool obscure = false,
     Widget? suffixIcon,
   }) {
+    final palette = getPalette(AppTheme.deepSlate);
     return TextField(
       controller: ctrl,
       keyboardType: keyboard,
       obscureText: obscure,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      decoration: InputDecoration(
+      style: AppleDesignSystem.subheadline.copyWith(
+        color: palette.textPrimary,
+      ),
+      decoration: AppleComponents.inputDecoration(
+        palette: palette,
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
-        prefixIcon: Icon(icon, size: 18, color: Colors.white24),
+        prefixIcon: Icon(icon, size: 18, color: palette.textQuaternary),
         suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: const Color(0xFF12162A),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.white10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF3B82F6)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
       ),
     );
   }
